@@ -8,17 +8,18 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Locale;
 
 public class Font {
-    public static final int SPACING = 5;
+    public static final int SPACING_X = 0;
+    public static final int SPACING_Y = 4;
     private static final int DEFAULT_WIDTH = 7;
     private static final int DEFAULT_HEIGHT = 7;
     TextureRegion[] chars;
 
     public Font(Texture source){
-        chars = new TextureRegion[39]; // 39
+        chars = new TextureRegion[40]; // 39
         int cnt = 0;
         int y = 0;
         int x = 0;
-        for(int i = 0; i < 39; i++){
+        for(int i = 0; i < chars.length; i++){
             chars[i] = new TextureRegion(source, x * 7, y*7, 7, 7);
             x++;
             if(x >= 16){
@@ -62,7 +63,7 @@ public class Font {
                 int letter = c - 65 + 10;
                 batch.draw(chars[letter], posX, y, xScale, yScale);
             }
-            posX += DEFAULT_WIDTH * xScale + SPACING;
+            posX += DEFAULT_WIDTH * xScale + SPACING_X;
 
         }
         batch.end();
@@ -72,21 +73,45 @@ public class Font {
         float posY = bounds.y;
         char[] line = text.toUpperCase(Locale.ROOT).toCharArray();
         batch.begin();
+        int letter = 0;
         for(char c : line){
-            if(c < 65) {
+            if(48 <= c && c <= 57) {
                 //c is a number
-                int letter = c - 48;
-                batch.draw(chars[letter], posX, bounds.y, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
+                letter = c - 48;
+            }
+            else if(c >= 65 && c <= 90){
+                //c is a letter
+                letter = c - 65 + 10;
             }
             else {
-                //c is a letter
-                int letter = c - 65 + 10;
-                batch.draw(chars[letter], posX, bounds.y, xScale, yScale);
+                switch(c){
+                    case ' ' : {
+                        letter = 39;
+                        break;
+                    }
+                    case 46: {
+                        letter = 36; //period
+                        break;
+                    }
+                    case 33: {
+                        letter = 38; //exclamation mark
+                        break;
+                    }
+                    case 63 : {
+                        letter = 37; //question mark
+                        break;
+                    }
+                    default : {
+                        System.out.println("Letter is not valid!");
+                    }
+                }
             }
-            posX += xScale + SPACING;
-            if(posX + DEFAULT_WIDTH > bounds.x + bounds.width){ //wrap
+            batch.draw(chars[letter], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
+
+            posX += DEFAULT_WIDTH * (xScale + SPACING_X);
+            if(posX + (DEFAULT_WIDTH * xScale) > bounds.x + bounds.width){ //wrap
                 posX = bounds.x;
-                posY += DEFAULT_HEIGHT * yScale;
+                posY -= DEFAULT_HEIGHT * (yScale + SPACING_Y);
             }
         }
         batch.end();

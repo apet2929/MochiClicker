@@ -2,7 +2,9 @@ package com.moonjew.mochiclicker.state;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.Font;
+import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.entities.Cat;
 
 
@@ -31,7 +33,7 @@ public class PlayState extends State{
 //        sb.begin();
 //        sb.draw(test.getTexture(), test.getPosition().x, test.getPosition().y, test.getPosition().width, test.getPosition().height);
 //        sb.end();
-        font.test(sb);
+        font.draw(sb, "testete ststesthaj!.?", new Rectangle(0, 200, 500, 500), 10, 10);
     }
 
     @Override
