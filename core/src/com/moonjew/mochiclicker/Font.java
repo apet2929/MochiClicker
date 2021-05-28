@@ -102,7 +102,7 @@ public class Font {
                         break;
                     }
                     default : {
-                        System.out.println("Letter is not valid!");
+                        System.out.println("Letter of " + c + " is not valid!");
                     }
                 }
             }

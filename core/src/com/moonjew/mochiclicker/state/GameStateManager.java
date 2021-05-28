@@ -1,5 +1,6 @@
 package com.moonjew.mochiclicker.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.Stack;
@@ -22,8 +23,13 @@ public class GameStateManager {
         states.pop().dispose();
         states.push(state);
     }
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
         states.peek().update(deltaTime);
+        try {
+            Thread.sleep((long) (1000 / 60 - Gdx.graphics.getDeltaTime()));
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
     public void render(SpriteBatch sb){
         states.peek().render(sb);
