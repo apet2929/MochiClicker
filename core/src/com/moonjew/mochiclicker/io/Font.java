@@ -1,9 +1,10 @@
-package com.moonjew.mochiclicker;
+package com.moonjew.mochiclicker.io;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.moonjew.mochiclicker.MochiClicker;
 
 import java.util.Locale;
 
@@ -14,7 +15,8 @@ public class Font {
     private static final int DEFAULT_HEIGHT = 7;
     TextureRegion[] chars;
 
-    public Font(Texture source){
+    public Font(){
+        Texture source = new Texture("font.png");
         chars = new TextureRegion[40]; // 39
         int cnt = 0;
         int y = 0;

@@ -51,7 +51,6 @@ public class Cat {
                 sleeping = false;
             }
         }
-
     }
 
     public double getTired() {

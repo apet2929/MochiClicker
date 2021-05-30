@@ -1,4 +1,4 @@
-package com.moonjew.mochiclicker.entities;
+package com.moonjew.mochiclicker.io;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;

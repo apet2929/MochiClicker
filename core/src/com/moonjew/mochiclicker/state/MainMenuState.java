@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.moonjew.mochiclicker.MochiClicker;
 
-public class MenuState extends State{
+public class MainMenuState extends State{
     Texture img;
-    public MenuState(GameStateManager gsm) {
+    public MainMenuState(GameStateManager gsm) {
         super(gsm);
         img = new Texture("testcat.jpg");
     }
