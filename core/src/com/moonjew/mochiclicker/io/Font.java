@@ -1,6 +1,7 @@
 package com.moonjew.mochiclicker.io;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -14,9 +15,10 @@ public class Font {
     private static final int DEFAULT_WIDTH = 7;
     private static final int DEFAULT_HEIGHT = 7;
     TextureRegion[] chars;
+    Texture source;
 
     public Font(){
-        Texture source = new Texture("font.png");
+        source = new Texture("font.png");
         chars = new TextureRegion[40]; // 39
         int cnt = 0;
         int y = 0;
@@ -48,19 +50,20 @@ public class Font {
         }
         batch.end();
     }
+    public void drawTest(SpriteBatch sb){
+        sb.draw(chars[0], 0, 0, 100, 100);
+    }
 
     public void draw(SpriteBatch batch, String text, float x, float y, float xScale, float yScale) {
         float posX = x;
         char[] line = text.toUpperCase(Locale.ROOT).toCharArray();
-        batch.begin();
-        for(char c : line){
-            if(c < 65) {
+        for(char c : line) {
+            if (c < 65) {
                 //c is a number
                 int letter = c - 48;
                 System.out.println(letter);
                 batch.draw(chars[letter], posX, y, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
-            }
-            else {
+            } else {
                 //c is a letter
                 int letter = c - 65 + 10;
                 batch.draw(chars[letter], posX, y, xScale, yScale);
@@ -68,13 +71,12 @@ public class Font {
             posX += DEFAULT_WIDTH * xScale + SPACING_X;
 
         }
-        batch.end();
     }
     public void draw(SpriteBatch batch, String text, Rectangle bounds, float xScale, float yScale){
         float posX = bounds.x;
         float posY = bounds.y;
         char[] line = text.toUpperCase(Locale.ROOT).toCharArray();
-        batch.begin();
+
         int letter = 0;
         for(char c : line){
             if(48 <= c && c <= 57) {
@@ -116,7 +118,9 @@ public class Font {
                 posY -= DEFAULT_HEIGHT * (yScale + SPACING_Y);
             }
         }
-        batch.end();
     }
 
+    public void dispose(){
+        source.dispose();
+    }
 }

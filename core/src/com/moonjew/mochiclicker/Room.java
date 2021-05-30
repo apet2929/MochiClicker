@@ -19,7 +19,7 @@ public class Room {
         this.color = color;
     }
 
-    public void update(float deltaTime){
+    public void update(float deltaTime, boolean focused){
         cat.update(deltaTime);
     }
     public Color getColor(){
@@ -30,5 +30,8 @@ public class Room {
     }
     public Cat getCat(){
         return cat;
+    }
+    public void dispose(){
+        cat.dispose();
     }
 }

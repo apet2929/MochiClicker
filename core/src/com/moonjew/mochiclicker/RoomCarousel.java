@@ -11,6 +11,14 @@ public class RoomCarousel {
         rooms = new ArrayList<>();
         currentRoom = 0;
     }
+    public void update(final float deltaTime){
+        for(int i = 0; i < rooms.size(); i++){
+            if(i == currentRoom){
+                rooms.get(i).update(deltaTime, true);
+            }
+            rooms.get(i).update(deltaTime, false);
+        }
+    }
 
     public Room getCurrentRoom(){
         return rooms.get(currentRoom);
@@ -33,6 +41,10 @@ public class RoomCarousel {
         rooms.add(room);
     }
 
-
+    public void dispose(){
+        for(Room room : rooms){
+            room.dispose();
+        }
+    }
 
 }

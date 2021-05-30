@@ -19,8 +19,8 @@ public class Animation {
         this.frameCount = frameCount;
         maxFrameTime = cycleTime / frameCount;
         frame = 0;
-
     }
+
     public void update(float deltaTime){
         currentFrameTime += deltaTime;
         if(currentFrameTime > maxFrameTime){
@@ -31,6 +31,7 @@ public class Animation {
             frame = 0;
         }
     }
+
     public TextureRegion getFrame(){
         return frames.get(frame);
     }

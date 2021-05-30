@@ -68,4 +68,7 @@ public class Cat {
         return position;
     }
 
+    public void dispose(){
+        texture.dispose();
+    }
 }
