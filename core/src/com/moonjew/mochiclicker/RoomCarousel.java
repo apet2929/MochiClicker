@@ -1,7 +1,6 @@
 package com.moonjew.mochiclicker;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 public class RoomCarousel {
     public ArrayList<Room> rooms;
@@ -22,6 +21,19 @@ public class RoomCarousel {
 
     public Room getCurrentRoom(){
         return rooms.get(currentRoom);
+    }
+
+    public Room getRightRoom() {
+        moveRight();
+        Room temp = getCurrentRoom();
+        moveLeft();
+        return temp;
+    }
+    public Room getLeftRoom() {
+        moveLeft();
+        Room temp = getCurrentRoom();
+        moveRight();
+        return temp;
     }
 
     public void moveLeft(){
@@ -46,5 +58,4 @@ public class RoomCarousel {
             room.dispose();
         }
     }
-
 }
