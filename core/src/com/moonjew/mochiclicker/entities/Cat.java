@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.moonjew.mochiclicker.MochiClicker;
+import com.moonjew.mochiclicker.Upgrade;
+
+import java.util.ArrayList;
 
 public class Cat {
     Texture texture; //change to animation when ready
@@ -47,6 +50,7 @@ public class Cat {
 
         if (sleeping && tired != 0) {
             tired -= deltaTime * 2;
+
             if (tired <= 0) {
                 sleeping = false;
             }
@@ -71,4 +75,6 @@ public class Cat {
     public void dispose(){
         texture.dispose();
     }
+
+
 }
