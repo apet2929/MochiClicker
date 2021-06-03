@@ -2,6 +2,7 @@ package com.moonjew.mochiclicker;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.state.GameStateManager;
@@ -14,15 +15,13 @@ public class Room {
     Cat cat;
     Rectangle rectangle;
     Color color;
-    boolean focused;
     ShopState shop;
 
-    public Room(Color color, GameStateManager gsm) {
+    public Room(Color color, GameStateManager gsm, ShapeRenderer sr) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         this.cat = new Cat(new Texture("testcat.jpg"), 0,0, 100, 100, rectangle);
         this.color = color;
-        this.shop = new ShopState(gsm);
-        this.shop.buyUpgrade(Upgrade.TEST);
+        this.shop = new ShopState(gsm, sr);
     }
 
     public boolean hasUpgrade(Upgrade upgrade){

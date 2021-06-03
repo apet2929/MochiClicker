@@ -20,24 +20,22 @@ import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.ShopButton;
 
 public class PlayState extends State{
+    public static int catNip;
     Font font;
     RoomCarousel rooms;
-    ShapeRenderer renderer;
     int currentRoom;
-    int catNip;
     ShopButton button;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
 
-    public PlayState(GameStateManager gsm) {
+    public PlayState(GameStateManager gsm, ShapeRenderer sr) {
         super(gsm);
         font = new Font();
-        renderer = new ShapeRenderer();
 
         currentRoom = 0;
         rooms = new RoomCarousel();
-        rooms.addRoom(new Room(Color.PURPLE, gsm));
-        rooms.addRoom(new Room(Color.ROYAL, gsm));
-        rooms.addRoom(new Room(Color.RED, gsm));
+        rooms.addRoom(new Room(Color.PURPLE, gsm, sr));
+        rooms.addRoom(new Room(Color.ROYAL, gsm, sr));
+        rooms.addRoom(new Room(Color.RED, gsm, sr));
 
         catNip = 0;
         button = new ShopButton(new Rectangle(50, MochiClicker.HEIGHT-50, 100, 50), font, gsm, rooms.getCurrentRoom());
@@ -102,25 +100,25 @@ public class PlayState extends State{
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render(SpriteBatch sb, ShapeRenderer sr) {
         sb.setProjectionMatrix(cam.combined);
-        renderer.setProjectionMatrix(cam.combined);
+        sr.setProjectionMatrix(cam.combined);
         Rectangle rectangle = rooms.getCurrentRoom().getRectangle();
 
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(rooms.getCurrentRoom().getColor());
-        renderer.rect(cam.position.x + rectangle.x, cam.position.y + rectangle.y, rectangle.width, rectangle.height);
+        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.setColor(rooms.getCurrentRoom().getColor());
+        sr.rect(cam.position.x + rectangle.x, cam.position.y + rectangle.y, rectangle.width, rectangle.height);
         if(transitioning == 1){ //to the right
-            renderer.setColor(rooms.getRightRoom().getColor());
+            sr.setColor(rooms.getRightRoom().getColor());
             Rectangle rightRectangle = rooms.getRightRoom().getRectangle();
-            renderer.rect(cam.position.x + rightRectangle.x + rectangle.width + 50, cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
+            sr.rect(cam.position.x + rightRectangle.x + rectangle.width + 50, cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
         }
         if(transitioning == -1){ //to the left
-            renderer.setColor(rooms.getLeftRoom().getColor());
+            sr.setColor(rooms.getLeftRoom().getColor());
             Rectangle leftRectangle = rooms.getLeftRoom().getRectangle();
-            renderer.rect(cam.position.x + leftRectangle.x - rectangle.width - 50, cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
+            sr.rect(cam.position.x + leftRectangle.x - rectangle.width - 50, cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
         }
-        renderer.end();
+        sr.end();
 
         sb.begin();
         Cat cat = rooms.getCurrentRoom().getCat();
