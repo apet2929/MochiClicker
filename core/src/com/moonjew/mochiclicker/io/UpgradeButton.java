@@ -8,15 +8,14 @@ import com.moonjew.mochiclicker.state.ShopState;
 
 public class UpgradeButton extends Button{
     Upgrade upgrade;
-    public UpgradeButton(Rectangle bounds, Font font, Upgrade upgrade) {
-        super("Shop", bounds, font);
+    public UpgradeButton(Rectangle bounds,  Upgrade upgrade) {
+        super("Upgrade", bounds);
         this.upgrade = upgrade;
     }
 
     public Upgrade getUpgrade() {
         return upgrade;
     }
-
 
     @Override
     public void onclick() {

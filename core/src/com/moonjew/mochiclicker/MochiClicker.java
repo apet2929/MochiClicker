@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.moonjew.mochiclicker.io.Font;
 import com.moonjew.mochiclicker.state.GameStateManager;
 import com.moonjew.mochiclicker.state.MainMenuState;
 
@@ -14,6 +15,7 @@ public class MochiClicker extends ApplicationAdapter {
 	SpriteBatch batch;
 	GameStateManager gsm;
 	ShapeRenderer sr;
+	public static Font FONT;
 
 	
 	@Override
@@ -22,6 +24,7 @@ public class MochiClicker extends ApplicationAdapter {
 		gsm = new GameStateManager();
 		sr = new ShapeRenderer();
 		gsm.push(new MainMenuState(gsm, sr));
+		FONT = new Font();
 	}
 
 	@Override
@@ -34,5 +37,6 @@ public class MochiClicker extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		FONT.dispose();
 	}
 }
