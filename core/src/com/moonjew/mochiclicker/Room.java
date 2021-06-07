@@ -19,7 +19,7 @@ public class Room {
 
     public Room(Color color, GameStateManager gsm, ShapeRenderer sr) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        this.cat = new Cat(new Texture("testcat.jpg"), 0,0, 100, 100, rectangle);
+        this.cat = new Cat(new Texture("kitty.png"), 0,0, 100, 70, rectangle);
         this.color = color;
         this.shop = new ShopState(gsm, sr);
     }

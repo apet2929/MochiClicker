@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -104,6 +105,8 @@ public class PlayState extends State{
         sb.setProjectionMatrix(cam.combined);
         sr.setProjectionMatrix(cam.combined);
         Rectangle rectangle = rooms.getCurrentRoom().getRectangle();
+        Texture background = new Texture("room.png");
+
 
         sr.begin(ShapeRenderer.ShapeType.Line);
         sr.setColor(rooms.getCurrentRoom().getColor());
@@ -121,9 +124,9 @@ public class PlayState extends State{
         sr.end();
 
         sb.begin();
+        sb.draw(background, 20, 20, 600, 440);
         Cat cat = rooms.getCurrentRoom().getCat();
         sb.draw(cat.getTexture(), cam.position.x + cat.getPosition().x, cam.position.y + cat.getPosition().y, cat.getPosition().width, cat.getPosition().height);
-
         font.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
         String tiredText = "Tired ";
         if(transitioning == 0) {
