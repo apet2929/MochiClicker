@@ -18,11 +18,11 @@ public class Room {
     Color color;
     ShopState shop;
 
-    public Room(Color color, GameStateManager gsm, ShapeRenderer sr) {
+    public Room(Color color, GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         this.cat = new Cat(new Texture("kitty.png"), 0,0, 100, 70, rectangle);
         this.color = color;
-        this.shop = new ShopState(gsm, sr, cat);
+        this.shop = new ShopState(gsm, cat);
     }
 
     public void update(float deltaTime, boolean focused){

@@ -20,12 +20,12 @@ public class ShopState extends State{
     BackButton backButton;
     UpgradeButton testUpgradeButton;
     HashMap<Upgrade, Boolean> upgrades;
-    ShapeRenderer renderer;
+
     Cat cat;
 
-    public ShopState(GameStateManager gsm, ShapeRenderer renderer, Cat cat) {
+    public ShopState(GameStateManager gsm, Cat cat) {
         super(gsm);
-        this.renderer = renderer;
+
         backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
         upgrades = new HashMap<>();
         for(int i = 0; i < Upgrade.UPGRADES.length; i++){
