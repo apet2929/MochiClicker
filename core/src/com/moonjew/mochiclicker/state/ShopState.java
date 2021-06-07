@@ -8,39 +8,41 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.Upgrade;
+import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.BackButton;
-import com.moonjew.mochiclicker.io.Font;
 import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.io.UpgradeButton;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.moonjew.mochiclicker.MochiClicker.FONT;
+
 public class ShopState extends State{
-    Font font;
     BackButton backButton;
     UpgradeButton testUpgradeButton;
     HashMap<Upgrade, Boolean> upgrades;
     ShapeRenderer renderer;
+    Cat cat;
 
-    public ShopState(GameStateManager gsm, ShapeRenderer renderer) {
+    public ShopState(GameStateManager gsm, ShapeRenderer renderer, Cat cat) {
         super(gsm);
-        font = new Font();
         this.renderer = renderer;
-        backButton = new BackButton(new Texture("testcat.jpg"), new Rectangle(MochiClicker.WIDTH/2, MochiClicker.HEIGHT/2, 200, 200), gsm);
+        backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
         upgrades = new HashMap<>();
         for(int i = 0; i < Upgrade.UPGRADES.length; i++){
             upgrades.put(Upgrade.UPGRADES[i], false);
         }
-        testUpgradeButton = new UpgradeButton(new Rectangle(200, 50, 450, 100), font, Upgrade.TEST);
+        testUpgradeButton = new UpgradeButton(new Rectangle(100, 80, 400, 100), Upgrade.TEST);
+        this.cat = cat;
     }
 
     public void buyUpgrade(Upgrade upgrade){
         if(PlayState.catNip >= upgrade.COST && !upgrades.get(upgrade)) {
             upgrades.put(upgrade, true);
             PlayState.catNip -= upgrade.COST;
+            cat.levelUp();
         }
     }
+
     public boolean hasUpgrade(Upgrade upgrade){
         return upgrades.get(upgrade);
     }
@@ -71,10 +73,10 @@ public class ShopState extends State{
     @Override
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         sb.begin();
-        font.draw(sb, "Shop", new Rectangle(50, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, MochiClicker.HEIGHT), 5, 5);
+        FONT.draw(sb, "Shop", new Rectangle(250, MochiClicker.HEIGHT-50, MochiClicker.WIDTH, MochiClicker.HEIGHT), 5, 5);
         backButton.render(sb);
         if(upgrades.get(Upgrade.TEST)){
-            font.draw(sb, Upgrade.TEST.DESCRIPTION, testUpgradeButton.getBounds(), 5, 5);
+            testUpgradeButton.render(sb);
         }
         sb.end();
         sr.setAutoShapeType(true);
@@ -83,7 +85,6 @@ public class ShopState extends State{
         sr.rect(testUpgradeButton.getBounds().x, testUpgradeButton.getBounds().y, testUpgradeButton.getBounds().width, testUpgradeButton.getBounds().height);
         sr.end();
     }
-
 
     @Override
     public void dispose() {

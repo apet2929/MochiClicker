@@ -1,0 +1,18 @@
+Upgrade the room- cooler furniture
+Upgrade the cats- more catnip
+
+You play as cat lady
+
+You click on meat grinder to make the catnip: the more catnip you make, the more cats appear. If you stop clicking the cats go away.
+Sell the cats? No
+
+Fishing mini game
+Cat icons, each cat icon has a thought bubble
+3 icons on the bottom of the screen, toy bin, hand to pet them, and food
+    -They have different needs, you need to use different tools to satisfy them
+
+Have tired be a meter
+Happiness has a set number of states represented by different emotion emojis. Blue smiling face = happiest, Red angry face = least happy
+Hunger is a stomach that fills up
+Health is a heart that beats faster or slower, if its beating too fast or too slow its unhealthy
+    -Unhealthy hearts turn a bad color, healthy hearts are red

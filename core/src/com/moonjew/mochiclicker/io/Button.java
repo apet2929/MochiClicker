@@ -4,17 +4,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import static com.moonjew.mochiclicker.MochiClicker.FONT;
+
 public abstract class Button {
-    private Rectangle bounds;
-    private String text;
-    private Font font;
-    private Texture texture;
-    public Button(String text, Rectangle bounds, Font font) {
+    Rectangle bounds;
+    String text;
+    Texture texture;
+    public Button(String text, Rectangle bounds) {
         this.text = text;
         this.bounds = bounds;
-        this.font = new Font();
-
     }
+
     public Button(Texture texture, Rectangle bounds){
         this.texture = texture;
         this.bounds = bounds;
@@ -25,7 +25,7 @@ public abstract class Button {
             sb.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
         if(text != null){
-            font.draw(sb, text, bounds, 2, 2);
+            FONT.draw(sb, text, bounds, 2, 2);
         }
     }
 

@@ -10,8 +10,8 @@ import com.moonjew.mochiclicker.state.ShopState;
 public class ShopButton extends Button{
     private Room room;
     private GameStateManager gsm;
-    public ShopButton(Rectangle bounds, Font font, GameStateManager gsm, Room room) {
-        super("Shop", bounds, font);
+    public ShopButton(Rectangle bounds, GameStateManager gsm, Room room) {
+        super("Shop", bounds);
         this.room = room;
         this.gsm = gsm;
     }
