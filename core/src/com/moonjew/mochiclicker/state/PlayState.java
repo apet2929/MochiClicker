@@ -54,7 +54,7 @@ public class PlayState extends State{
         catNip = 0;
         shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-50, 100, 50), gsm, rooms.getCurrentRoom());
         menuButton = new MenuButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
-        foodBowlButton = new GenericButton(new Texture("food_bowl.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 50, 50));
+        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 50, 50));
         transitioning = 0;
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -79,9 +79,14 @@ public class PlayState extends State{
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
             if(rooms.getCurrentRoom().getCat().getPosition().contains(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()){
                 // hit cat
-                catNip++;
-                if(rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST)){
-                    catNip += 2;
+                if(currentTool == NO_TOOL) {
+                    catNip++;
+                    if (rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST)) {
+                        catNip += 2;
+                    }
+                }
+                else if (currentTool == FOOD_BOWL_TOOL){
+                    System.out.println("Testing");
                 }
             }
             if(shopButton.getBounds().contains(x, y) && menu){
