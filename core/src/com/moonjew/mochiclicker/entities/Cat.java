@@ -2,17 +2,20 @@ package com.moonjew.mochiclicker.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.Upgrade;
+import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cat {
     private static List<String> usedNames = new ArrayList<>();
-    Texture texture; //change to animation when ready
+    Animation texture; //change to animation when ready
+    Texture sourceTexture;
     Rectangle position;
     Vector2 velocity; //temp variable
     Rectangle room;
@@ -24,8 +27,10 @@ public class Cat {
     int health;
     double level;
 
-    public Cat(Texture texture, int x, int y, int width, int height, Rectangle room) {
-        this.texture = texture;
+    public Cat(Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
+        this.sourceTexture = sourceTexture;
+        TextureRegion src = new TextureRegion(sourceTexture, 388, 42);
+        this.texture = new Animation(src, 5, 2.0f);
         this.position = new Rectangle(x + room.x, y + room.y, width, height);
         this.velocity = new Vector2(100, 100);
         this.room = room;
@@ -38,6 +43,7 @@ public class Cat {
     }
 
     public void update(float deltaTime){
+        texture.update(deltaTime);
         //update animation
         if(!sleeping) {
             position.x += velocity.x * deltaTime;
@@ -117,14 +123,14 @@ public class Cat {
     public boolean isSleeping() {
         return sleeping;
     }
-    public Texture getTexture(){
-        return texture;
+    public TextureRegion getTexture(){
+        return texture.getFrame();
     }
     public Rectangle getPosition(){
         return position;
     }
     public void dispose(){
-        texture.dispose();
+        sourceTexture.dispose();
     }
 
     public static String randomName(){
