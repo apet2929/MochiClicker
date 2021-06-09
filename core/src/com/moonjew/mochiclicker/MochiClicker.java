@@ -17,7 +17,6 @@ public class MochiClicker extends ApplicationAdapter {
 	ShapeRenderer sr;
 	public static Font FONT;
 
-	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

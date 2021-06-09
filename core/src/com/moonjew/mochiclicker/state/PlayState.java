@@ -25,6 +25,7 @@ import static com.moonjew.mochiclicker.MochiClicker.FONT;
 public class PlayState extends State{
     public static int catNip;
     RoomCarousel rooms;
+    UI ui;
     int currentRoom;
     ShopButton shopButton;
     MenuButton menuButton;
@@ -45,17 +46,23 @@ public class PlayState extends State{
     public PlayState(GameStateManager gsm) {
         super(gsm);
 
+        ui = new UI();
+
         currentRoom = 0;
         rooms = new RoomCarousel();
         rooms.addRoom(new Room(Color.PURPLE, gsm));
         rooms.addRoom(new Room(Color.ROYAL, gsm));
         rooms.addRoom(new Room(Color.RED, gsm));
+        transitioning = 0;
+        ui.setCat(rooms.getCurrentRoom().getCat());
 
         catNip = 0;
-        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-50, 100, 50), gsm, rooms.getCurrentRoom());
+
+        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-100, 100, 50), gsm, rooms.getCurrentRoom());
         menuButton = new MenuButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
-        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 50, 50));
-        transitioning = 0;
+        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 64, 64));
+        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton}); //adding buttons to the UI
+
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
         cam.position.y = 0;
@@ -97,11 +104,13 @@ public class PlayState extends State{
             }
             else if(menuButton.getBounds().contains(x,y)){
                 setMenu(!menu);
+                setCurrentTool(NO_TOOL);
             }
             else if(foodBowlButton.getBounds().contains(x,y)){
-                setCurrentTool(FOOD_BOWL_TOOL);
-                System.out.println("Food bowl button touched");
+                if(currentTool == FOOD_BOWL_TOOL) setCurrentTool(NO_TOOL);
+                else setCurrentTool(FOOD_BOWL_TOOL);
             }
+
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
             Gdx.app.debug("POSITION", "X touched: " + x + " Y touched: " + y);
         }
@@ -118,6 +127,7 @@ public class PlayState extends State{
                 rooms.moveRight();
                 cam.position.x = 0;
                 cam.position.y = 0;
+                ui.setCat(rooms.getCurrentRoom().getCat());
             }
         }
         if(transitioning == -1) {
@@ -127,6 +137,7 @@ public class PlayState extends State{
                 rooms.moveLeft();
                 cam.position.x = 0;
                 cam.position.y = 0;
+                ui.setCat(rooms.getCurrentRoom().getCat());
             }
         }
     }
@@ -146,42 +157,23 @@ public class PlayState extends State{
 
         sb.draw(background, cam.position.x + rectangle.x,  cam.position.y + rectangle.y, rectangle.width, rectangle.height);
 
+        if(transitioning == 1){ //to the right
+            Rectangle rightRectangle = rooms.getRightRoom().getRectangle();
+            sb.draw(background, cam.position.x + rightRectangle.x + rectangle.width + 50, cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
+        }
+        else if(transitioning == -1){ //to the right
+            Rectangle leftRectangle = rooms.getLeftRoom().getRectangle();
+            sb.draw(background, cam.position.x + leftRectangle.x - rectangle.width - 50, cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
+        }
+
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
         Cat cat = rooms.getCurrentRoom().getCat();
         sb.draw(cat.getTexture(), cam.position.x + cat.getPosition().x, cam.position.y + cat.getPosition().y, cat.getPosition().width, cat.getPosition().height);
 
-        //TOP LAYER - MENUS, TEXT
+        //TOP LAYER - UI
 
-        String tiredText = "Tired ";
-        if(transitioning == 0) {
-            tiredText += (int)(rooms.getCurrentRoom().getCat().getTired());
-        } else {
-            tiredText += "???";
-        }
-        FONT.draw(sb, tiredText, new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
-        FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
-        if(menu){
-            shopButton.render(sb);
-            FONT.draw(sb, cat.getName(), new Rectangle(shopButton.getBounds().x, shopButton.getBounds().y-50, 100, 100), 2, 2);
-            sr.rect(MochiClicker.WIDTH-100, 0, 100, MochiClicker.HEIGHT);
-        }
-
-        menuButton.render(sb);
-        foodBowlButton.render(sb);
-
-        sr.setColor(rooms.getCurrentRoom().getColor());
-        sr.rect(cam.position.x + rectangle.x, cam.position.y + rectangle.y, rectangle.width, rectangle.height);
-        if(transitioning == 1){ //to the right
-            sr.setColor(rooms.getRightRoom().getColor());
-            Rectangle rightRectangle = rooms.getRightRoom().getRectangle();
-            sr.rect(cam.position.x + rightRectangle.x + rectangle.width + 50, cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
-        }
-        if(transitioning == -1){ //to the left
-            sr.setColor(rooms.getLeftRoom().getColor());
-            Rectangle leftRectangle = rooms.getLeftRoom().getRectangle();
-            sr.rect(cam.position.x + leftRectangle.x - rectangle.width - 50, cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
-        }
+        ui.render(sb, sr, transitioning);
 
         sb.end();
         sr.end();
@@ -215,10 +207,13 @@ public class PlayState extends State{
         if(menu){
             cam.position.x = -100;
             menuButton.getBounds().x = MochiClicker.WIDTH - 150;
+
         } else {
             cam.position.x = 0;
             menuButton.getBounds().x = MochiClicker.WIDTH - 50;
         }
+        shopButton.setMenu(menu);
+        ui.menu = menu;
     }
 
     @Override
