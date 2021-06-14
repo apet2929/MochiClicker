@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.moonjew.mochiclicker.MochiClicker;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class Font {
@@ -32,28 +34,10 @@ public class Font {
             }
         }
         System.out.println(chars.length);
-//        chars[0] = new TextureRegion(source, 0, 0, 7, 7);
     }
 
-    public void test(SpriteBatch batch){
-        batch.begin();
-//        batch.draw(test, 0, 0, MochiClicker.WIDTH, MochiClicker.HEIGHT);
-//        batch.draw(chars[0], 0, 0, chars[0].getRegionWidth() * 10, chars[0].getRegionHeight() * 10);
-        for(int j = 0; j < 50; j++) {
-            for (int i = 0; i < chars.length; i++) {
-                if (chars[i] != null) {
-                    batch.draw(chars[i], i * 16, MochiClicker.HEIGHT - j * 16, 16, 16);
-                } else {
-                    System.out.println(i);
-                }
-            }
-        }
-        batch.end();
-    }
-    public void drawTest(SpriteBatch sb){
-        sb.draw(chars[0], 0, 0, 100, 100);
-    }
-
+    //Don't use this one, it sucks
+    @Deprecated
     public void draw(SpriteBatch batch, String text, float x, float y, float xScale, float yScale) {
         float posX = x;
         char[] line = text.toUpperCase(Locale.ROOT).toCharArray();
@@ -72,6 +56,8 @@ public class Font {
 
         }
     }
+
+    //Use this one instead
     public void draw(SpriteBatch batch, String text, Rectangle bounds, float xScale, float yScale){
         float posX = bounds.x;
         float posY = bounds.y;
@@ -79,37 +65,7 @@ public class Font {
 
         int letter = 0;
         for(char c : line){
-            if(48 <= c && c <= 57) {
-                //c is a number
-                letter = c - 48;
-            }
-            else if(c >= 65 && c <= 90){
-                //c is a letter
-                letter = c - 65 + 10;
-            }
-            else {
-                switch(c){
-                    case ' ' : {
-                        letter = 39;
-                        break;
-                    }
-                    case 46: {
-                        letter = 36; //period
-                        break;
-                    }
-                    case 33: {
-                        letter = 38; //exclamation mark
-                        break;
-                    }
-                    case 63 : {
-                        letter = 37; //question mark
-                        break;
-                    }
-                    default : {
-                        System.out.println("Letter of " + c + " is not valid!");
-                    }
-                }
-            }
+            letter = getLetter(c);
             batch.draw(chars[letter], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
 
             posX += DEFAULT_WIDTH * (xScale + SPACING_X);
@@ -119,6 +75,111 @@ public class Font {
             }
         }
     }
+
+    //To draw something in the middle, I need to get the width of the total string
+    //I can do this by taking each of the chars and adding their widths
+    //Then, I just get the offset by subtracting the text width from the width of the bounds and dividing by 2
+    //This does not account for word wrapping... Maybe I remove the rect and just have multiple .drawMiddle calls?
+    //Or maybe I get the total width and the # of times it wraps is just width / rect width, and use that?
+    //We'll see
+    public void drawMiddle(SpriteBatch batch, String text, Rectangle rect, float xScale, float yScale){
+
+        String[] words = text.toUpperCase(Locale.ROOT).split(" ");
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("");
+        float currentLineWidth = 0; //Holds the current line's width
+        Array<Float> lineWidths = new Array<>(); //Holds the width of every line
+        int wraps = 0; // # of wraps
+
+        for(int i = 0; i < words.length; i++){
+            char[] word = words[i].toCharArray();
+            char[] nextWord = null;
+            if(i != words.length-1) {
+                nextWord = words[i + 1].toCharArray();
+            }
+
+            float tempWidth = currentLineWidth + word.length * (DEFAULT_WIDTH * xScale); //accounting for the space at the end of the word
+            tempWidth += DEFAULT_WIDTH * xScale + SPACING_X;
+
+            if(tempWidth <= rect.width){ //Current word can fit
+                currentLineWidth = tempWidth;
+                String curLine = lines.get(wraps);
+                lines.set(wraps, curLine + words[i] + " "); //add current word to list
+
+                //Check if next word can fit, if not then wrap
+                if(nextWord != null) {
+                    tempWidth += nextWord.length * (DEFAULT_WIDTH * xScale);
+                    tempWidth += DEFAULT_WIDTH * xScale + SPACING_X;
+                    if (tempWidth >= rect.width) { //Word after current word CAN'T fit
+                        lineWidths.add(currentLineWidth);
+                        lines.add("");
+                        currentLineWidth = 0;
+                        wraps++;
+                    }
+                }
+            } else { //current word CAN'T FIT, wrap
+                i--; //make sure we don't skip the current word on the next line
+                lineWidths.add(currentLineWidth);
+                lines.add("");
+                currentLineWidth = 0;
+                wraps++;
+            }
+        }
+
+        //Accounting for end of words, when currentLineWidth is not >= rect.width
+        lineWidths.add(currentLineWidth);
+        wraps++;
+
+        float posX;
+        float posY = rect.y - DEFAULT_HEIGHT * yScale;
+        for(int i = 0; i < wraps; i++){
+            float difference = rect.width - lineWidths.get(i);
+            difference /= 2;
+            posX = rect.x + difference;
+            char[] word = lines.get(i).toCharArray();
+            for(char c : word){
+                int letter = getLetter(c);
+                batch.draw(chars[letter], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
+                posX += DEFAULT_WIDTH * xScale + SPACING_X;
+            }
+//            batch.draw(chars[getLetter(' ')], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
+            posY -= DEFAULT_HEIGHT * (yScale + SPACING_Y);
+        }
+    }
+
+    public int getLetter(char c){
+        if(48 <= c && c <= 57) {
+            //c is a number
+            return c - 48;
+        }
+        else if(c >= 65 && c <= 90){
+            //c is a letter
+            return c - 65 + 10;
+        }
+        else {
+            switch(c){
+                case ' ' : {
+                    return 39;
+                }
+                case 46: {
+                    return 36; //period
+                }
+                case 33: {
+                    return 38; //exclamation mark
+                }
+                case 63 : {
+                    return 37; //question mark
+                }
+                default : {
+                    System.out.println("Letter of " + c + " is not valid!");
+                }
+            }
+        }
+        System.out.println("Huh? How did this happen? Font class");
+        return -1;
+    }
+
+
 
     public void dispose(){
         source.dispose();

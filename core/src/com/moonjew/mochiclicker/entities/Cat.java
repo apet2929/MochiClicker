@@ -29,8 +29,8 @@ public class Cat {
 
     public Cat(Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.sourceTexture = sourceTexture;
-        TextureRegion src = new TextureRegion(sourceTexture, 388, 42);
-        this.texture = new Animation(src, 5, 2.0f);
+        TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
+        this.texture = new Animation(src, 5, 0.6f);
         this.position = new Rectangle(x + room.x, y + room.y, width, height);
         this.velocity = new Vector2(100, 100);
         this.room = room;
