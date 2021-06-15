@@ -25,11 +25,13 @@ public class UI {
     }
 
     public void render(SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
-        //Tired bar?
-        FONT.draw(sb, getTiredText(transitioning), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
+        //Cat status
+        FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
+        FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
+        FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
 
         //Catnip counter
-        FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
+        FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);
 
         if(menu) {
             FONT.draw(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT-25, 100, 100), 2, 2);
@@ -43,6 +45,16 @@ public class UI {
         }
     }
 
+    private String getUIText(int transitioning, String valName, float val){
+        // If transitioning, "Tired: ???" will be returned
+        String uiText = valName + " ";
+        if(transitioning == 0) {
+            uiText += (int)(val);
+        } else {
+            uiText += "???";
+        }
+        return uiText;
+    }
     private String getTiredText(int transitioning) { //Returns the cats current tired level unless transitioning.
         // If transitioning, "Tired: ???" will be returned
         String tiredText = "Tired ";

@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.moonjew.mochiclicker.RoomCarousel;
 import com.moonjew.mochiclicker.Upgrade;
 import com.moonjew.mochiclicker.io.*;
@@ -18,9 +17,6 @@ import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.Room;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.Button;
-
-
-import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
 public class PlayState extends State{
     public static int catNip;
@@ -30,17 +26,18 @@ public class PlayState extends State{
     ShopButton shopButton;
     MenuButton menuButton;
     Button foodBowlButton;
+    Button handButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
     boolean menu;
 
     short currentTool; //0 = no tool, 1 = dustbin, 2 = toy bin, 3 = food bowl
     private static final short NO_TOOL = (short) 0;
     private static final short DUSTBIN_TOOL = (short) 1;
-    private static final short TOY_BIN_TOOL = (short) 2;
+    private static final short HAND_TOOL = (short) 2;
     private static final short FOOD_BOWL_TOOL = (short) 3;
 
     Cursor dustbinCursor;
-    Cursor toyBinCursor;
+    Cursor handCursor;
     Cursor foodBowlCursor;
 
     public PlayState(GameStateManager gsm) {
@@ -61,7 +58,8 @@ public class PlayState extends State{
         shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-100, 100, 50), gsm, rooms.getCurrentRoom());
         menuButton = new MenuButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
         foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 64, 64));
-        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton}); //adding buttons to the UI
+        handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 25, 25, 64, 64));
+        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -71,6 +69,11 @@ public class PlayState extends State{
         int xHotSpot = foodBowlCursorTexture.getWidth() / 2;
         int yHotSpot = foodBowlCursorTexture.getHeight() / 2;
         foodBowlCursor = Gdx.graphics.newCursor(foodBowlCursorTexture, xHotSpot, yHotSpot);
+
+        Pixmap handCursorTexture = new Pixmap(Gdx.files.internal("hand_button.png"));
+        xHotSpot = foodBowlCursorTexture.getWidth() / 2;
+        yHotSpot = foodBowlCursorTexture.getHeight() / 2;
+        handCursor = Gdx.graphics.newCursor(handCursorTexture, xHotSpot, yHotSpot);
     }
 
     @Override
@@ -93,7 +96,10 @@ public class PlayState extends State{
                     }
                 }
                 else if (currentTool == FOOD_BOWL_TOOL){
-                    System.out.println("Testing");
+                    rooms.getCurrentRoom().getCat().eat();
+                }
+                else if(currentTool == HAND_TOOL){
+                    rooms.getCurrentRoom().getCat().pet();
                 }
             }
             if(shopButton.getBounds().contains(x, y) && menu){
@@ -109,6 +115,10 @@ public class PlayState extends State{
             else if(foodBowlButton.getBounds().contains(x,y)){
                 if(currentTool == FOOD_BOWL_TOOL) setCurrentTool(NO_TOOL);
                 else setCurrentTool(FOOD_BOWL_TOOL);
+            }
+            else if(handButton.getBounds().contains(x,y)){
+                if(currentTool == HAND_TOOL) setCurrentTool(NO_TOOL);
+                else setCurrentTool(HAND_TOOL);
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -191,7 +201,8 @@ public class PlayState extends State{
             case DUSTBIN_TOOL: {
                 break;
             }
-            case TOY_BIN_TOOL: {
+            case HAND_TOOL: {
+                Gdx.graphics.setCursor(handCursor);
                 break;
             }
             case FOOD_BOWL_TOOL: {

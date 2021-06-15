@@ -1,43 +1,41 @@
 package com.moonjew.mochiclicker.entities;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.moonjew.mochiclicker.MochiClicker;
-import com.moonjew.mochiclicker.Upgrade;
 import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cat {
-    private static List<String> usedNames = new ArrayList<>();
-    Animation texture; //change to animation when ready
+    private static final List<String> usedNames = new ArrayList<>();
+    Animation texture;
     Texture sourceTexture;
     Rectangle position;
     Vector2 velocity; //temp variable
-    Rectangle room;
+    Rectangle room; //boundaries of the room
     String name;
-    int happiness;
+    float happiness; //0 - 100, affects cat speed
     boolean sleeping;
-    double sleep;
-    double tired;
-    int health;
-    double level;
+    double tired; //0 - 10, once the cat reaches 10, it falls asleep
+    float health; //0 - 100, affects cat's health? not sure how to implement this
+    float hunger;
+    double level; //The number of upgrades purchased, affects how much catnip is acquired per click
 
     public Cat(Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
         this.position = new Rectangle(x + room.x, y + room.y, width, height);
-        this.velocity = new Vector2(100, 100);
+        this.velocity = new Vector2(1, 1);
         this.room = room;
         this.level = 1;
-        this.happiness = 1;
+        this.happiness = 100;
         this.sleeping = false;
         this.tired = 0;
+        this.hunger = 0;
         this.name = randomName();
         usedNames.add(this.name);
     }
@@ -45,10 +43,14 @@ public class Cat {
     public void update(float deltaTime){
         texture.update(deltaTime);
         //update animation
+
+        //movement
         if(!sleeping) {
-            position.x += velocity.x * deltaTime;
-            position.y += velocity.y * deltaTime;
+            position.x += velocity.x * deltaTime * happiness;
+            position.y += velocity.y * deltaTime * happiness;
         }
+
+        //clamp position inside of room, reverse direction if collide with walls
         if((position.x + position.width) > room.width){
             velocity.x *= -1;
             position.x = room.width - position.width;
@@ -64,12 +66,21 @@ public class Cat {
             position.y  = room.y;
         }
 
+        //handle state
+
         if (!sleeping) {
             tired += deltaTime;
             if (tired >= 10) {
                 sleeping = true;
             }
+            happiness -= deltaTime * 10;
+            health -= deltaTime * 0.01f;
+            hunger += deltaTime * 5;
         }
+
+        happiness = clampFloat(happiness, 0, 100);
+        health = clampFloat(health, 0, 100);
+        hunger = clampFloat(hunger, 0, 100);
 
         if (sleeping && tired != 0) {
             tired -= deltaTime * 2;
@@ -89,20 +100,44 @@ public class Cat {
 
     }
 
+    public void eat(){
+        this.hunger -= 20;
+        this.hunger = clampFloat(hunger, 0, 100);
+    }
+    public void pet(){
+        this.happiness += 5;
+        this.happiness = clampFloat(happiness, 0, 100);
+    }
+    //happiness function?
+
+
+
+    public static float clampFloat(float val, float min, float max){
+        if(val < min) return min;
+        if(val > max) return max;
+        return val;
+
+    }
+
+    public void setHunger(float hunger) {
+        this.hunger = hunger;
+    }
+    public float getHunger() {
+        return hunger;
+    }
     public String getName() {
         return name;
     }
-
-    public int getHappiness() {
+    public float getHappiness() {
         return happiness;
     }
-    public void setHappiness(int happiness) {
+    public void setHappiness(float happiness) {
         this.happiness = happiness;
     }
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
     public double getLevel() {
