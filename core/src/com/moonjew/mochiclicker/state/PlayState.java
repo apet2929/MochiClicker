@@ -27,6 +27,7 @@ public class PlayState extends State{
     MenuButton menuButton;
     Button foodBowlButton;
     Button handButton;
+    Button mouseButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
     boolean menu;
 
@@ -35,10 +36,12 @@ public class PlayState extends State{
     private static final short DUSTBIN_TOOL = (short) 1;
     private static final short HAND_TOOL = (short) 2;
     private static final short FOOD_BOWL_TOOL = (short) 3;
+    private static final short MOUSE_TOY_TOOL = (short) 4;
 
     Cursor dustbinCursor;
     Cursor handCursor;
     Cursor foodBowlCursor;
+    Cursor mouseCursor;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -57,9 +60,10 @@ public class PlayState extends State{
 
         shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-100, 100, 50), gsm, rooms.getCurrentRoom());
         menuButton = new MenuButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
-        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 25, 25, 64, 64));
-        handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 25, 25, 64, 64));
-        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton}); //adding buttons to the UI
+        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
+        handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
+        mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
+        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton, mouseButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -74,6 +78,11 @@ public class PlayState extends State{
         xHotSpot = foodBowlCursorTexture.getWidth() / 2;
         yHotSpot = foodBowlCursorTexture.getHeight() / 2;
         handCursor = Gdx.graphics.newCursor(handCursorTexture, xHotSpot, yHotSpot);
+
+        Pixmap mouseCursorTexture = new Pixmap(Gdx.files.internal("mouse.png"));
+        xHotSpot = mouseCursorTexture.getWidth() / 2;
+        yHotSpot = mouseCursorTexture.getHeight() / 2;
+        mouseCursor = Gdx.graphics.newCursor(mouseCursorTexture, xHotSpot, yHotSpot);
     }
 
     @Override
@@ -101,6 +110,11 @@ public class PlayState extends State{
                 else if(currentTool == HAND_TOOL){
                     rooms.getCurrentRoom().getCat().pet();
                 }
+                else if(currentTool == MOUSE_TOY_TOOL){
+                    System.out.println("true");
+                    rooms.getCurrentRoom().getCat().pet();
+                    rooms.getCurrentRoom().getCat().pet();
+                }
             }
             if(shopButton.getBounds().contains(x, y) && menu){
                 System.out.println("True");
@@ -119,6 +133,10 @@ public class PlayState extends State{
             else if(handButton.getBounds().contains(x,y)){
                 if(currentTool == HAND_TOOL) setCurrentTool(NO_TOOL);
                 else setCurrentTool(HAND_TOOL);
+            }
+            else if(mouseButton.getBounds().contains(x,y)){
+                if(currentTool == MOUSE_TOY_TOOL) setCurrentTool(NO_TOOL);
+                else setCurrentTool(MOUSE_TOY_TOOL);
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -179,7 +197,7 @@ public class PlayState extends State{
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
         Cat cat = rooms.getCurrentRoom().getCat();
-        sb.draw(cat.getTexture(), cam.position.x + cat.getPosition().x, cam.position.y + cat.getPosition().y, cat.getPosition().width, cat.getPosition().height);
+        cat.render(sb, cam);
 
         //TOP LAYER - UI
 
@@ -190,9 +208,8 @@ public class PlayState extends State{
     }
 
     public void setCurrentTool(short currentTool) {
-        if(currentTool >= 0 && currentTool <= 3){
-            this.currentTool = currentTool;
-        }
+        System.out.println(currentTool);
+        this.currentTool = currentTool;
         switch (currentTool){
             case NO_TOOL: {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
@@ -207,6 +224,10 @@ public class PlayState extends State{
             }
             case FOOD_BOWL_TOOL: {
                 Gdx.graphics.setCursor(foodBowlCursor);
+                break;
+            }
+            case MOUSE_TOY_TOOL: {
+                Gdx.graphics.setCursor(mouseCursor);
                 break;
             }
             default: throw new IllegalArgumentException();

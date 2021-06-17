@@ -20,7 +20,12 @@ public class Room {
 
     public Room(Color color, GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        this.cat = new Cat(new Texture("elwood.png"), 0,0, 100, 70, rectangle);
+        String name = Cat.randomName();
+        Texture catTexture;
+        if(name.equals("Paige")){
+            catTexture = new Texture("paige.png");
+        } else catTexture = new Texture("elwood.png");
+        this.cat = new Cat(name, catTexture, 0,0, 100, 70, rectangle);
         this.color = color;
         this.shop = new ShopState(gsm, cat);
     }

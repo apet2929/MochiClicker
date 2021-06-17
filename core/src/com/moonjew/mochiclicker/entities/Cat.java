@@ -1,6 +1,8 @@
 package com.moonjew.mochiclicker.entities;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +26,8 @@ public class Cat {
     float hunger;
     double level; //The number of upgrades purchased, affects how much catnip is acquired per click
 
-    public Cat(Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
+    public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
+        this.name = name;
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
@@ -36,12 +39,16 @@ public class Cat {
         this.sleeping = false;
         this.tired = 0;
         this.hunger = 0;
-        this.name = randomName();
         usedNames.add(this.name);
+    }
+
+    public void render(SpriteBatch spriteBatch, Camera cam){
+        spriteBatch.draw(getTexture(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
     }
 
     public void update(float deltaTime){
         texture.update(deltaTime);
+
         //update animation
 
         //movement
@@ -53,10 +60,13 @@ public class Cat {
         //clamp position inside of room, reverse direction if collide with walls
         if((position.x + position.width) > room.width){
             velocity.x *= -1;
-            position.x = room.width - position.width;
-        } else if (position.x < room.x){
+            position.width = -position.width;
+            position.x -= position.width;
+        } else if (position.x + position.width < room.x){
             velocity.x *= -1;
-            position.x  = room.x;
+//            position.x  = room.x
+            position.width = -position.width;
+            position.x += position.width;
         }
         if((position.y + position.height) > room.height){
             velocity.y *= -1;
@@ -70,10 +80,10 @@ public class Cat {
 
         if (!sleeping) {
             tired += deltaTime;
-            if (tired >= 10) {
+            if (tired >= 50) {
                 sleeping = true;
             }
-            happiness -= deltaTime * 10;
+            happiness -= deltaTime * 3;
             health -= deltaTime * 0.01f;
             hunger += deltaTime * 5;
         }

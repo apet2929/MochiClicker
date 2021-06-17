@@ -43,6 +43,12 @@ public class UI {
         for(Button button : buttons){
             button.render(sb);
         }
+        sr.setColor(Color.BLUE);
+//        sr.rect(MochiClicker.WIDTH/2-43, 100, 20, 20);
+        sr.rect(MochiClicker.WIDTH/2-18, 100, 20, 20);
+        sr.rect(MochiClicker.WIDTH/2+7, 100, 20, 20);
+
+
     }
 
     private String getUIText(int transitioning, String valName, float val){
