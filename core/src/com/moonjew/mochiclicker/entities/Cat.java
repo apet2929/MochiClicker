@@ -25,6 +25,8 @@ public class Cat {
     float health; //0 - 100, affects cat's health? not sure how to implement this
     float hunger;
     double level; //The number of upgrades purchased, affects how much catnip is acquired per click
+    Vector2 targetPosition;
+    int speed = 2;
 
     public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.name = name;
@@ -32,7 +34,7 @@ public class Cat {
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
         this.position = new Rectangle(x + room.x, y + room.y, width, height);
-        this.velocity = new Vector2(1, 1);
+        this.velocity = new Vector2();
         this.room = room;
         this.level = 1;
         this.happiness = 100;
@@ -40,10 +42,15 @@ public class Cat {
         this.tired = 0;
         this.hunger = 0;
         usedNames.add(this.name);
+        double targetX = Math.random()*room.width + room.x;
+        double targetY = Math.random()*room.height + room.y;
+        targetPosition = new Vector2((float)targetX, (float)targetY);
+        moveToTarget(true);
     }
 
     public void render(SpriteBatch spriteBatch, Camera cam){
         spriteBatch.draw(getTexture(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
+        spriteBatch.draw(getTexture(), cam.position.x + targetPosition.x, cam.position.y + targetPosition.y, 32, 32);
     }
 
     public void update(float deltaTime){
@@ -52,29 +59,32 @@ public class Cat {
         //update animation
 
         //movement
+        moveToTarget(false);
         if(!sleeping) {
             position.x += velocity.x * deltaTime * happiness;
             position.y += velocity.y * deltaTime * happiness;
         }
 
         //clamp position inside of room, reverse direction if collide with walls
-        if((position.x + position.width) > room.width){
-            velocity.x *= -1;
-            position.width = -position.width;
-            position.x -= position.width;
-        } else if (position.x + position.width < room.x){
-            velocity.x *= -1;
-//            position.x  = room.x
-            position.width = -position.width;
-            position.x += position.width;
-        }
-        if((position.y + position.height) > room.height){
-            velocity.y *= -1;
-            position.y = room.height - position.height;
-        } else if (position.y < room.y) {
-            velocity.y *= -1;
-            position.y  = room.y;
-        }
+//        if((position.x + position.width) > room.width){ //right
+//            velocity.x *= -1;
+//            position.width = -position.width;
+//            position.x -= position.width;
+//        } else if (position.x + position.width < room.x){ //left
+//            velocity.x *= -1;
+////            position.x  = room.x
+//            position.width = -position.width;
+//            position.x -= position.width;
+//        }
+//        if((position.y + position.height) > room.height){
+//            velocity.y *= -1;
+//            position.y = room.height - position.height;
+//        } else if (position.y < room.y) {
+//            velocity.y *= -1;
+//            position.y  = room.y;
+//        }
+
+
 
         //handle state
 
@@ -101,6 +111,32 @@ public class Cat {
         }
     }
 
+    public void moveToTarget(boolean poo){
+        float xDif = targetPosition.x - (position.x + position.width/2);
+        float yDif = targetPosition.y - (position.y);
+
+        if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 || poo) {
+            //we hit the target
+            double targetX = Math.random() * room.width + room.x;
+            double targetY = Math.random() * room.height + room.y;
+            targetPosition = new Vector2((float) targetX, (float) targetY);
+        }
+        double mag = Math.sqrt(xDif * xDif + yDif * yDif);
+
+        float tempX = (float) (xDif / mag * speed); //previous = 2 next = 1
+        float tempY= (float) (yDif / mag * speed);
+
+        boolean newYee = tempX > 0;
+        boolean yee = velocity.x > 0;
+        if(newYee != yee && !poo){ //it flipped
+            position.width = -position.width;
+            position.x -= position.width;
+        }
+
+        velocity.x = tempX;
+        velocity.y = tempY;
+
+    }
     public boolean randomTick(){
         boolean passed = (int) (Math.random() * 1000) < Math.floor(level);
         if(sleeping && passed) {
