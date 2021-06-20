@@ -6,10 +6,8 @@ public class Upgrade {
     public final String DESCRIPTION;
 
     //upgrades
-
     public static final Upgrade[] UPGRADES = genUpgrades();
     public static final Upgrade TEST = UPGRADES[0];
-
 
     public Upgrade(String ID, int COST, String DESCRIPTION) {
         this.ID = ID;

@@ -54,9 +54,8 @@ public class Cat {
     }
 
     public void update(float deltaTime){
-        texture.update(deltaTime);
-
         //update animation
+        if(!sleeping) texture.update(deltaTime);
 
         //movement
         moveToTarget(false);
@@ -65,33 +64,12 @@ public class Cat {
             position.y += velocity.y * deltaTime * happiness;
         }
 
-        //clamp position inside of room, reverse direction if collide with walls
-//        if((position.x + position.width) > room.width){ //right
-//            velocity.x *= -1;
-//            position.width = -position.width;
-//            position.x -= position.width;
-//        } else if (position.x + position.width < room.x){ //left
-//            velocity.x *= -1;
-////            position.x  = room.x
-//            position.width = -position.width;
-//            position.x -= position.width;
-//        }
-//        if((position.y + position.height) > room.height){
-//            velocity.y *= -1;
-//            position.y = room.height - position.height;
-//        } else if (position.y < room.y) {
-//            velocity.y *= -1;
-//            position.y  = room.y;
-//        }
-
-
-
         //handle state
 
         if (!sleeping) {
             tired += deltaTime;
             if (tired >= 50) {
-                sleeping = true;
+                sleep();
             }
             happiness -= deltaTime * 3;
             health -= deltaTime * 0.01f;
@@ -109,6 +87,7 @@ public class Cat {
                 sleeping = false;
             }
         }
+
     }
 
     public void moveToTarget(boolean poo){
@@ -143,6 +122,12 @@ public class Cat {
             tired -= 1.0;
         }
         return passed;
+
+    }
+    public void sleep(){
+        //set animation to sleeping animation
+
+        sleeping = true;
 
     }
 
