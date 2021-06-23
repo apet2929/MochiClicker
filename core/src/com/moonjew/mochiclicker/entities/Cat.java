@@ -33,7 +33,7 @@ public class Cat {
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
-        this.position = new Rectangle(x + room.x, y + room.y, width, height);
+        this.position = new Rectangle(x + room.x, y + room.y, -width, height);
         this.velocity = new Vector2();
         this.room = room;
         this.level = 1;
@@ -45,7 +45,7 @@ public class Cat {
         double targetX = Math.random()*room.width + room.x;
         double targetY = Math.random()*room.height + room.y;
         targetPosition = new Vector2((float)targetX, (float)targetY);
-        moveToTarget(true);
+        genTargetPosition();
     }
 
     public void render(SpriteBatch spriteBatch, Camera cam){
@@ -58,7 +58,7 @@ public class Cat {
         if(!sleeping) texture.update(deltaTime);
 
         //movement
-        moveToTarget(false);
+        moveToTarget();
         if(!sleeping) {
             position.x += velocity.x * deltaTime * happiness;
             position.y += velocity.y * deltaTime * happiness;
@@ -90,15 +90,13 @@ public class Cat {
 
     }
 
-    public void moveToTarget(boolean poo){
+    public void moveToTarget(){
         float xDif = targetPosition.x - (position.x + position.width/2);
         float yDif = targetPosition.y - (position.y);
 
-        if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 || poo) {
+        if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 ) {
             //we hit the target
-            double targetX = Math.random() * room.width + room.x;
-            double targetY = Math.random() * room.height + room.y;
-            targetPosition = new Vector2((float) targetX, (float) targetY);
+            genTargetPosition();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 
@@ -107,7 +105,7 @@ public class Cat {
 
         boolean newYee = tempX > 0;
         boolean yee = velocity.x > 0;
-        if(newYee != yee && !poo){ //it flipped
+        if(newYee != yee){ //it flipped
             position.width = -position.width;
             position.x -= position.width;
         }
@@ -115,6 +113,12 @@ public class Cat {
         velocity.x = tempX;
         velocity.y = tempY;
 
+    }
+
+    private void genTargetPosition() {
+        double targetX = Math.random() * room.width + room.x;
+        double targetY = Math.random() * room.height + room.y;
+        targetPosition = new Vector2((float) targetX, (float) targetY);
     }
     public boolean randomTick(){
         boolean passed = (int) (Math.random() * 1000) < Math.floor(level);

@@ -66,13 +66,18 @@ public class Font {
         int letter = 0;
         for(char c : line){
             letter = getLetter(c);
-            batch.draw(chars[letter], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
+            try {
+                batch.draw(chars[letter], posX, posY, DEFAULT_WIDTH * xScale, DEFAULT_HEIGHT * yScale);
 
-            posX += DEFAULT_WIDTH * (xScale + SPACING_X);
-            if(posX + (DEFAULT_WIDTH * xScale) > bounds.x + bounds.width){ //wrap
-                posX = bounds.x;
-                posY -= DEFAULT_HEIGHT * (yScale + SPACING_Y);
+                posX += DEFAULT_WIDTH * (xScale + SPACING_X);
+                if (posX + (DEFAULT_WIDTH * xScale) > bounds.x + bounds.width) { //wrap
+                    posX = bounds.x;
+                    posY -= DEFAULT_HEIGHT * (yScale + SPACING_Y);
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
+
         }
     }
 

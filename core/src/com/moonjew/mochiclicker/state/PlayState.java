@@ -99,9 +99,13 @@ public class PlayState extends State{
             if(rooms.getCurrentRoom().getCat().getPosition().contains(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()){
                 // hit cat
                 if(currentTool == NO_TOOL) {
+                    System.out.println("True");
                     catNip++;
                     if (rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST)) {
                         catNip += 2;
+                    }
+                    if(rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST2)){
+                        catNip += 3;
                     }
                 }
                 else if (currentTool == FOOD_BOWL_TOOL){

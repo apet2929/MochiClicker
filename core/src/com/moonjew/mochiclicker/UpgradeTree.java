@@ -5,12 +5,13 @@ import com.moonjew.mochiclicker.state.PlayState;
 import java.util.Arrays;
 
 public class UpgradeTree {
+
     private int currentUpgrade;
     private Upgrade currentlyInUse;
     public final Upgrade[] upgrades;
     public boolean[] purchased;
 
-    public UpgradeTree(Upgrade[] line){
+    public UpgradeTree(Upgrade[] line) {
         this.upgrades = line;
         purchased = new boolean[upgrades.length];
         Arrays.fill(purchased, false);
@@ -20,14 +21,22 @@ public class UpgradeTree {
         return purchased[getUpgrade(upgrade)];
     }
 
-    public void buyNext(){
-        currentUpgrade++;
-        PlayState.catNip -= upgrades[currentUpgrade].COST;
-        purchased[currentUpgrade] = true;
-        setCurrentlyInUse(upgrades[currentUpgrade]);
+    public void buyNext() {
+        if(currentUpgrade < upgrades.length) {
+            if (upgrades[currentUpgrade].COST <= PlayState.catNip) {
+                PlayState.catNip -= upgrades[currentUpgrade].COST;
+                purchased[currentUpgrade] = true;
+                setCurrentlyInUse(upgrades[currentUpgrade]);
+                currentUpgrade++;
+            } else {
+                System.out.println("Not enough catnip");
+            }
+        } else {
+            System.out.println("No more upgrades in this tree");
+        }
     }
 
-    public void setCurrentlyInUse(Upgrade upgrade){
+    public void setCurrentlyInUse(Upgrade upgrade) {
         currentlyInUse = upgrade;
     }
 
@@ -35,7 +44,7 @@ public class UpgradeTree {
         return currentlyInUse;
     }
 
-    public int getUpgrade(Upgrade upgrade){
+    public int getUpgrade(Upgrade upgrade) {
         for (int i = 0; i < upgrades.length; i++) {
             if(upgrade.equals(upgrades[i])){
                 return i;
