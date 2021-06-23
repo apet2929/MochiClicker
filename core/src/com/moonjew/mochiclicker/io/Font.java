@@ -106,7 +106,7 @@ public class Font {
             float tempWidth = currentLineWidth + word.length * (DEFAULT_WIDTH * xScale); //accounting for the space at the end of the word
             tempWidth += DEFAULT_WIDTH * xScale + SPACING_X;
 
-            if(tempWidth <= rect.width){ //Current word can fit
+            if(tempWidth <= rect.width || lines.get(wraps).equals("")){ //Current word can fit
                 currentLineWidth = tempWidth;
                 String curLine = lines.get(wraps);
                 lines.set(wraps, curLine + words[i] + " "); //add current word to list
@@ -136,7 +136,7 @@ public class Font {
         wraps++;
 
         float posX;
-        float posY = rect.y - DEFAULT_HEIGHT * yScale;
+        float posY = rect.y + rect.height - (DEFAULT_HEIGHT * yScale);
         for(int i = 0; i < wraps; i++){
             float difference = rect.width - lineWidths.get(i);
             difference /= 2;

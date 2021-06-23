@@ -19,26 +19,24 @@ import static com.moonjew.mochiclicker.MochiClicker.FONT;
 public class ShopState extends State{
     BackButton backButton;
     UpgradeButton testUpgradeButton;
-    UpgradeTree upgrades;
+    UpgradeButton foodUpgradeButton;
+    UpgradeTree testUpgradeTree;
+    UpgradeTree foodUpgradeTree;
     Cat cat;
 
     public ShopState(GameStateManager gsm, Cat cat) {
         super(gsm);
         backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
-        upgrades = new UpgradeTree(new Upgrade[]{Upgrade.TEST, Upgrade.TEST2});
-        testUpgradeButton = new UpgradeButton(new Rectangle(100, 80, 400, 100), Upgrade.TEST);
+        testUpgradeTree = new UpgradeTree(Upgrade.TEST_UPGRADES);
+        foodUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES);
+
+        testUpgradeButton = new UpgradeButton(new Rectangle(75, 100, 250, 100), testUpgradeTree.getNextUpgrade());
+        foodUpgradeButton = new UpgradeButton(new Rectangle(325, 100, 250, 100), foodUpgradeTree.getNextUpgrade());
         this.cat = cat;
     }
 
-    public void buyUpgrade(Upgrade upgrade){
-        if(PlayState.catNip >= upgrade.COST && !upgrades.purchased(upgrade)) {
-            upgrades.buyNext();
-            cat.levelUp();
-        }
-    }
-
     public boolean hasUpgrade(Upgrade upgrade){
-        return upgrades.purchased(upgrade);
+        return testUpgradeTree.purchased(upgrade) || foodUpgradeTree.purchased(upgrade);
     }
 
     @Override
@@ -50,8 +48,12 @@ public class ShopState extends State{
                 gsm.pop();
             }
             if(testUpgradeButton.getBounds().contains(x, y)){
-                testUpgradeButton.onclick();
-                upgrades.buyNext();
+                testUpgradeButton.onclick(); //useless
+                if(testUpgradeTree.buyNext()) testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
+            }
+            if(foodUpgradeButton.getBounds().contains(x,y)){
+                foodUpgradeButton.onclick();
+                if(foodUpgradeTree.buyNext()) foodUpgradeButton.setUpgrade(foodUpgradeTree.getNextUpgrade());
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -69,15 +71,16 @@ public class ShopState extends State{
         sb.begin();
         FONT.draw(sb, "Shop", new Rectangle(250, MochiClicker.HEIGHT-50, MochiClicker.WIDTH, MochiClicker.HEIGHT), 5, 5);
         backButton.render(sb);
-        if(upgrades.purchased(Upgrade.TEST)){
-            testUpgradeButton.render(sb);
-            FONT.draw(sb, upgrades.getCurrentUpgrade().DESCRIPTION, testUpgradeButton.getBounds(), 3, 3);
-        }
+
+        testUpgradeButton.render(sb);
+        foodUpgradeButton.render(sb);
+
         sb.end();
         sr.setAutoShapeType(true);
         sr.begin();
         sr.setColor(Color.BLACK);
         sr.rect(testUpgradeButton.getBounds().x, testUpgradeButton.getBounds().y, testUpgradeButton.getBounds().width, testUpgradeButton.getBounds().height);
+        sr.rect(foodUpgradeButton.getBounds().x, foodUpgradeButton.getBounds().y, foodUpgradeButton.getBounds().width, foodUpgradeButton.getBounds().height);
         sr.end();
     }
 

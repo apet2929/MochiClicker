@@ -17,13 +17,12 @@ public class Room {
     Rectangle rectangle;
     Color color;
     ShopState shop;
-    UpgradeTree testTree;
 
     public Room(Color color, GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         String name = Cat.randomName();
         Texture catTexture;
-        if(name.equals("Paige")){
+        if(name.equals("Paige")) {
             catTexture = new Texture("paige.png");
         } else catTexture = new Texture("elwood.png");
         Rectangle catFloor = new Rectangle(rectangle.x + rectangle.width/3, rectangle.y, rectangle.width*2/3, rectangle.height/2);

@@ -115,6 +115,12 @@ public class Cat {
 
     }
 
+    public boolean touch(float x, float y){
+        if(position.width > 0){
+            return x > position.x && x < position.x + position.width && y > position.y && y < position.y + position.height;
+        } return x < position.x && x > position.x + position.width && y > position.y && y < position.y + position.height;
+    }
+
     private void genTargetPosition() {
         double targetX = Math.random() * room.width + room.x;
         double targetY = Math.random() * room.height + room.y;

@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class UpgradeTree {
 
-    private int currentUpgrade;
+    private int nextUpgrade;
     private Upgrade currentlyInUse;
     public final Upgrade[] upgrades;
     public boolean[] purchased;
@@ -18,22 +18,27 @@ public class UpgradeTree {
     }
 
     public boolean purchased(Upgrade upgrade){
-        return purchased[getUpgrade(upgrade)];
+        int u = getUpgrade(upgrade);
+        if(u != -1) {
+            return purchased[getUpgrade(upgrade)];
+        } else return false;
     }
 
-    public void buyNext() {
-        if(currentUpgrade < upgrades.length) {
-            if (upgrades[currentUpgrade].COST <= PlayState.catNip) {
-                PlayState.catNip -= upgrades[currentUpgrade].COST;
-                purchased[currentUpgrade] = true;
-                setCurrentlyInUse(upgrades[currentUpgrade]);
-                currentUpgrade++;
+    public boolean buyNext() {
+        if(nextUpgrade < upgrades.length) {
+            if (upgrades[nextUpgrade].COST <= PlayState.catNip) {
+                PlayState.catNip -= upgrades[nextUpgrade].COST;
+                purchased[nextUpgrade] = true;
+                setCurrentlyInUse(upgrades[nextUpgrade]);
+                nextUpgrade++;
+                return true;
             } else {
                 System.out.println("Not enough catnip");
             }
         } else {
             System.out.println("No more upgrades in this tree");
         }
+        return false;
     }
 
     public void setCurrentlyInUse(Upgrade upgrade) {
@@ -41,7 +46,18 @@ public class UpgradeTree {
     }
 
     public Upgrade getCurrentUpgrade() {
-        return currentlyInUse;
+        if(currentlyInUse != null){
+            return currentlyInUse;
+        } else System.out.println("Current upgrade not defined");
+        return null;
+    }
+
+    public Upgrade getNextUpgrade() {
+        if(nextUpgrade < upgrades.length) {
+            return upgrades[nextUpgrade];
+        }
+        System.out.println("Next upgrade is out of bounds");
+        return null;
     }
 
     public int getUpgrade(Upgrade upgrade) {
@@ -50,8 +66,7 @@ public class UpgradeTree {
                 return i;
             }
         }
-        Gdx.app.debug("BUG", "Upgrade of " + upgrade.toString() + " is not valid");
-        throw new IllegalArgumentException();
+        return -1;
     }
 
 }

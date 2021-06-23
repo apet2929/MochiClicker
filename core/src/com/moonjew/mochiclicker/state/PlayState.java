@@ -93,10 +93,10 @@ public class PlayState extends State{
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             transitioning = -1;
         }
-        if(Gdx.input.justTouched()){
+        if(Gdx.input.justTouched()) {
             float x = Gdx.input.getX();
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
-            if(rooms.getCurrentRoom().getCat().getPosition().contains(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()){
+            if(rooms.getCurrentRoom().getCat().touch(x,y) && !rooms.getCurrentRoom().getCat().isSleeping()){
                 // hit cat
                 if(currentTool == NO_TOOL) {
                     System.out.println("True");
