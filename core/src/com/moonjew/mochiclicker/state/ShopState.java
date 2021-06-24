@@ -35,7 +35,7 @@ public class ShopState extends State{
         this.cat = cat;
     }
 
-    public boolean hasUpgrade(Upgrade upgrade){
+    public boolean hasUpgrade(Upgrade upgrade) {
         return testUpgradeTree.purchased(upgrade) || foodUpgradeTree.purchased(upgrade);
     }
 

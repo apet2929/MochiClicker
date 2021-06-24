@@ -10,6 +10,8 @@ import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Cat {
     private static final List<String> usedNames = new ArrayList<>();
@@ -26,7 +28,9 @@ public class Cat {
     float hunger;
     double level; //The number of upgrades purchased, affects how much catnip is acquired per click
     Vector2 targetPosition;
+    boolean hitTargetPosition;
     int speed = 2;
+
 
     public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.name = name;
@@ -58,8 +62,8 @@ public class Cat {
         if(!sleeping) texture.update(deltaTime);
 
         //movement
-        moveToTarget();
         if(!sleeping) {
+            moveToTarget();
             position.x += velocity.x * deltaTime * happiness;
             position.y += velocity.y * deltaTime * happiness;
         }
@@ -72,8 +76,14 @@ public class Cat {
                 sleep();
             }
             happiness -= deltaTime * 3;
-            health -= deltaTime * 0.01f;
             hunger += deltaTime * 5;
+
+            if(hunger >= 75 || happiness <= 20){
+                health -= deltaTime*0.1;
+            }
+            if(hunger >= 100 || happiness <= 0){
+                health -= deltaTime*0.9;
+            }
         }
 
         happiness = clampFloat(happiness, 0, 100);
@@ -94,9 +104,18 @@ public class Cat {
         float xDif = targetPosition.x - (position.x + position.width/2);
         float yDif = targetPosition.y - (position.y);
 
-        if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 ) {
+        if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 || hitTargetPosition) {
+            hitTargetPosition = true;
             //we hit the target
-            genTargetPosition();
+            if(checkMove()){
+                genTargetPosition();
+                this.hitTargetPosition = false;
+            } else {
+                this.targetPosition = new Vector2(-50,-50);
+                sleep();
+            }
+
+            increaseHealth();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 
@@ -112,7 +131,6 @@ public class Cat {
 
         velocity.x = tempX;
         velocity.y = tempY;
-
     }
 
     public boolean touch(float x, float y){
@@ -121,6 +139,9 @@ public class Cat {
         } return x < position.x && x > position.x + position.width && y > position.y && y < position.y + position.height;
     }
 
+    private boolean checkMove(){
+        return happiness >= Math.random() * 100;
+    }
     private void genTargetPosition() {
         double targetX = Math.random() * room.width + room.x;
         double targetY = Math.random() * room.height + room.y;
@@ -136,9 +157,11 @@ public class Cat {
     }
     public void sleep(){
         //set animation to sleeping animation
-
         sleeping = true;
+    }
 
+    public void increaseHealth(){
+        health += 10;
     }
 
     public void eat(){
