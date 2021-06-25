@@ -1,5 +1,7 @@
 package com.moonjew.mochiclicker;
 
+import com.moonjew.mochiclicker.entities.Cat;
+
 import java.util.ArrayList;
 
 public class RoomCarousel {
@@ -19,6 +21,15 @@ public class RoomCarousel {
         }
     }
 
+    public Cat isCatDying(){
+        for(Room room : rooms){
+            if(room.getCat().alert){
+                return room.getCat();
+
+            }
+        }
+        return null;
+    }
     public Room getCurrentRoom(){
         return rooms.get(currentRoom);
     }

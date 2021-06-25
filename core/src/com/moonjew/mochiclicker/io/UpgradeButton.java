@@ -13,6 +13,10 @@ public class UpgradeButton extends Button{
         super((String) null, bounds);
         this.upgrade = upgrade;
     }
+    public UpgradeButton(Rectangle bounds){
+        super((String) null, bounds);
+        this.upgrade = null;
+    }
 
     public void setUpgrade(Upgrade upgrade) {
         this.upgrade = upgrade;

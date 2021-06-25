@@ -20,18 +20,16 @@ public class Room {
 
     public Room(Color color, GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        String name = Cat.randomName();
-        Texture catTexture;
-        if(name.equals("Paige")) {
-            catTexture = new Texture("paige.png");
-        } else catTexture = new Texture("elwood.png");
-        Rectangle catFloor = new Rectangle(rectangle.x + rectangle.width/3, rectangle.y, rectangle.width*2/3, rectangle.height/2);
-        this.cat = new Cat(name, catTexture, 0,0, 100, 70, catFloor);
         this.color = color;
         this.shop = new ShopState(gsm, cat);
+        this.cat = genCat();
     }
 
     public void update(float deltaTime, boolean focused){
+        if(cat.getHealth() == 0){
+            cat.alert = true;
+        }
+
         if(focused) {
             cat.update(deltaTime);
         } else {
@@ -42,6 +40,23 @@ public class Room {
         }
     }
 
+    public void killCat(){
+        this.cat = null;
+        this.cat = genCat();
+        this.shop.restart(this.cat);
+
+    }
+
+    public Cat genCat(){
+        String name = Cat.randomName();
+        Texture catTexture;
+        if(name.equals("Paige")) {
+            catTexture = new Texture("paige.png");
+        } else catTexture = new Texture("elwood.png");
+        Rectangle catFloor = new Rectangle(rectangle.x + rectangle.width/3, rectangle.y, rectangle.width*2/3, rectangle.height/2);
+
+        return new Cat(name, catTexture, 0,0, 100, 70, catFloor);
+    }
     public boolean hasUpgrade(Upgrade upgrade){
         return shop.hasUpgrade(upgrade);
     }

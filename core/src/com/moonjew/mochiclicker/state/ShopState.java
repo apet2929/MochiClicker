@@ -27,12 +27,9 @@ public class ShopState extends State{
     public ShopState(GameStateManager gsm, Cat cat) {
         super(gsm);
         backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
-        testUpgradeTree = new UpgradeTree(Upgrade.TEST_UPGRADES);
-        foodUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES);
-
-        testUpgradeButton = new UpgradeButton(new Rectangle(75, 100, 250, 100), testUpgradeTree.getNextUpgrade());
-        foodUpgradeButton = new UpgradeButton(new Rectangle(325, 100, 250, 100), foodUpgradeTree.getNextUpgrade());
-        this.cat = cat;
+        testUpgradeButton = new UpgradeButton(new Rectangle(75, 100, 250, 100));
+        foodUpgradeButton = new UpgradeButton(new Rectangle(325, 100, 250, 100));
+        restart(cat);
     }
 
     public boolean hasUpgrade(Upgrade upgrade) {
@@ -82,6 +79,14 @@ public class ShopState extends State{
         sr.rect(testUpgradeButton.getBounds().x, testUpgradeButton.getBounds().y, testUpgradeButton.getBounds().width, testUpgradeButton.getBounds().height);
         sr.rect(foodUpgradeButton.getBounds().x, foodUpgradeButton.getBounds().y, foodUpgradeButton.getBounds().width, foodUpgradeButton.getBounds().height);
         sr.end();
+    }
+
+    public void restart(Cat cat){
+        this.cat = cat;
+        testUpgradeTree = new UpgradeTree(Upgrade.TEST_UPGRADES);
+        foodUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES);
+        testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
+        foodUpgradeButton.setUpgrade(foodUpgradeTree.getNextUpgrade());
     }
 
     @Override

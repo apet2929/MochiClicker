@@ -18,6 +18,7 @@ public class UI {
     public boolean menu;  //Are we currently in a menu?
     private Cat cat;  //The current room's cat, used for the health, hunger, sleep, and happiness meters
     ArrayList<Button> buttons;
+    public Cat dyingCat;
 
     public UI() {
         menu = false;
@@ -29,7 +30,7 @@ public class UI {
         FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
         FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
         FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
-        FONT.draw(sb, getUIText(transitioning, "Health", cat.getHealth()), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
+        FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
 
         //Catnip counter
         FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);
@@ -48,6 +49,9 @@ public class UI {
         sr.rect(MochiClicker.WIDTH/2-18, 100, 20, 20);
         sr.rect(MochiClicker.WIDTH/2+7, 100, 20, 20);
 
+        if(dyingCat != null){
+            FONT.drawMiddle(sb, dyingCat.getName()+ " is dying! Heal?", new Rectangle(60, -200, MochiClicker.WIDTH-60, MochiClicker.HEIGHT), 6, 6);
+        }
 
     }
 

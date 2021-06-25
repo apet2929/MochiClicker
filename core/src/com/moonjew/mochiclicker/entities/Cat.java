@@ -30,7 +30,7 @@ public class Cat {
     Vector2 targetPosition;
     boolean hitTargetPosition;
     int speed = 2;
-
+    public boolean alert; //health = 0
 
     public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.name = name;
@@ -45,6 +45,7 @@ public class Cat {
         this.sleeping = false;
         this.tired = 0;
         this.hunger = 0;
+        this.health = 0;
         usedNames.add(this.name);
         double targetX = Math.random()*room.width + room.x;
         double targetY = Math.random()*room.height + room.y;
@@ -61,16 +62,20 @@ public class Cat {
         //update animation
         if(!sleeping) texture.update(deltaTime);
 
+        if(this.health == 0){
+            this.alert = true;
+        }
+
         //movement
-        if(!sleeping) {
+        if(!sleeping && !alert) {
             moveToTarget();
-            position.x += velocity.x * deltaTime * happiness;
-            position.y += velocity.y * deltaTime * happiness;
+            position.x += velocity.x * deltaTime * (100 - hunger);
+            position.y += velocity.y * deltaTime * (100 - hunger);
         }
 
         //handle state
 
-        if (!sleeping) {
+        if (!sleeping && !alert) {
             tired += deltaTime;
             if (tired >= 50) {
                 sleep();
@@ -85,6 +90,7 @@ public class Cat {
                 health -= deltaTime*0.9;
             }
         }
+
 
         happiness = clampFloat(happiness, 0, 100);
         health = clampFloat(health, 0, 100);
@@ -115,7 +121,7 @@ public class Cat {
                 sleep();
             }
 
-            increaseHealth();
+//            increaseHealth();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 
@@ -174,12 +180,18 @@ public class Cat {
     }
     //happiness function?
 
-
-
     public static float clampFloat(float val, float min, float max){
         if(val < min) return min;
         if(val > max) return max;
         return val;
+
+    }
+
+    public void heal() {
+        this.alert = false;
+        this.health = 100;
+    }
+    public void die() {
 
     }
 

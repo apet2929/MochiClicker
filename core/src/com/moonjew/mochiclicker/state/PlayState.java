@@ -25,11 +25,15 @@ public class PlayState extends State{
     int currentRoom;
     ShopButton shopButton;
     MenuButton menuButton;
+    HealButton healYesButton;
+    HealButton healNoButton;
+
     Button foodBowlButton;
     Button handButton;
     Button mouseButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
     boolean menu;
+    boolean alert;
 
     short currentTool; //0 = no tool, 1 = dustbin, 2 = toy bin, 3 = food bowl
     private static final short NO_TOOL = (short) 0;
@@ -63,7 +67,10 @@ public class PlayState extends State{
         foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
         handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
         mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
-        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton, mouseButton}); //adding buttons to the UI
+        healYesButton = new HealButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
+        healNoButton = new HealButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
+
+        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -93,6 +100,10 @@ public class PlayState extends State{
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             transitioning = -1;
         }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+//            rooms.getCurrentRoom().killCat();
+//        }
+
         if(Gdx.input.justTouched()) {
             float x = Gdx.input.getX();
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
@@ -141,6 +152,15 @@ public class PlayState extends State{
             else if(mouseButton.getBounds().contains(x,y)){
                 if(currentTool == MOUSE_TOY_TOOL) setCurrentTool(NO_TOOL);
                 else setCurrentTool(MOUSE_TOY_TOOL);
+            } else if(healYesButton.willRender && healYesButton.getBounds().contains(x,y)){
+                rooms.getCurrentRoom().getCat().heal();
+                ui.dyingCat = rooms.isCatDying();
+                setAlert(false);
+            }
+            else if(healNoButton.willRender && healNoButton.getBounds().contains(x,y)){
+                rooms.getCurrentRoom().killCat();
+                ui.dyingCat = rooms.isCatDying();
+                setAlert(false);
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -152,6 +172,9 @@ public class PlayState extends State{
     public void update(float deltaTime) {
         handleInput();
         rooms.update(deltaTime);
+        ui.dyingCat = rooms.isCatDying();
+        setAlert(rooms.getCurrentRoom().getCat().equals(ui.dyingCat)); //in the same room as the dying cat
+
         if(transitioning == 1) {
             cam.position.x -= 1000 * deltaTime;
             if(cam.position.x < -rooms.getCurrentRoom().getRectangle().width - 50){
@@ -250,6 +273,12 @@ public class PlayState extends State{
         }
         shopButton.setMenu(menu);
         ui.menu = menu;
+    }
+
+    public void setAlert(boolean alert){
+        healYesButton.willRender = alert;
+        healNoButton.willRender = alert;
+
     }
 
     @Override
