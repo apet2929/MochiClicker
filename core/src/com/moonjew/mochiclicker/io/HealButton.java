@@ -17,7 +17,7 @@ public class HealButton extends Button
     @Override
     public void render(SpriteBatch sb) {
         if(willRender) {
-//            super.render(sb);
+//            super.renderBackgrounds(sb);
 //            System.out.println("True");
             FONT.draw(sb, text, bounds, 2, 2);
         }

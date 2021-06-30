@@ -136,7 +136,7 @@ public class Font {
         wraps++;
 
         float posX;
-        float posY = rect.y + rect.height - (DEFAULT_HEIGHT * yScale);
+        float posY = rect.y + rect.height/2 + (DEFAULT_HEIGHT * yScale * wraps);
         for(int i = 0; i < wraps; i++){
             float difference = rect.width - lineWidths.get(i);
             difference /= 2;

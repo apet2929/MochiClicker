@@ -12,7 +12,7 @@ public class MenuButton extends Button{
     }
 
     public void reset(){
-        this.getBounds().x = MochiClicker.WIDTH-64;
+        this.getBounds().x = MochiClicker.WIDTH*0.9f;
         this.getBounds().y = MochiClicker.HEIGHT-64;
     }
 
@@ -20,7 +20,7 @@ public class MenuButton extends Button{
     public void onclick() {
         menu = !menu;
         if(menu) {
-            this.getBounds().x = MochiClicker.WIDTH-164;
+            this.getBounds().x = MochiClicker.WIDTH-MochiClicker.WIDTH*0.75f;
         }
         else {
             reset();

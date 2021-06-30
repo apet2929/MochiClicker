@@ -1,35 +1,62 @@
 package com.moonjew.mochiclicker;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.state.MainRoomState;
+import jdk.tools.jmod.Main;
 
 import java.util.ArrayList;
 
 public class RoomCarousel {
+    public static final Texture[] roomTextures = genRoomTextures();
+
+    private MainRoom mainRoom;
     public ArrayList<Room> rooms;
     private int currentRoom;
 
-    public RoomCarousel(){
+    public RoomCarousel() {
         rooms = new ArrayList<>();
         currentRoom = 0;
+        this.mainRoom = new MainRoom(0);
     }
+
     public void update(final float deltaTime){
-        for(int i = 0; i < rooms.size(); i++){
-            if(i == currentRoom){
-                rooms.get(i).update(deltaTime, true);
-            }
-            rooms.get(i).update(deltaTime, false);
+        mainRoom.update(deltaTime);
+        for(Room room : rooms){
+            room.update(deltaTime);
         }
     }
 
-    public Cat isCatDying(){
+    public Cat isCatDying() { //returns first room with a dying cat
         for(Room room : rooms){
             if(room.getCat().alert){
                 return room.getCat();
-
             }
         }
         return null;
     }
+
+    public void renderBackgrounds(SpriteBatch sb, Camera cam, int transitioning){
+        Rectangle rectangle = getCurrentRoom().getRectangle();
+
+        sb.draw(roomTextures[getCurrentRoom().roomTexture], cam.position.x + rectangle.x, cam.position.y + rectangle.y,
+                rectangle.width, rectangle.height);
+
+        if (transitioning == 1) { //to the right
+            Rectangle rightRectangle = getRightRoom().getRectangle();
+            sb.draw(roomTextures[getRightRoom().roomTexture], cam.position.x + rightRectangle.x + rectangle.width + 50,
+                    cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
+        } else if (transitioning == -1) { //to the right
+            Rectangle leftRectangle = getLeftRoom().getRectangle();
+            sb.draw(roomTextures[getLeftRoom().roomTexture], cam.position.x + leftRectangle.x - rectangle.width - 50,
+                    cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
+        }
+    }
+
     public Room getCurrentRoom(){
         return rooms.get(currentRoom);
     }
@@ -53,6 +80,11 @@ public class RoomCarousel {
             currentRoom = rooms.size()-1;
         }
     }
+
+    public MainRoom getMainRoom() {
+        return mainRoom;
+    }
+
     public void moveRight(){
         currentRoom++;
         if(currentRoom >= rooms.size()){
@@ -60,13 +92,24 @@ public class RoomCarousel {
         }
     }
 
+    public void addCurrentCatToMainRoom() {
+        mainRoom.addCat(getCurrentRoom().getCat());
+        getCurrentRoom().killCat();
+    }
+
     public void addRoom(Room room){
         rooms.add(room);
     }
 
-    public void dispose(){
+    public void dispose() {
         for(Room room : rooms){
             room.dispose();
         }
+    }
+
+    private static Texture[] genRoomTextures(){
+        return new Texture[]{
+                new Texture("room.png")
+        };
     }
 }

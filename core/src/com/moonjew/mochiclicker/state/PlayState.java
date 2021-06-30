@@ -3,22 +3,19 @@ package com.moonjew.mochiclicker.state;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.moonjew.mochiclicker.RoomCarousel;
-import com.moonjew.mochiclicker.Upgrade;
+import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.io.*;
-import com.moonjew.mochiclicker.MochiClicker;
-import com.moonjew.mochiclicker.Room;
-import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.Button;
 
-public class PlayState extends State{
+import static com.moonjew.mochiclicker.ToolType.*;
+
+public class PlayState extends State {
     public static int catNip;
     RoomCarousel rooms;
     UI ui;
@@ -33,14 +30,8 @@ public class PlayState extends State{
     Button mouseButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
     boolean menu;
-    boolean alert;
 
-    short currentTool; //0 = no tool, 1 = dustbin, 2 = toy bin, 3 = food bowl
-    private static final short NO_TOOL = (short) 0;
-    private static final short DUSTBIN_TOOL = (short) 1;
-    private static final short HAND_TOOL = (short) 2;
-    private static final short FOOD_BOWL_TOOL = (short) 3;
-    private static final short MOUSE_TOY_TOOL = (short) 4;
+    ToolType currentTool; //0 = no tool, 1 = dustbin, 2 = toy bin, 3 = food bowl
 
     Cursor dustbinCursor;
     Cursor handCursor;
@@ -51,12 +42,13 @@ public class PlayState extends State{
         super(gsm);
 
         ui = new UI();
+        currentTool = NO_TOOL;
 
         currentRoom = 0;
         rooms = new RoomCarousel();
-        rooms.addRoom(new Room(Color.PURPLE, gsm));
-        rooms.addRoom(new Room(Color.ROYAL, gsm));
-        rooms.addRoom(new Room(Color.RED, gsm));
+        rooms.addRoom(new Room(gsm));
+        rooms.addRoom(new Room(gsm));
+        rooms.addRoom(new Room(gsm));
         transitioning = 0;
         ui.setCat(rooms.getCurrentRoom().getCat());
 
@@ -100,16 +92,20 @@ public class PlayState extends State{
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             transitioning = -1;
         }
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-//            rooms.getCurrentRoom().killCat();
-//        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            rooms.getCurrentRoom().getCat().sendOutside();
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
+        }
+
 
         if(Gdx.input.justTouched()) {
             float x = Gdx.input.getX();
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
             if(rooms.getCurrentRoom().getCat().touch(x,y) && !rooms.getCurrentRoom().getCat().isSleeping()){
                 // hit cat
-                if(currentTool == NO_TOOL) {
+                if(currentTool.equals( NO_TOOL)) {
                     System.out.println("True");
                     catNip++;
                     if (rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST)) {
@@ -119,13 +115,13 @@ public class PlayState extends State{
                         catNip += 3;
                     }
                 }
-                else if (currentTool == FOOD_BOWL_TOOL){
+                else if (currentTool.equals( FOOD_BOWL_TOOL)){
                     rooms.getCurrentRoom().getCat().eat();
                 }
-                else if(currentTool == HAND_TOOL){
+                else if(currentTool.equals( HAND_TOOL)){
                     rooms.getCurrentRoom().getCat().pet();
                 }
-                else if(currentTool == MOUSE_TOY_TOOL){
+                else if(currentTool.equals( MOUSE_TOY_TOOL)){
                     System.out.println("true");
                     rooms.getCurrentRoom().getCat().pet();
                     rooms.getCurrentRoom().getCat().pet();
@@ -142,15 +138,15 @@ public class PlayState extends State{
                 setCurrentTool(NO_TOOL);
             }
             else if(foodBowlButton.getBounds().contains(x,y)){
-                if(currentTool == FOOD_BOWL_TOOL) setCurrentTool(NO_TOOL);
+                if(currentTool.equals( FOOD_BOWL_TOOL)) setCurrentTool(NO_TOOL);
                 else setCurrentTool(FOOD_BOWL_TOOL);
             }
             else if(handButton.getBounds().contains(x,y)){
-                if(currentTool == HAND_TOOL) setCurrentTool(NO_TOOL);
+                if(currentTool.equals( HAND_TOOL)) setCurrentTool(NO_TOOL);
                 else setCurrentTool(HAND_TOOL);
             }
             else if(mouseButton.getBounds().contains(x,y)){
-                if(currentTool == MOUSE_TOY_TOOL) setCurrentTool(NO_TOOL);
+                if(currentTool.equals( MOUSE_TOY_TOOL)) setCurrentTool(NO_TOOL);
                 else setCurrentTool(MOUSE_TOY_TOOL);
             } else if(healYesButton.willRender && healYesButton.getBounds().contains(x,y)){
                 rooms.getCurrentRoom().getCat().heal();
@@ -203,28 +199,23 @@ public class PlayState extends State{
         sr.setProjectionMatrix(cam.combined);
         sr.setAutoShapeType(true);
 
-        Rectangle rectangle = rooms.getCurrentRoom().getRectangle();
-        Texture background = new Texture("room.png");
         sr.begin(ShapeRenderer.ShapeType.Line);
         sb.begin();
 
         //BOTTOM LAYER - BACKGROUNDS
 
-        sb.draw(background, cam.position.x + rectangle.x,  cam.position.y + rectangle.y, rectangle.width, rectangle.height);
+        if(rooms.getCurrentRoom().getCat().outsideTimer == -1) { //if cat is not outside
+            rooms.renderBackgrounds(sb, cam, transitioning);
+            rooms.getCurrentRoom().getCat().render(sb, cam);
+        } else { //cat is outside
+            rooms.getCurrentRoom().getCat().render(sb, cam);
+            rooms.renderBackgrounds(sb, cam, transitioning);
+        }
 
-        if(transitioning == 1){ //to the right
-            Rectangle rightRectangle = rooms.getRightRoom().getRectangle();
-            sb.draw(background, cam.position.x + rightRectangle.x + rectangle.width + 50, cam.position.y + rightRectangle.y, rightRectangle.width, rightRectangle.height);
-        }
-        else if(transitioning == -1){ //to the right
-            Rectangle leftRectangle = rooms.getLeftRoom().getRectangle();
-            sb.draw(background, cam.position.x + leftRectangle.x - rectangle.width - 50, cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
-        }
 
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
-        Cat cat = rooms.getCurrentRoom().getCat();
-        cat.render(sb, cam);
+
 
         //TOP LAYER - UI
 
@@ -234,7 +225,7 @@ public class PlayState extends State{
         sr.end();
     }
 
-    public void setCurrentTool(short currentTool) {
+    public void setCurrentTool(ToolType currentTool) {
         System.out.println(currentTool);
         this.currentTool = currentTool;
         switch (currentTool){
@@ -261,7 +252,7 @@ public class PlayState extends State{
         }
     }
 
-    public void setMenu(boolean menu){
+    public void setMenu(boolean menu) {
         this.menu = menu;
         if(menu){
             cam.position.x = -100;

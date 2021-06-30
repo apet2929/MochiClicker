@@ -21,16 +21,32 @@ public class Cat {
     Vector2 velocity; //temp variable
     Rectangle room; //boundaries of the room
     String name;
-    float happiness; //0 - 100, affects cat speed
-    boolean sleeping;
+
+
+    float happiness; //0 - 100, affects how likely the cat is to fall asleep
+    int happyModifier; //How much happiness it gets from toys
+
+    boolean sleeping; //Is the cat asleep?
     double tired; //0 - 10, once the cat reaches 10, it falls asleep
+    int sleepModifier; //How fast the cat wakes up after falling asleep
+
     float health; //0 - 100, affects cat's health? not sure how to implement this
-    float hunger;
+    int healthModifier; //How much health the cat gains from exercise
+    public boolean alert; //Cat is about to die!
+
+    float hunger; //0 - 100, the cat gets slower until it reaches 100, then it stops moving
+    int hungerModifier; //How much hunger it gets from food
+
     double level; //The number of upgrades purchased, affects how much catnip is acquired per click
-    Vector2 targetPosition;
+
+    //Movement
+    Vector2 targetPosition; //Where the cat is going to
     boolean hitTargetPosition;
     int speed = 2;
-    public boolean alert; //health = 0
+
+    public float outsideTimer; //How long the cat has been outside, -1 if cat is not outside
+    private float timeOutside; //How long the cat will be outside
+    private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
     public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Rectangle room) {
         this.name = name;
@@ -44,8 +60,13 @@ public class Cat {
         this.happiness = 100;
         this.sleeping = false;
         this.tired = 0;
+        this.sleepModifier = 1;
         this.hunger = 0;
-        this.health = 0;
+        this.hungerModifier = 1;
+        this.health = 100;
+        this.healthModifier = 1;
+        this.timeOutside = 10;
+        this.outsideTimer = -1;
         usedNames.add(this.name);
         double targetX = Math.random()*room.width + room.x;
         double targetY = Math.random()*room.height + room.y;
@@ -74,36 +95,41 @@ public class Cat {
         }
 
         //handle state
+        if(outsideTimer == -1 && !inMainRoom) {
+            if (!sleeping && !alert) {
+                tired += deltaTime;
+                if (tired >= 50) {
+                    sleep();
+                }
+                happiness -= deltaTime * 3;
+                hunger += deltaTime * 5;
 
-        if (!sleeping && !alert) {
-            tired += deltaTime;
-            if (tired >= 50) {
-                sleep();
+                if (hunger >= 75 || happiness <= 20) {
+                    health -= deltaTime * 0.1;
+                }
+                if (hunger >= 100 || happiness <= 0) {
+                    health -= deltaTime * 0.9;
+                }
             }
-            happiness -= deltaTime * 3;
-            hunger += deltaTime * 5;
 
-            if(hunger >= 75 || happiness <= 20){
-                health -= deltaTime*0.1;
+            happiness = clampFloat(happiness, 0, 100);
+            health = clampFloat(health, 0, 100);
+            hunger = clampFloat(hunger, 0, 100);
+
+            if (sleeping && tired != 0) {
+                tired -= deltaTime * sleepModifier;
+
+                if (tired <= 0) {
+                    sleeping = false;
+                }
             }
-            if(hunger >= 100 || happiness <= 0){
-                health -= deltaTime*0.9;
+        } else if(outsideTimer != -1){
+            outsideTimer += deltaTime;
+            if(outsideTimer > timeOutside){
+                //return with stuff
+                outsideTimer = -1;
             }
         }
-
-
-        happiness = clampFloat(happiness, 0, 100);
-        health = clampFloat(health, 0, 100);
-        hunger = clampFloat(hunger, 0, 100);
-
-        if (sleeping && tired != 0) {
-            tired -= deltaTime * 2;
-
-            if (tired <= 0) {
-                sleeping = false;
-            }
-        }
-
     }
 
     public void moveToTarget(){
@@ -121,7 +147,7 @@ public class Cat {
                 sleep();
             }
 
-//            increaseHealth();
+            increaseHealth();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 
@@ -144,6 +170,9 @@ public class Cat {
             return x > position.x && x < position.x + position.width && y > position.y && y < position.y + position.height;
         } return x < position.x && x > position.x + position.width && y > position.y && y < position.y + position.height;
     }
+    public void sendToMainRoom(){
+        this.inMainRoom = true;
+    }
 
     private boolean checkMove(){
         return happiness >= Math.random() * 100;
@@ -154,33 +183,29 @@ public class Cat {
         targetPosition = new Vector2((float) targetX, (float) targetY);
     }
     public boolean randomTick(){
-        boolean passed = (int) (Math.random() * 1000) < Math.floor(level);
-        if(sleeping && passed) {
-            tired -= 1.0;
-        }
-        return passed;
-
+        return (int) (Math.random() * 1000) < Math.floor(level);
+    }
+    public void sendOutside(){
+        if(this.outsideTimer == -1) this.outsideTimer = 0.0f;
     }
     public void sleep(){
         //set animation to sleeping animation
         sleeping = true;
     }
-
     public void increaseHealth(){
         health += 10;
     }
 
     public void eat(){
-        this.hunger -= 20;
+        this.hunger -= 20 * hungerModifier;
         this.hunger = clampFloat(hunger, 0, 100);
     }
     public void pet(){
-        this.happiness += 5;
+        this.happiness += 5 * happyModifier;
         this.happiness = clampFloat(happiness, 0, 100);
     }
-    //happiness function?
 
-    public static float clampFloat(float val, float min, float max){
+    public static float clampFloat(float val, float min, float max){ //Clamps a variable in between 2 values
         if(val < min) return min;
         if(val > max) return max;
         return val;
@@ -248,7 +273,7 @@ public class Cat {
         String[] names = {
                 "Bob", "Joe", "Dog", "Paige",
                 "Sparky", "Marshmallow", "Rigby",
-                "Elwood"
+                "Elwood", "Coco"
         };
         //make sure that names don't get reused
         //I actually found a use for do while loops? wtf??

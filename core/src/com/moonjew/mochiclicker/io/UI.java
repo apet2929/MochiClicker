@@ -1,6 +1,7 @@
 package com.moonjew.mochiclicker.io;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -19,10 +20,12 @@ public class UI {
     private Cat cat;  //The current room's cat, used for the health, hunger, sleep, and happiness meters
     ArrayList<Button> buttons;
     public Cat dyingCat;
+    Texture menuTexture;
 
     public UI() {
         menu = false;
         buttons = new ArrayList<>();
+        menuTexture = new Texture("sidebar.png");
     }
 
     public void render(SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
@@ -35,22 +38,24 @@ public class UI {
         //Catnip counter
         FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);
 
-        if(menu) {
-            FONT.draw(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT-25, 100, 100), 2, 2);
-            sr.setColor(Color.BLACK);
-            sr.rect(MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT); //To be replaced with menu sprite
+        if (menu) {
+//            sr.setColor(Color.BLACK);
+//            sr.rect(MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT); //To be replaced with menu sprite
+            sb.draw(menuTexture, MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT);
+            FONT.drawMiddle(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT - 25, 100, 0), 2, 2);
         }
 
         //Buttons
-        for(Button button : buttons){
+        for (Button button : buttons) {
             button.render(sb);
         }
-        sr.setColor(Color.BLUE);
-        sr.rect(MochiClicker.WIDTH/2-18, 100, 20, 20);
-        sr.rect(MochiClicker.WIDTH/2+7, 100, 20, 20);
 
-        if(dyingCat != null){
-            FONT.drawMiddle(sb, dyingCat.getName()+ " is dying! Heal?", new Rectangle(60, -200, MochiClicker.WIDTH-60, MochiClicker.HEIGHT), 6, 6);
+        sr.setColor(Color.BLUE);
+        sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
+        sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
+
+        if (dyingCat != null) {
+            FONT.drawMiddle(sb, dyingCat.getName() + " is dying! Heal?", new Rectangle(60, -200, MochiClicker.WIDTH - 60, MochiClicker.HEIGHT), 6, 6);
         }
 
     }

@@ -25,7 +25,7 @@ public abstract class Button {
             sb.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
         if(text != null){
-            FONT.draw(sb, text, bounds, 2, 2);
+            FONT.drawMiddle(sb, text, bounds, 2, 2);
         }
     }
 
