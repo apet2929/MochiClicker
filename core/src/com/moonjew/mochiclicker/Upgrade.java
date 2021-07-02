@@ -17,6 +17,7 @@ public class Upgrade {
     public static final Upgrade FOOD3 = UPGRADES[6];
     public static final Upgrade FOOD4 = UPGRADES[7];
 
+    public static final int MAX_LEVEL = UPGRADES.length;
 
     //upgrade trees
     public static final Upgrade[] TEST_UPGRADES = new Upgrade[]{UPGRADES[0], UPGRADES[1], UPGRADES[2], UPGRADES[3]};

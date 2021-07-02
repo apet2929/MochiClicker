@@ -10,12 +10,20 @@ import com.moonjew.mochiclicker.state.GameStateManager;
 import com.moonjew.mochiclicker.state.MainMenuState;
 
 public class MochiClicker extends ApplicationAdapter {
-	public static final int WIDTH = 640;
-	public static final int HEIGHT = 480;
+	public static int WIDTH = 640;
+	public static int HEIGHT = 480;
 	SpriteBatch batch;
 	GameStateManager gsm;
 	ShapeRenderer sr;
 	public static Font FONT;
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		WIDTH = width;
+		HEIGHT = height;
+		System.out.println(width + " " + height);
+	}
 
 	@Override
 	public void create () {
@@ -38,4 +46,5 @@ public class MochiClicker extends ApplicationAdapter {
 		batch.dispose();
 		FONT.dispose();
 	}
+
 }

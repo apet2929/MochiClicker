@@ -16,3 +16,40 @@ Happiness has a set number of states represented by different emotion emojis. Bl
 Hunger is a stomach that fills up
 Health is a heart that beats faster or slower, if its beating too fast or too slow its unhealthy
     -Unhealthy hearts turn a bad color, healthy hearts are red
+
+
+
+
+How to do happiness health and hunger
+
+
+Pet it to make it happy, but not too much or else it’ll go down.
+If you overdo any of the happiness options then it’ll make the cat mad.
+
+Click on happiness icon to make a little menu appear with toys, petting, and treats options.
+
+The cat will randomly decide what it wants and you have to guess what that is, or listen for certain meows.
+
+Each cat has its own meows.
+
+Random function to decide what the cat wants, and it’ll wait for a bit after that before changing its mind. Tiers of things the cat wants that decide how much happiness you get when you click.
+
+Unlock vet some point mid game. Then eventually your cat might get sick and have symptoms like sleeping too much, not eating, and not being happy. Going to the vet fixes it but rings up huge bill.
+
+Cats can get pregnant and then get sick from it so when you go to the vet you come back with a kitten. Or they can just have a cold
+
+They all have an eating schedule where they get really hungry right at meal times you have to get to know your cat to feed them at the right times.
+
+If you dont keep your cat full and happy consistently it will get sick
+
+Happiness goes down if you click on it while its asleep
+
+If you click it enough then it’ll wake up and be grouchy and health will go down
+
+Happinesss is the chance of it finding a new spot to move to. When its moving its exercising and that keeps the health up. When the health is critically low you get offered to pay a large sum of money to fix it or just let the cat die. Hunger affects how fast the cat moves.
+
+Food tool has different foods, dry, wet, and treats
+
+For real money purchase only you can put hats on your cats
+
+Have the main room be really big with a camera to locate any particular cat

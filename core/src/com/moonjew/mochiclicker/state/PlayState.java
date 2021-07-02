@@ -13,6 +13,8 @@ import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.io.*;
 import com.moonjew.mochiclicker.io.Button;
 
+import java.awt.*;
+
 import static com.moonjew.mochiclicker.ToolType.*;
 
 public class PlayState extends State {
@@ -21,9 +23,11 @@ public class PlayState extends State {
     UI ui;
     int currentRoom;
     ShopButton shopButton;
-    MenuButton menuButton;
+    SidebarButton sidebarButton;
     HealButton healYesButton;
     HealButton healNoButton;
+    MenuButton sendCatToMainRoomButton;
+    MenuButton[] menuButtons;
 
     Button foodBowlButton;
     Button handButton;
@@ -54,15 +58,19 @@ public class PlayState extends State {
 
         catNip = 0;
 
-        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH-100, MochiClicker.HEIGHT-100, 100, 50), gsm, rooms.getCurrentRoom());
-        menuButton = new MenuButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
+//        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH * 0.84f, MochiClicker.HEIGHT * .79f, 100, 50), gsm, rooms.getCurrentRoom());
+        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 100, 100, 50), gsm, rooms.getCurrentRoom());
+        sendCatToMainRoomButton = new MenuButton("Send Cat To Main Room", new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 125, 100, 50));
+        menuButtons = new MenuButton[]{shopButton, sendCatToMainRoomButton};
+
+        sidebarButton = new SidebarButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
         foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
         handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
         mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
         healYesButton = new HealButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
         healNoButton = new HealButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
 
-        ui.addButtons(new Button[]{shopButton, menuButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton}); //adding buttons to the UI
+        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton, sendCatToMainRoomButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -92,11 +100,14 @@ public class PlayState extends State {
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             transitioning = -1;
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            rooms.getCurrentRoom().getCat().sendOutside();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            rooms.sendCatToMainRoom();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            Gdx.app.exit();
         }
 
 
@@ -127,13 +138,18 @@ public class PlayState extends State {
                     rooms.getCurrentRoom().getCat().pet();
                 }
             }
-            if(shopButton.getBounds().contains(x, y) && menu){
-                System.out.println("True");
-                shopButton.setRoom(rooms.getCurrentRoom());
-                shopButton.onclick();
-                setMenu(!menu);
+            if(menu) {
+                if (shopButton.getBounds().contains(x, y) && menu) {
+                    System.out.println("True");
+                    shopButton.setRoom(rooms.getCurrentRoom());
+                    shopButton.onclick();
+                    setMenu(!menu);
+                }
+                else if (sendCatToMainRoomButton.getBounds().contains(x, y)) {
+                    rooms.sendCatToMainRoom();
+                }
             }
-            else if(menuButton.getBounds().contains(x,y)){
+            else if(sidebarButton.getBounds().contains(x,y)){
                 setMenu(!menu);
                 setCurrentTool(NO_TOOL);
             }
@@ -161,6 +177,7 @@ public class PlayState extends State {
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
             Gdx.app.debug("POSITION", "X touched: " + x + " Y touched: " + y);
+            Gdx.app.debug("CAT", rooms.getCurrentRoom().getCat().getPosition().toString());
         }
     }
 
@@ -256,13 +273,15 @@ public class PlayState extends State {
         this.menu = menu;
         if(menu){
             cam.position.x = -100;
-            menuButton.getBounds().x = MochiClicker.WIDTH - 150;
+            sidebarButton.getBounds().x = MochiClicker.WIDTH - 150;
 
         } else {
             cam.position.x = 0;
-            menuButton.getBounds().x = MochiClicker.WIDTH - 50;
+            sidebarButton.getBounds().x = MochiClicker.WIDTH - 50;
         }
-        shopButton.setMenu(menu);
+        for (MenuButton menuButton : menuButtons) {
+            menuButton.setMenu(menu);
+        }
         ui.menu = menu;
     }
 

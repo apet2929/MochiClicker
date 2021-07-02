@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import static com.moonjew.mochiclicker.state.PlayState.catNip;
 
 public class Room {
+
     int roomTexture;
     Cat cat;
     Rectangle rectangle;
@@ -55,6 +56,7 @@ public class Room {
         this.cat = genCat();
         this.shop.restart(this.cat);
     }
+
 
     public Cat genCat(){
         String name = Cat.randomName();

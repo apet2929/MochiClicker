@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.moonjew.mochiclicker.RoomCarousel;
 import com.moonjew.mochiclicker.Upgrade;
 import com.moonjew.mochiclicker.UpgradeTree;
 import com.moonjew.mochiclicker.entities.Cat;
@@ -17,6 +18,7 @@ import com.moonjew.mochiclicker.io.UpgradeButton;
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
 public class ShopState extends State{
+
     BackButton backButton;
     UpgradeButton testUpgradeButton;
     UpgradeButton foodUpgradeButton;
@@ -46,7 +48,12 @@ public class ShopState extends State{
             }
             if(testUpgradeButton.getBounds().contains(x, y)){
                 testUpgradeButton.onclick(); //useless
-                if(testUpgradeTree.buyNext()) testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
+                if(testUpgradeTree.buyNext()) {
+                    testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
+                    if(cat.getLevel() == Upgrade.MAX_LEVEL){
+
+                    }
+                }
             }
             if(foodUpgradeButton.getBounds().contains(x,y)){
                 foodUpgradeButton.onclick();

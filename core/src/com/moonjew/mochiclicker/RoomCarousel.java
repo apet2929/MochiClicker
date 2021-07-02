@@ -24,9 +24,9 @@ public class RoomCarousel {
         this.mainRoom = new MainRoom(0);
     }
 
-    public void update(final float deltaTime){
+    public void update(final float deltaTime) {
         mainRoom.update(deltaTime);
-        for(Room room : rooms){
+        for(Room room : rooms) {
             room.update(deltaTime);
         }
     }
@@ -38,6 +38,12 @@ public class RoomCarousel {
             }
         }
         return null;
+    }
+
+    public void sendCatToMainRoom() {
+        mainRoom.addCat(getCurrentRoom().getCat());
+        getCurrentRoom().getCat().sendToMainRoom();
+        getCurrentRoom().killCat();
     }
 
     public void renderBackgrounds(SpriteBatch sb, Camera cam, int transitioning){

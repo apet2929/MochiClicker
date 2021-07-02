@@ -28,6 +28,9 @@ public abstract class Button {
             FONT.drawMiddle(sb, text, bounds, 2, 2);
         }
     }
+    public void resize(float x, float y, float width, float height){
+        bounds = new Rectangle(x, y, width, height);
+    }
 
     public Rectangle getBounds() {
         return bounds;

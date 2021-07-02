@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.moonjew.mochiclicker.Upgrade;
 import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class Cat {
         this.room = room;
         this.level = 1;
         this.happiness = 100;
+        this.happyModifier = 1;
         this.sleeping = false;
         this.tired = 0;
         this.sleepModifier = 1;
@@ -170,8 +172,12 @@ public class Cat {
             return x > position.x && x < position.x + position.width && y > position.y && y < position.y + position.height;
         } return x < position.x && x > position.x + position.width && y > position.y && y < position.y + position.height;
     }
-    public void sendToMainRoom(){
+    public void sendToMainRoom() {
         this.inMainRoom = true;
+        this.health = 100;
+        this.hunger = 0;
+        this.happiness = 100;
+        this.tired = 0;
     }
 
     private boolean checkMove(){
@@ -220,6 +226,11 @@ public class Cat {
 
     }
 
+    public void checkMaxed(){
+        if(this.level == Upgrade.MAX_LEVEL){
+            sendToMainRoom();
+        }
+    }
     public void setHunger(float hunger) {
         this.hunger = hunger;
     }
