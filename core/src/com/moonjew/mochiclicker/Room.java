@@ -27,7 +27,7 @@ public class Room {
     public Room(GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         this.cat = genCat();
-        this.shop = new ShopState(gsm, cat);
+        this.shop = new ShopState(gsm, this);
         this.roomTexture = 0;
     }
 
@@ -54,9 +54,8 @@ public class Room {
     public void killCat(){
         this.cat = null;
         this.cat = genCat();
-        this.shop.restart(this.cat);
+        this.shop.restart();
     }
-
 
     public Cat genCat(){
         String name = Cat.randomName();

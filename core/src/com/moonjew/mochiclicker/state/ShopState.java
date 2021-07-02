@@ -7,13 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.moonjew.mochiclicker.RoomCarousel;
-import com.moonjew.mochiclicker.Upgrade;
-import com.moonjew.mochiclicker.UpgradeTree;
+import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.BackButton;
-import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.io.UpgradeButton;
+
+import java.util.Timer;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
@@ -24,14 +23,15 @@ public class ShopState extends State{
     UpgradeButton foodUpgradeButton;
     UpgradeTree testUpgradeTree;
     UpgradeTree foodUpgradeTree;
-    Cat cat;
+    Room room;
 
-    public ShopState(GameStateManager gsm, Cat cat) {
+    public ShopState(GameStateManager gsm, Room room) {
         super(gsm);
         backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
         testUpgradeButton = new UpgradeButton(new Rectangle(75, 100, 250, 100));
         foodUpgradeButton = new UpgradeButton(new Rectangle(325, 100, 250, 100));
-        restart(cat);
+        this.room = room;
+        restart();
     }
 
     public boolean hasUpgrade(Upgrade upgrade) {
@@ -49,12 +49,11 @@ public class ShopState extends State{
             if(testUpgradeButton.getBounds().contains(x, y)){
                 testUpgradeButton.onclick(); //useless
                 if(testUpgradeTree.buyNext()) {
+//                    room.getCat().hungerModifier += testUpgradeTree.getCurrentUpgrade();
                     testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
-                    if(cat.getLevel() == Upgrade.MAX_LEVEL){
-
-                    }
                 }
             }
+
             if(foodUpgradeButton.getBounds().contains(x,y)){
                 foodUpgradeButton.onclick();
                 if(foodUpgradeTree.buyNext()) foodUpgradeButton.setUpgrade(foodUpgradeTree.getNextUpgrade());
@@ -88,8 +87,7 @@ public class ShopState extends State{
         sr.end();
     }
 
-    public void restart(Cat cat){
-        this.cat = cat;
+    public void restart() {
         testUpgradeTree = new UpgradeTree(Upgrade.TEST_UPGRADES);
         foodUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES);
         testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
