@@ -42,6 +42,8 @@ public class PlayState extends State {
     Cursor foodBowlCursor;
     Cursor mouseCursor;
 
+    SoundEffect mrow = new SoundEffect("mrow.wav", 1, 5.0f, 0);
+
     public PlayState(GameStateManager gsm) {
         super(gsm);
 
@@ -105,6 +107,9 @@ public class PlayState extends State {
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            mrow.play();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             Gdx.app.exit();
