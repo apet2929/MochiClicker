@@ -1,18 +1,24 @@
-package com.moonjew.mochiclicker;
+package com.moonjew.mochiclicker.upgrades;
 
-import com.badlogic.gdx.Gdx;
+import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.io.ShopButton;
+import com.moonjew.mochiclicker.io.UpgradeButton;
 import com.moonjew.mochiclicker.state.PlayState;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
+
 import java.util.Arrays;
 
 public class UpgradeTree {
 
+    public UpgradeType upgradeType;
     private int nextUpgrade;
     private Upgrade currentlyInUse;
     public final Upgrade[] upgrades;
     public boolean[] purchased;
 
-    public UpgradeTree(Upgrade[] line) {
+    public UpgradeTree(Upgrade[] line, UpgradeType type) {
         this.upgrades = line;
+        this.upgradeType = type;
         purchased = new boolean[upgrades.length];
         Arrays.fill(purchased, false);
     }
@@ -24,13 +30,33 @@ public class UpgradeTree {
         } else return false;
     }
 
-    public boolean buyNext() {
+    public boolean buyNext(Cat cat, UpgradeButton upgradeButton) {
         if(nextUpgrade < upgrades.length) {
             if (upgrades[nextUpgrade].COST <= PlayState.catNip) {
                 PlayState.catNip -= upgrades[nextUpgrade].COST;
                 purchased[nextUpgrade] = true;
                 setCurrentlyInUse(upgrades[nextUpgrade]);
+
+                cat.levelUp();
+                float val = upgrades[nextUpgrade].VALUE;
+                switch(this.upgradeType){
+                    case HEALTH:
+                        cat.healthModifier += val;
+                        break;
+                    case HUNGER:
+                        cat.hungerModifier += val;
+                        break;
+                    case SLEEP:
+                        cat.sleepModifier += val;
+                        break;
+                    case HAPPINESS:
+                        cat.happyModifier += val;
+                        break;
+                }
+
                 nextUpgrade++;
+                upgradeButton.setUpgrade(getNextUpgrade());
+
                 return true;
             } else {
                 System.out.println("Not enough catnip");

@@ -1,18 +1,13 @@
 package com.moonjew.mochiclicker;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.state.GameStateManager;
-import com.moonjew.mochiclicker.state.PlayState;
 import com.moonjew.mochiclicker.state.ShopState;
-
-import java.io.FileNotFoundException;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
 
 import static com.moonjew.mochiclicker.state.PlayState.catNip;
 

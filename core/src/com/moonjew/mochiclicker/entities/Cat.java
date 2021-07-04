@@ -6,13 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.moonjew.mochiclicker.Upgrade;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
 import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Cat {
     private static final List<String> usedNames = new ArrayList<>();
@@ -23,12 +21,11 @@ public class Cat {
     Rectangle room; //boundaries of the room
     String name;
 
-
     float happiness; //0 - 100, affects how likely the cat is to fall asleep
     public int happyModifier; //How much happiness it gets from toys
 
     boolean sleeping; //Is the cat asleep?
-    double tired; //0 - 10, once the cat reaches 10, it falls asleep
+    float tired; //0 - 10, once the cat reaches 10, it falls asleep
     public int sleepModifier; //How fast the cat wakes up after falling asleep
 
     float health; //0 - 100, affects cat's health? not sure how to implement this
@@ -38,7 +35,7 @@ public class Cat {
     float hunger; //0 - 100, the cat gets slower until it reaches 100, then it stops moving
     public int hungerModifier; //How much hunger it gets from food
 
-    double level; //The number of upgrades purchased, affects how much catnip is acquired per click
+    int level; //The number of upgrades purchased, affects how much catnip is acquired per click
 
     //Movement
     Vector2 targetPosition; //Where the cat is going to

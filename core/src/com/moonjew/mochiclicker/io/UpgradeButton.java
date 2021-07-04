@@ -3,7 +3,7 @@ package com.moonjew.mochiclicker.io;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.moonjew.mochiclicker.Upgrade;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
@@ -35,7 +35,11 @@ public class UpgradeButton extends Button{
     public void render(SpriteBatch sb) {
         super.render(sb);
         if(upgrade != null) {
-            FONT.drawMiddle(sb, upgrade.DESCRIPTION + " COST " + upgrade.COST, bounds, 4, 4);
+            FONT.drawMiddle(sb, upgrade.DESCRIPTION + " COST " + upgrade.COST, bounds, 2, 2);
         }
+    }
+
+    public void renderOutline(ShapeRenderer sr){
+        sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 }

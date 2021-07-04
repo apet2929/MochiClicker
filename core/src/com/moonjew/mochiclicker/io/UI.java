@@ -28,7 +28,7 @@ public class UI {
         menuTexture = new Texture("sidebar.png");
     }
 
-    public void render(SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
+    public void render(Cat cat, SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
         //Cat status
         FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
         FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
@@ -42,7 +42,7 @@ public class UI {
 //            sr.setColor(Color.BLACK);
 //            sr.rect(MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT); //To be replaced with menu sprite
             sb.draw(menuTexture, MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT);
-            FONT.drawMiddle(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT - 25, 100, 0), 2, 2);
+            FONT.drawMiddle(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT - 50, 100, 0), 2, 2);
         }
 
         //Buttons
@@ -64,12 +64,13 @@ public class UI {
         // If transitioning, "Tired: ???" will be returned
         String uiText = valName + " ";
         if(transitioning == 0) {
-            uiText += (int)(val);
+            uiText += (int)(Math.abs(val));
         } else {
             uiText += "???";
         }
         return uiText;
     }
+
     private String getTiredText(int transitioning) { //Returns the cats current tired level unless transitioning.
         // If transitioning, "Tired: ???" will be returned
         String tiredText = "Tired ";

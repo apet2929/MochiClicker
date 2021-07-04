@@ -12,8 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.io.*;
 import com.moonjew.mochiclicker.io.Button;
-
-import java.awt.*;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
 
 import static com.moonjew.mochiclicker.ToolType.*;
 
@@ -61,8 +60,8 @@ public class PlayState extends State {
         catNip = 0;
 
 //        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH * 0.84f, MochiClicker.HEIGHT * .79f, 100, 50), gsm, rooms.getCurrentRoom());
-        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 100, 100, 50), gsm, rooms.getCurrentRoom());
-        sendCatToMainRoomButton = new MenuButton("Send Cat To Main Room", new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 125, 100, 50));
+        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 150, 100, 50), gsm, rooms.getCurrentRoom());
+        sendCatToMainRoomButton = new MenuButton("Send Cat To Main Room", new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 300, 100, 50));
         menuButtons = new MenuButton[]{shopButton, sendCatToMainRoomButton};
 
         sidebarButton = new SidebarButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
@@ -103,7 +102,7 @@ public class PlayState extends State {
             transitioning = -1;
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            rooms.sendCatToMainRoom();
+            rooms.getCurrentRoom().getCat().sendOutside();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
@@ -123,13 +122,7 @@ public class PlayState extends State {
                 // hit cat
                 if(currentTool.equals( NO_TOOL)) {
                     System.out.println("True");
-                    catNip++;
-                    if (rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST)) {
-                        catNip += 2;
-                    }
-                    if(rooms.getCurrentRoom().hasUpgrade(Upgrade.TEST2)){
-                        catNip += 3;
-                    }
+                    catNip+= rooms.getCurrentRoom().getCat().getLevel();
                 }
                 else if (currentTool.equals( FOOD_BOWL_TOOL)){
                     rooms.getCurrentRoom().getCat().eat();
@@ -143,9 +136,13 @@ public class PlayState extends State {
                     rooms.getCurrentRoom().getCat().pet();
                 }
             }
+            if(sidebarButton.getBounds().contains(x,y)){
+                System.out.println("Sidebar button pressed");
+                setMenu(!menu);
+                setCurrentTool(NO_TOOL);
+            }
             if(menu) {
                 if (shopButton.getBounds().contains(x, y) && menu) {
-                    System.out.println("True");
                     shopButton.setRoom(rooms.getCurrentRoom());
                     shopButton.onclick();
                     setMenu(!menu);
@@ -153,10 +150,6 @@ public class PlayState extends State {
                 else if (sendCatToMainRoomButton.getBounds().contains(x, y)) {
                     rooms.sendCatToMainRoom();
                 }
-            }
-            else if(sidebarButton.getBounds().contains(x,y)){
-                setMenu(!menu);
-                setCurrentTool(NO_TOOL);
             }
             else if(foodBowlButton.getBounds().contains(x,y)){
                 if(currentTool.equals( FOOD_BOWL_TOOL)) setCurrentTool(NO_TOOL);
@@ -182,7 +175,7 @@ public class PlayState extends State {
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
             Gdx.app.debug("POSITION", "X touched: " + x + " Y touched: " + y);
-            Gdx.app.debug("CAT", rooms.getCurrentRoom().getCat().getPosition().toString());
+
         }
     }
 
@@ -241,7 +234,7 @@ public class PlayState extends State {
 
         //TOP LAYER - UI
 
-        ui.render(sb, sr, transitioning);
+        ui.render(rooms.getCurrentRoom().getCat(), sb, sr, transitioning);
 
         sb.end();
         sr.end();

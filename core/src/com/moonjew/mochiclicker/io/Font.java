@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class Font {
     public static final int SPACING_X = 0;
-    public static final int SPACING_Y = 4;
+    public static final int SPACING_Y = 2;
     private static final int DEFAULT_WIDTH = 7;
     private static final int DEFAULT_HEIGHT = 7;
     TextureRegion[] chars;
@@ -104,7 +104,7 @@ public class Font {
             }
 
             float tempWidth = currentLineWidth + word.length * (DEFAULT_WIDTH * xScale); //accounting for the space at the end of the word
-            tempWidth += DEFAULT_WIDTH * xScale + SPACING_X;
+            tempWidth += (DEFAULT_WIDTH * xScale + SPACING_X) / 2.1f;
 
             if(tempWidth <= rect.width || lines.get(wraps).equals("")){ //Current word can fit
                 currentLineWidth = tempWidth;
@@ -136,7 +136,7 @@ public class Font {
         wraps++;
 
         float posX;
-        float posY = rect.y + rect.height/2 + (DEFAULT_HEIGHT * yScale * wraps);
+        float posY = rect.y + rect.height/2 + (yScale * SPACING_Y * wraps);
         for(int i = 0; i < wraps; i++){
             float difference = rect.width - lineWidths.get(i);
             difference /= 2;

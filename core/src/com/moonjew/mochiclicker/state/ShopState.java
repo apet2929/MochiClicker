@@ -8,34 +8,41 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
-import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.BackButton;
 import com.moonjew.mochiclicker.io.UpgradeButton;
-
-import java.util.Timer;
+import com.moonjew.mochiclicker.upgrades.Upgrade;
+import com.moonjew.mochiclicker.upgrades.UpgradeTree;
+import com.moonjew.mochiclicker.upgrades.UpgradeType;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
 public class ShopState extends State{
 
     BackButton backButton;
-    UpgradeButton testUpgradeButton;
-    UpgradeButton foodUpgradeButton;
-    UpgradeTree testUpgradeTree;
-    UpgradeTree foodUpgradeTree;
+    UpgradeButton healthUpgradeButton;
+    UpgradeButton hungerUpgradeButton;
+    UpgradeButton happinessUpgradeButton;
+    UpgradeButton sleepUpgradeButton;
+
+    UpgradeTree healthUpgradeTree;
+    UpgradeTree hungerUpgradeTree;
+    UpgradeTree happinessUpgradeTree;
+    UpgradeTree sleepUpgradeTree;
     Room room;
 
     public ShopState(GameStateManager gsm, Room room) {
         super(gsm);
         backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
-        testUpgradeButton = new UpgradeButton(new Rectangle(75, 100, 250, 100));
-        foodUpgradeButton = new UpgradeButton(new Rectangle(325, 100, 250, 100));
+        healthUpgradeButton = new UpgradeButton(new Rectangle(10, 100, 140, 100));
+        hungerUpgradeButton = new UpgradeButton(new Rectangle(170, 100, 140, 100));
+        happinessUpgradeButton = new UpgradeButton(new Rectangle(330, 100, 140, 100));
+        sleepUpgradeButton = new UpgradeButton(new Rectangle(490, 100, 140, 100));
         this.room = room;
         restart();
     }
 
     public boolean hasUpgrade(Upgrade upgrade) {
-        return testUpgradeTree.purchased(upgrade) || foodUpgradeTree.purchased(upgrade);
+        return healthUpgradeTree.purchased(upgrade) || hungerUpgradeTree.purchased(upgrade);
     }
 
     @Override
@@ -46,17 +53,18 @@ public class ShopState extends State{
             if(backButton.getBounds().contains(x, y)){
                 gsm.pop();
             }
-            if(testUpgradeButton.getBounds().contains(x, y)){
-                testUpgradeButton.onclick(); //useless
-                if(testUpgradeTree.buyNext()) {
-//                    room.getCat().hungerModifier += testUpgradeTree.getCurrentUpgrade();
-                    testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
-                }
+            if(healthUpgradeButton.getBounds().contains(x, y)){
+                healthUpgradeTree.buyNext(room.getCat(), healthUpgradeButton);
+            }
+            if(hungerUpgradeButton.getBounds().contains(x,y)){
+                hungerUpgradeTree.buyNext(room.getCat(), hungerUpgradeButton);
+            }
+            if(sleepUpgradeButton.getBounds().contains(x,y)){
+                sleepUpgradeTree.buyNext(room.getCat(), sleepUpgradeButton);
             }
 
-            if(foodUpgradeButton.getBounds().contains(x,y)){
-                foodUpgradeButton.onclick();
-                if(foodUpgradeTree.buyNext()) foodUpgradeButton.setUpgrade(foodUpgradeTree.getNextUpgrade());
+            if(happinessUpgradeButton.getBounds().contains(x,y)){
+                happinessUpgradeTree.buyNext(room.getCat(), happinessUpgradeButton);
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -72,26 +80,36 @@ public class ShopState extends State{
     @Override
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         sb.begin();
-        FONT.draw(sb, "Shop", new Rectangle(250, MochiClicker.HEIGHT-50, MochiClicker.WIDTH, MochiClicker.HEIGHT), 5, 5);
+        FONT.drawMiddle(sb, "Shop", new Rectangle(0, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, 0), 6, 6);
         backButton.render(sb);
 
-        testUpgradeButton.render(sb);
-        foodUpgradeButton.render(sb);
+        healthUpgradeButton.render(sb);
+        hungerUpgradeButton.render(sb);
+        sleepUpgradeButton.render(sb);
+        happinessUpgradeButton.render(sb);
 
         sb.end();
         sr.setAutoShapeType(true);
         sr.begin();
         sr.setColor(Color.BLACK);
-        sr.rect(testUpgradeButton.getBounds().x, testUpgradeButton.getBounds().y, testUpgradeButton.getBounds().width, testUpgradeButton.getBounds().height);
-        sr.rect(foodUpgradeButton.getBounds().x, foodUpgradeButton.getBounds().y, foodUpgradeButton.getBounds().width, foodUpgradeButton.getBounds().height);
+        healthUpgradeButton.renderOutline(sr);
+        happinessUpgradeButton.renderOutline(sr);
+        hungerUpgradeButton.renderOutline(sr);
+        sleepUpgradeButton.renderOutline(sr);
         sr.end();
     }
 
     public void restart() {
-        testUpgradeTree = new UpgradeTree(Upgrade.TEST_UPGRADES);
-        foodUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES);
-        testUpgradeButton.setUpgrade(testUpgradeTree.getNextUpgrade());
-        foodUpgradeButton.setUpgrade(foodUpgradeTree.getNextUpgrade());
+        hungerUpgradeTree = new UpgradeTree(Upgrade.FOOD_UPGRADES, UpgradeType.HUNGER);
+        healthUpgradeTree = new UpgradeTree(Upgrade.HEALTH_UPGRADES, UpgradeType.HEALTH);
+        happinessUpgradeTree = new UpgradeTree(Upgrade.HAPPINESS_UPGRADES, UpgradeType.HAPPINESS);
+        sleepUpgradeTree = new UpgradeTree(Upgrade.SLEEP_UPGRADES, UpgradeType.SLEEP);
+
+
+        healthUpgradeButton.setUpgrade(healthUpgradeTree.getNextUpgrade());
+        hungerUpgradeButton.setUpgrade(hungerUpgradeTree.getNextUpgrade());
+        happinessUpgradeButton.setUpgrade(happinessUpgradeTree.getNextUpgrade());
+        sleepUpgradeButton.setUpgrade(sleepUpgradeTree.getNextUpgrade());
     }
 
     @Override
