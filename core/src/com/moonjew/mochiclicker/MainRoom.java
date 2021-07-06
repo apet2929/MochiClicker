@@ -5,13 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.entities.Cat;
-import com.moonjew.mochiclicker.state.GameStateManager;
+import com.moonjew.mochiclicker.room.Room;
+import com.moonjew.mochiclicker.room.RoomCarousel;
 import com.moonjew.mochiclicker.state.PlayState;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainRoom extends Room{
+public class MainRoom extends Room {
 
     int roomTexture;
     Rectangle rectangle;

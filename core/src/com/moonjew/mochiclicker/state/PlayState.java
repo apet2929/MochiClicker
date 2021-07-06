@@ -12,7 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.io.*;
 import com.moonjew.mochiclicker.io.Button;
-import com.moonjew.mochiclicker.upgrades.Upgrade;
+import com.moonjew.mochiclicker.room.Room;
+import com.moonjew.mochiclicker.room.RoomCarousel;
 
 import static com.moonjew.mochiclicker.ToolType.*;
 

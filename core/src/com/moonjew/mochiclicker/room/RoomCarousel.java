@@ -1,13 +1,12 @@
-package com.moonjew.mochiclicker;
+package com.moonjew.mochiclicker.room;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.moonjew.mochiclicker.MainRoom;
 import com.moonjew.mochiclicker.entities.Cat;
-import com.moonjew.mochiclicker.state.MainRoomState;
-import jdk.tools.jmod.Main;
+import com.moonjew.mochiclicker.room.Room;
 
 import java.util.ArrayList;
 
