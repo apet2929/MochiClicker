@@ -29,6 +29,11 @@ public class ShopState extends State{
     UpgradeTree hungerUpgradeTree;
     UpgradeTree happinessUpgradeTree;
     UpgradeTree sleepUpgradeTree;
+
+    UpgradeButton bedUpgradeButton;
+    UpgradeTree bedUpgradeTree;
+
+
     Room room;
 
     public ShopState(GameStateManager gsm, Room room) {
@@ -38,6 +43,7 @@ public class ShopState extends State{
         hungerUpgradeButton = new UpgradeButton(new Rectangle(170, 100, 140, 100));
         happinessUpgradeButton = new UpgradeButton(new Rectangle(330, 100, 140, 100));
         sleepUpgradeButton = new UpgradeButton(new Rectangle(490, 100, 140, 100));
+        bedUpgradeButton = new UpgradeButton(new Rectangle(10, 220, 140, 100));
         this.room = room;
         restart();
     }
@@ -54,18 +60,20 @@ public class ShopState extends State{
             if(backButton.getBounds().contains(x, y)){
                 gsm.pop();
             }
-            if(healthUpgradeButton.getBounds().contains(x, y)){
+            else if(healthUpgradeButton.getBounds().contains(x, y)){
                 healthUpgradeTree.buyNext(room.getCat(), healthUpgradeButton);
             }
-            if(hungerUpgradeButton.getBounds().contains(x,y)){
+            else if(hungerUpgradeButton.getBounds().contains(x,y)){
                 hungerUpgradeTree.buyNext(room.getCat(), hungerUpgradeButton);
             }
-            if(sleepUpgradeButton.getBounds().contains(x,y)){
+            else if(sleepUpgradeButton.getBounds().contains(x,y)){
                 sleepUpgradeTree.buyNext(room.getCat(), sleepUpgradeButton);
             }
-
-            if(happinessUpgradeButton.getBounds().contains(x,y)){
+            else if(happinessUpgradeButton.getBounds().contains(x,y)){
                 happinessUpgradeTree.buyNext(room.getCat(), happinessUpgradeButton);
+            }
+            else if(bedUpgradeButton.getBounds().contains(x,y)){
+                bedUpgradeTree.buyNext(room, bedUpgradeButton);
             }
 
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -88,6 +96,7 @@ public class ShopState extends State{
         hungerUpgradeButton.render(sb);
         sleepUpgradeButton.render(sb);
         happinessUpgradeButton.render(sb);
+        bedUpgradeButton.render(sb);
 
         sb.end();
         sr.setAutoShapeType(true);
@@ -97,6 +106,7 @@ public class ShopState extends State{
         happinessUpgradeButton.renderOutline(sr);
         hungerUpgradeButton.renderOutline(sr);
         sleepUpgradeButton.renderOutline(sr);
+        bedUpgradeButton.renderOutline(sr);
         sr.end();
     }
 
@@ -106,11 +116,14 @@ public class ShopState extends State{
         happinessUpgradeTree = new UpgradeTree(Upgrade.HAPPINESS_UPGRADES, UpgradeType.HAPPINESS);
         sleepUpgradeTree = new UpgradeTree(Upgrade.SLEEP_UPGRADES, UpgradeType.SLEEP);
 
+        bedUpgradeTree = new UpgradeTree(Upgrade.BED_UPGRADES, UpgradeType.BED);
 
         healthUpgradeButton.setUpgrade(healthUpgradeTree.getNextUpgrade());
         hungerUpgradeButton.setUpgrade(hungerUpgradeTree.getNextUpgrade());
         happinessUpgradeButton.setUpgrade(happinessUpgradeTree.getNextUpgrade());
         sleepUpgradeButton.setUpgrade(sleepUpgradeTree.getNextUpgrade());
+
+        bedUpgradeButton.setUpgrade(bedUpgradeTree.getNextUpgrade());
     }
 
     @Override

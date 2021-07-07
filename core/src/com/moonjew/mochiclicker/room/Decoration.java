@@ -1,20 +1,22 @@
 package com.moonjew.mochiclicker.room;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Decoration {
-    private final TextureRegion texture;
+    private final Texture texture;
     private final float value; //What the decoration actually does: increases some value to help the player
     private final DecorationType type;
 
-    public Decoration(TextureRegion texture, float value, DecorationType type) {
+    public Decoration(Texture texture, float value, DecorationType type) {
         this.texture = texture;
         this.value = value;
         this.type = type;
     }
 
-    public TextureRegion getTexture() {
+    public Texture getTexture() {
         return texture;
     }
 
@@ -26,11 +28,7 @@ public class Decoration {
         return type;
     }
 
-    public void render(SpriteBatch sb){
-        sb.draw(texture, Room.decorationPositions.get(type).x, Room.decorationPositions.get(type).y);
-    }
-
-    enum DecorationType {
+    public enum DecorationType {
         BED, // Cat goes here when it sleeps, better bed increases how long cat stays awake
         TREE, // Cat can exercise on it, increases health
         WINDOW, // Increased scouting ability, cat has a greater chance to return with something after going outside

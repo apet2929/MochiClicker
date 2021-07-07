@@ -3,6 +3,7 @@ package com.moonjew.mochiclicker.upgrades;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.io.ShopButton;
 import com.moonjew.mochiclicker.io.UpgradeButton;
+import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.state.PlayState;
 import com.moonjew.mochiclicker.upgrades.Upgrade;
 
@@ -65,6 +66,20 @@ public class UpgradeTree {
             System.out.println("No more upgrades in this tree");
         }
         return false;
+    }
+
+    public void buyNext(Room room, UpgradeButton upgradeButton){
+        if(nextUpgrade < upgrades.length) {
+            if (upgrades[nextUpgrade].COST <= PlayState.catNip) {
+                PlayState.catNip -= upgrades[nextUpgrade].COST;
+                purchased[nextUpgrade] = true;
+                setCurrentlyInUse(upgrades[nextUpgrade]);
+                room.setDecoration(getNextUpgrade().DECORATION);
+
+                nextUpgrade++;
+                upgradeButton.setUpgrade(getNextUpgrade());
+            }
+        }
     }
 
     public void setCurrentlyInUse(Upgrade upgrade) {

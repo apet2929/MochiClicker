@@ -88,7 +88,7 @@ public class PlayState extends State {
         yHotSpot = foodBowlCursorTexture.getHeight() / 2;
         handCursor = Gdx.graphics.newCursor(handCursorTexture, xHotSpot, yHotSpot);
 
-        Pixmap mouseCursorTexture = new Pixmap(Gdx.files.internal("mouse.png"));
+        Pixmap mouseCursorTexture = new Pixmap(Gdx.files.internal("mouse_toy.png"));
         xHotSpot = mouseCursorTexture.getWidth() / 2;
         yHotSpot = mouseCursorTexture.getHeight() / 2;
         mouseCursor = Gdx.graphics.newCursor(mouseCursorTexture, xHotSpot, yHotSpot);
@@ -222,12 +222,11 @@ public class PlayState extends State {
 
         if(rooms.getCurrentRoom().getCat().outsideTimer == -1) { //if cat is not outside
             rooms.renderBackgrounds(sb, cam, transitioning);
-            rooms.getCurrentRoom().getCat().render(sb, cam);
+            rooms.renderCat(sb, cam);
         } else { //cat is outside
-            rooms.getCurrentRoom().getCat().render(sb, cam);
+            rooms.renderCat(sb, cam);
             rooms.renderBackgrounds(sb, cam, transitioning);
         }
-
 
         //MIDDLE LAYER - ENTITIES, EFFECTS
 

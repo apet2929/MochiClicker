@@ -1,12 +1,14 @@
 package com.moonjew.mochiclicker.upgrades;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.moonjew.mochiclicker.room.Decoration;
 
 public class Upgrade {
     public final int COST;
     public final String DESCRIPTION;
     public final UpgradeType UPGRADE_TYPE;
-    public final TextureRegion TEXTURE;
+    public final Decoration DECORATION;
     public final int VALUE;
 
     //upgrades
@@ -30,26 +32,27 @@ public class Upgrade {
     public static final Upgrade[] HAPPINESS_UPGRADES = new Upgrade[]{UPGRADES[12], UPGRADES[13], UPGRADES[14], UPGRADES[15]};
     public static final Upgrade[] SLEEP_UPGRADES = new Upgrade[]{UPGRADES[16], UPGRADES[17], UPGRADES[18], UPGRADES[19]};
 
+    public static final Upgrade[] BED_UPGRADES = new Upgrade[]{UPGRADES[20]};
     public Upgrade(UpgradeType UPGRADE_TYPE, int COST, String DESCRIPTION) {
         this.UPGRADE_TYPE = UPGRADE_TYPE;
         this.COST = COST;
         this.DESCRIPTION = DESCRIPTION;
         this.VALUE = -1;
-        this.TEXTURE = null;
+        this.DECORATION = null;
     }
     public Upgrade(UpgradeType UPGRADE_TYPE, int COST, String DESCRIPTION, int VALUE){
         this.UPGRADE_TYPE = UPGRADE_TYPE;
         this.COST = COST;
         this.DESCRIPTION = DESCRIPTION;
         this.VALUE = VALUE;
-        this.TEXTURE = null;
+        this.DECORATION = null;
     }
-    public Upgrade(UpgradeType UPGRADE_TYPE, int COST, String DESCRIPTION, TextureRegion TEXTURE){
+    public Upgrade(UpgradeType UPGRADE_TYPE, int COST, String DESCRIPTION, Decoration DECORATION){
         this.UPGRADE_TYPE = UPGRADE_TYPE;
         this.COST = COST;
         this.DESCRIPTION = DESCRIPTION;
         this.VALUE = -1;
-        this.TEXTURE = TEXTURE;
+        this.DECORATION = DECORATION;
     }
 
     private static Upgrade[] genUpgrades(){
@@ -79,6 +82,7 @@ public class Upgrade {
                 new Upgrade(UpgradeType.SLEEP, 30, "Sleep 3", 15),
                 new Upgrade(UpgradeType.SLEEP, 40, "Sleep 4", 20),
 
+                new Upgrade(UpgradeType.BED, 5, "Get a good nights rest", new Decoration(new Texture(Gdx.files.internal("testcat.jpg")), 20, Decoration.DecorationType.BED))
         };
     }
 

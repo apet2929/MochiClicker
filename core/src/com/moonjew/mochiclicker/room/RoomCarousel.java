@@ -51,6 +51,8 @@ public class RoomCarousel {
         sb.draw(roomTextures[getCurrentRoom().roomTexture], cam.position.x + rectangle.x, cam.position.y + rectangle.y,
                 rectangle.width, rectangle.height);
 
+        getCurrentRoom().renderDecorations(sb, cam);
+
         if (transitioning == 1) { //to the right
             Rectangle rightRectangle = getRightRoom().getRectangle();
             sb.draw(roomTextures[getRightRoom().roomTexture], cam.position.x + rightRectangle.x + rectangle.width + 50,
@@ -60,6 +62,9 @@ public class RoomCarousel {
             sb.draw(roomTextures[getLeftRoom().roomTexture], cam.position.x + leftRectangle.x - rectangle.width - 50,
                     cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
         }
+    }
+    public void renderCat(SpriteBatch sb, Camera cam){
+        getCurrentRoom().cat.render(sb, cam);
     }
 
     public Room getCurrentRoom(){
