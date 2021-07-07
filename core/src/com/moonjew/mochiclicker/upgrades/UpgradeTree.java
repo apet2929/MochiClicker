@@ -1,11 +1,9 @@
 package com.moonjew.mochiclicker.upgrades;
 
 import com.moonjew.mochiclicker.entities.Cat;
-import com.moonjew.mochiclicker.io.ShopButton;
 import com.moonjew.mochiclicker.io.UpgradeButton;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.state.PlayState;
-import com.moonjew.mochiclicker.upgrades.Upgrade;
 
 import java.util.Arrays;
 
@@ -42,16 +40,16 @@ public class UpgradeTree {
                 float val = upgrades[nextUpgrade].VALUE;
                 switch(this.upgradeType){
                     case HEALTH:
-                        cat.healthModifier += val;
+                        cat.maxHealth += val;
                         break;
                     case HUNGER:
-                        cat.hungerModifier += val;
+                        cat.maxHunger += val;
                         break;
                     case SLEEP:
-                        cat.sleepModifier += val;
+                        cat.maxTired += val;
                         break;
                     case HAPPINESS:
-                        cat.happyModifier += val;
+                        cat.maxHappiness += val;
                         break;
                 }
 

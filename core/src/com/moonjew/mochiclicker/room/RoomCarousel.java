@@ -4,9 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.moonjew.mochiclicker.MainRoom;
 import com.moonjew.mochiclicker.entities.Cat;
-import com.moonjew.mochiclicker.room.Room;
 
 import java.util.ArrayList;
 

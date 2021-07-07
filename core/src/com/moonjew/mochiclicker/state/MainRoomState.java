@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.moonjew.mochiclicker.MainRoom;
+import com.moonjew.mochiclicker.room.MainRoom;
 import com.moonjew.mochiclicker.MochiClicker;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;

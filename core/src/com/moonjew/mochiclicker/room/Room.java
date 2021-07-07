@@ -74,16 +74,16 @@ public class Room {
         }
     }
 
-    private void initDecorations(){
+    void initDecorations(){
         decorations = new Decoration[Decoration.DecorationType.values().length];
-        decorations[Decoration.DecorationType.BED.ordinal()] = new Decoration(new Texture(Gdx.files.internal("pumpkin_bed.png")), 20, Decoration.DecorationType.BED);
-        decorations[Decoration.DecorationType.TREE.ordinal()] = new Decoration(new Texture(Gdx.files.internal("back-button.png")), 20, Decoration.DecorationType.TREE);
-        decorations[Decoration.DecorationType.WINDOW.ordinal()] = new Decoration(new Texture(Gdx.files.internal("button_template.png")), 20, Decoration.DecorationType.WINDOW);
-        decorations[Decoration.DecorationType.CARPET.ordinal()] = new Decoration(new Texture(Gdx.files.internal("mouse_toy.png")), 20, Decoration.DecorationType.CARPET);
-        decorations[Decoration.DecorationType.PAINTING.ordinal()] = new Decoration(new Texture(Gdx.files.internal("room.png")), 20, Decoration.DecorationType.PAINTING);
-        decorations[Decoration.DecorationType.FOOD_WATER_BOWL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("food_bowl.png")), 20, Decoration.DecorationType.FOOD_WATER_BOWL);
-        decorations[Decoration.DecorationType.LITTER_BOX.ordinal()] = new Decoration(new Texture(Gdx.files.internal("hand_button.png")), 20, Decoration.DecorationType.LITTER_BOX);
-        decorations[Decoration.DecorationType.SPECIAL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("testcat.jpg")), 20, Decoration.DecorationType.SPECIAL);
+        decorations[Decoration.DecorationType.BED.ordinal()] = new Decoration(new Texture(Gdx.files.internal("pumpkin_bed.png")), 5, Decoration.DecorationType.BED);
+        decorations[Decoration.DecorationType.TREE.ordinal()] = new Decoration(new Texture(Gdx.files.internal("back-button.png")), 5, Decoration.DecorationType.TREE);
+        decorations[Decoration.DecorationType.WINDOW.ordinal()] = new Decoration(new Texture(Gdx.files.internal("button_template.png")), 5, Decoration.DecorationType.WINDOW);
+        decorations[Decoration.DecorationType.CARPET.ordinal()] = new Decoration(new Texture(Gdx.files.internal("mouse_toy.png")), 5, Decoration.DecorationType.CARPET);
+        decorations[Decoration.DecorationType.PAINTING.ordinal()] = new Decoration(new Texture(Gdx.files.internal("room.png")), 5, Decoration.DecorationType.PAINTING);
+        decorations[Decoration.DecorationType.FOOD_WATER_BOWL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("food_bowl.png")), 5, Decoration.DecorationType.FOOD_WATER_BOWL);
+        decorations[Decoration.DecorationType.LITTER_BOX.ordinal()] = new Decoration(new Texture(Gdx.files.internal("hand_button.png")), 5, Decoration.DecorationType.LITTER_BOX);
+        decorations[Decoration.DecorationType.SPECIAL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("testcat.jpg")), 5, Decoration.DecorationType.SPECIAL);
     }
 
     public void setDecoration(Decoration decoration){
@@ -101,14 +101,20 @@ public class Room {
         Texture catTexture;
         try {
             catTexture = new Texture(name + ".png");
-        } catch (GdxRuntimeException e){
+        } catch (GdxRuntimeException e) {
             catTexture = new Texture("Paige.png");
         }
-        Rectangle catFloor = new Rectangle(rectangle.x + rectangle.width/3, rectangle.y, rectangle.width*2/3, rectangle.height/2);
 
-        return new Cat(name, catTexture, 0,0, 100, 70, catFloor);
+        return new Cat(name, catTexture, 0,0, 100, 70, this);
     }
 
+    public float getDecoration(Decoration.DecorationType type){
+        return decorations[type.ordinal()].getValue();
+    }
+
+    public Decoration[] getDecorations(){
+        return decorations;
+    }
     public boolean hasUpgrade(Upgrade upgrade){
         return shop.hasUpgrade(upgrade);
     }

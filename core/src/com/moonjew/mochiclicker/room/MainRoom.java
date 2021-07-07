@@ -1,9 +1,11 @@
-package com.moonjew.mochiclicker;
+package com.moonjew.mochiclicker.room;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.room.RoomCarousel;
@@ -22,10 +24,11 @@ public class MainRoom extends Room {
         super();
         this.roomTexture = roomTexture;
         this.cats = new ArrayList<>();
-        this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        Cat bob = new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this.rectangle);
+        this.rectangle = new Rectangle(20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
+        Cat bob = new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this);
         bob.sendToMainRoom();
-        addCat(new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this.rectangle));
+        addCat(new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this));
+        initDecorations();
     }
 
     public void update(float deltaTime) {
