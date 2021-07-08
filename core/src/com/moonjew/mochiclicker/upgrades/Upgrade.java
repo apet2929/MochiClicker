@@ -82,7 +82,7 @@ public class Upgrade {
                 new Upgrade(UpgradeType.SLEEP, 30, "Sleep 3", 15),
                 new Upgrade(UpgradeType.SLEEP, 40, "Sleep 4", 20),
 
-                new Upgrade(UpgradeType.BED, 5, "Get a good nights rest", new Decoration(new Texture(Gdx.files.internal("testcat.jpg")), 20, Decoration.DecorationType.BED))
+                new Upgrade(UpgradeType.BED, 5, "Get a good nights rest", new Decoration(new Texture(Gdx.files.internal("testcat.jpg")), 20, Decoration.DecorationType.BED, 64, 64))
         };
     }
 

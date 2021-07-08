@@ -27,7 +27,6 @@ public class Cat {
     float happiness; //0 - 100, affects how likely the cat is to fall asleep
     public int maxHappiness; //How much happiness it gets from toys
 
-
     boolean sleeping; //Is the cat asleep?
     float tired; //0 - 10, once the cat reaches 10, it falls asleep
     public int maxTired; //How fast the cat wakes up after falling asleep
@@ -40,6 +39,8 @@ public class Cat {
     float hunger; //0 - 100, the cat gets slower until it reaches 100, then it stops moving
     public int maxHunger; //How much hunger it gets from food
 
+    float outsideChanceModifier;
+
     int level; //The number of upgrades purchased, affects how much catnip is acquired per click
 
     //Movement
@@ -48,7 +49,7 @@ public class Cat {
     int speed = 2;
 
     public float outsideTimer; //How long the cat has been outside, -1 if cat is not outside
-    private float timeOutside; //How long the cat will be outside
+    private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
     public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Room room) {
@@ -72,9 +73,11 @@ public class Cat {
         this.maxHunger = 100;
         this.health = 100;
         this.maxHealth = 100;
-        this.timeOutside = 10;
+        this.maxTimeOutside = 10;
         this.outsideTimer = -1;
         usedNames.add(this.name);
+
+        outsideChanceModifier = 0.0f;
         double targetX = Math.random()*room.getRectangle().width + room.getRectangle().x;
         double targetY = Math.random()*room.getRectangle().height + room.getRectangle().y;
         targetPosition = new Vector2((float)targetX, (float)targetY);
@@ -96,9 +99,7 @@ public class Cat {
 
         //movement
         if(!sleeping && !alert) {
-            moveToTarget();
-            position.x += velocity.x * deltaTime * (maxHunger - hunger);
-            position.y += velocity.y * deltaTime * (maxHunger - hunger);
+            doMovement(deltaTime);
         }
 
         //handle state
@@ -106,6 +107,7 @@ public class Cat {
             if (!sleeping && !alert) {
                 tired += deltaTime * ((100-tiredModifier)/100);
                 if (tired >= 50) {
+                    System.out.println("Sleeping");
                     sleep();
                 }
                 happiness -= deltaTime * room.getDecoration(Decoration.DecorationType.PAINTING);
@@ -132,7 +134,7 @@ public class Cat {
             }
         } else if(outsideTimer != -1){
             outsideTimer += deltaTime;
-            if(outsideTimer > timeOutside){
+            if(outsideTimer > maxTimeOutside){
                 //return with stuff
                 outsideTimer = -1;
             }
@@ -223,19 +225,72 @@ public class Cat {
 
     }
 
+    public int getTimeLeftOutside(){
+        return (int) (maxTimeOutside - outsideTimer);
+    }
     public void heal() {
         this.alert = false;
         this.health = 100;
     }
-    public void die() {
 
+    public void doMovement(float deltaTime){
+        moveToTarget();
+        position.x += velocity.x * deltaTime * (maxHunger - hunger);
+        position.y += velocity.y * deltaTime * (maxHunger - hunger);
     }
 
-    public void checkMaxed(){
-        if(this.level == Upgrade.MAX_LEVEL){
-            sendToMainRoom();
+    public boolean updateOutside(float deltaTime){
+        outsideTimer += deltaTime;
+        texture.update(deltaTime);
+        if(outsideTimer >= maxTimeOutside){
+            System.out.println("Cat is returning");
+            //send inside
+            double rand = Math.random();
+            if(rand <= 0.2 - outsideChanceModifier){
+                //bad outcome
+                health -= 20;
+            } else if(rand <= 0.4 - outsideChanceModifier){
+                //do nothing
+            } else if(rand <= 0.6 - outsideChanceModifier){
+                //good outcome, increase random stat by some amount
+                increaseRandomStat(1);
+            } else if(rand <= 0.8 - outsideChanceModifier){
+                //better outcome
+                increaseRandomStat(3);
+            } else {
+                //best outcome
+                increaseRandomStat(5);
+            }
+            return true;
+        }
+        doMovement(deltaTime);
+
+        return false;
+    }
+    public void increaseRandomStat(int value){
+        double stat = Math.random() * 6;
+        if(stat < 1){
+            //increase health
+            maxHealth += value;
+        }
+        else if(stat < 2){
+            //tired
+            tiredModifier += value * 0.2;
+        }
+        else if(stat < 3){
+            maxHunger += value;
+        }
+        else if(stat < 4){
+            maxHappiness += value;
+        }
+        else if(stat < 5){
+            maxTired += value / 2;
+        }
+        else {
+            maxTimeOutside -= value;
         }
     }
+
     public void setHunger(float hunger) {
         this.hunger = hunger;
     }
@@ -289,7 +344,7 @@ public class Cat {
         String[] names = {
                 "Bob", "Joe", "Dog", "Paige",
                 "Sparky", "Marshmallow", "Rigby",
-                "Elwood", "Coco"
+                "Elwood", "Coco", "Tiger"
         };
         //make sure that names don't get reused
         //I actually found a use for do while loops? wtf??

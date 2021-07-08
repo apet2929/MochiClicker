@@ -9,11 +9,14 @@ public class Decoration {
     private final Texture texture;
     private final float value; //What the decoration actually does: increases some value to help the player
     private final DecorationType type;
+    int width, height;
 
-    public Decoration(Texture texture, float value, DecorationType type) {
+    public Decoration(Texture texture, float value, DecorationType type, int width, int height) {
         this.texture = texture;
         this.value = value;
         this.type = type;
+        this.width = width;
+        this.height = height;
     }
 
     public Texture getTexture() {

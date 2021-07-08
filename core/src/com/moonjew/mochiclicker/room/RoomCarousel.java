@@ -12,6 +12,7 @@ public class RoomCarousel {
     public static final Texture[] roomTextures = genRoomTextures();
 
     private MainRoom mainRoom;
+    private OutsideRoom outsideRoom;
     public ArrayList<Room> rooms;
     private int currentRoom;
 
@@ -19,19 +20,23 @@ public class RoomCarousel {
         rooms = new ArrayList<>();
         currentRoom = 0;
         this.mainRoom = new MainRoom(0);
+        this.outsideRoom = new OutsideRoom(1);
     }
 
     public void update(final float deltaTime) {
         mainRoom.update(deltaTime);
+        outsideRoom.update(deltaTime);
         for(Room room : rooms) {
             room.update(deltaTime);
         }
     }
 
     public Cat isCatDying() { //returns first room with a dying cat
-        for(Room room : rooms){
-            if(room.getCat().alert){
-                return room.getCat();
+        for(Room room : rooms) {
+            if (room.getCat() != null) {
+                if (room.getCat().alert) {
+                    return room.getCat();
+                }
             }
         }
         return null;
@@ -41,6 +46,10 @@ public class RoomCarousel {
         mainRoom.addCat(getCurrentRoom().getCat());
         getCurrentRoom().getCat().sendToMainRoom();
         getCurrentRoom().killCat();
+    }
+    public void sendCatOutside(){
+        outsideRoom.sendCatOutside(getCurrentRoom());
+        getCurrentRoom().getCat().sendOutside();
     }
 
     public void renderBackgrounds(SpriteBatch sb, Camera cam, int transitioning){
@@ -62,7 +71,13 @@ public class RoomCarousel {
         }
     }
     public void renderCat(SpriteBatch sb, Camera cam){
-        getCurrentRoom().cat.render(sb, cam);
+        if(getCurrentRoom().cat != null) {
+            getCurrentRoom().cat.render(sb, cam);
+        }
+    }
+
+    public OutsideRoom getOutsideRoom() {
+        return outsideRoom;
     }
 
     public Room getCurrentRoom(){
@@ -100,11 +115,6 @@ public class RoomCarousel {
         }
     }
 
-    public void addCurrentCatToMainRoom() {
-        mainRoom.addCat(getCurrentRoom().getCat());
-        getCurrentRoom().killCat();
-    }
-
     public void addRoom(Room room){
         rooms.add(room);
     }
@@ -117,7 +127,8 @@ public class RoomCarousel {
 
     private static Texture[] genRoomTextures(){
         return new Texture[]{
-                new Texture("room.png")
+                new Texture("catroom.png"),
+                new Texture("outside.png")
         };
     }
 }

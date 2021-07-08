@@ -42,7 +42,7 @@ public class PlayState extends State {
     Cursor foodBowlCursor;
     Cursor mouseCursor;
 
-    SoundEffect mrow = new SoundEffect("mrow.wav", 1, 5.0f, 0);
+    SoundEffect mrow = new SoundEffect("mrow.wav", 1, 1.0f, 0);
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -110,6 +110,10 @@ public class PlayState extends State {
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
             mrow.play();
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.O)){
+            rooms.sendCatOutside();
+            gsm.push(new OutsideState(gsm, rooms.getOutsideRoom()));
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             Gdx.app.exit();
@@ -220,17 +224,12 @@ public class PlayState extends State {
 
         //BOTTOM LAYER - BACKGROUNDS
 
-        if(rooms.getCurrentRoom().getCat().outsideTimer == -1) { //if cat is not outside
-            rooms.renderBackgrounds(sb, cam, transitioning);
-            rooms.renderCat(sb, cam);
-        } else { //cat is outside
-            rooms.renderCat(sb, cam);
-            rooms.renderBackgrounds(sb, cam, transitioning);
-        }
+        rooms.renderBackgrounds(sb, cam, transitioning);
+
 
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
-
+        rooms.renderCat(sb, cam);
 
         //TOP LAYER - UI
 
