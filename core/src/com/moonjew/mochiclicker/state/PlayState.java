@@ -105,13 +105,13 @@ public class PlayState extends State {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             rooms.getCurrentRoom().getCat().sendOutside();
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
             mrow.play();
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.O)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
             rooms.sendCatOutside();
             gsm.push(new OutsideState(gsm, rooms.getOutsideRoom()));
         }

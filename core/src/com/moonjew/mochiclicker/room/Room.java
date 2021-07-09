@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.entities.CatState;
 import com.moonjew.mochiclicker.state.GameStateManager;
 import com.moonjew.mochiclicker.state.ShopState;
 import com.moonjew.mochiclicker.upgrades.Upgrade;
@@ -53,16 +54,9 @@ public class Room {
     public void update(float deltaTime){
         if(cat != null) {
             if (cat.getHealth() == 0) {
-                cat.alert = true;
+                cat.setState(new CatState(CatState.CatStateType.DYING));
             }
-            float temp = cat.outsideTimer;
-
-            cat.update(deltaTime); //cat update
-
-            if (temp != -1 && cat.outsideTimer == -1) { //cat returned from outside
-                catNip += 100;
-                System.out.println("True");
-            }
+            cat.update(deltaTime);
         }
     }
 

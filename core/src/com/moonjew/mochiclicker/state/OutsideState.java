@@ -19,7 +19,7 @@ public class OutsideState extends State{
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             gsm.pop();
         }
     }

@@ -34,7 +34,7 @@ public class RoomCarousel {
     public Cat isCatDying() { //returns first room with a dying cat
         for(Room room : rooms) {
             if (room.getCat() != null) {
-                if (room.getCat().alert) {
+                if (room.getCat().isDying()) {
                     return room.getCat();
                 }
             }
@@ -72,7 +72,7 @@ public class RoomCarousel {
     }
     public void renderCat(SpriteBatch sb, Camera cam){
         if(getCurrentRoom().cat != null) {
-            getCurrentRoom().cat.render(sb, cam);
+            if(getCurrentRoom().cat.outsideTimer == -1) getCurrentRoom().cat.render(sb, cam);
         }
     }
 
