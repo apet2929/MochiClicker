@@ -48,7 +48,6 @@ public class Cat {
     boolean hitTargetPosition;
     int speed = 2;
 
-    public float outsideTimer; //How long the cat has been outside, -1 if cat is not outside
     private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
@@ -75,7 +74,6 @@ public class Cat {
         this.health = 100;
         this.maxHealth = 100;
         this.maxTimeOutside = 10;
-        this.outsideTimer = -1;
         usedNames.add(this.name);
 
         outsideChanceModifier = 0.0f;
@@ -106,7 +104,6 @@ public class Cat {
             if (!isSleeping() && !isDying() && !isIdle()) {
                 tired += deltaTime * ((100-tiredModifier)/100);
                 if (tired >= maxTired) {
-                    System.out.println("Line 109, tired >= maxTired, Sleeping");
                     sleep();
                 }
                 happiness -= deltaTime * room.getDecoration(Decoration.DecorationType.PAINTING);
@@ -130,16 +127,14 @@ public class Cat {
                 if (!this.state.finished) {
                     this.tired = this.state.maxTime - this.state.timer;
                 } else {
-                    System.out.println("Line 132, " + this.state);
                     this.tired = 0;
                 }
             }
             if(this.health == 0){
-                this.state = new CatState(CatState.CatStateType.DYING);
+                changeState(new CatState(CatState.CatStateType.DYING));
             }
             if(this.state.finished){
-                System.out.println("CatState " + state + " returning to default");
-                this.state = new CatState(CatState.CatStateType.DEFAULT);
+                changeState(new CatState(CatState.CatStateType.DEFAULT));
             }
         }
     }
@@ -156,9 +151,7 @@ public class Cat {
                 this.hitTargetPosition = false;
             } else {
                 if(!isSleeping() && !isIdle()) {
-                    System.out.println("Line 159, !isSleeping() && !isIdle() -> going IDLE " + this.state);
-                    this.targetPosition = new Vector2(-50, -50);
-                    this.state = new CatState(CatState.CatStateType.IDLE, 5);
+                    changeState(new CatState(CatState.CatStateType.IDLE, 5));
                 }
             }
 
@@ -210,8 +203,14 @@ public class Cat {
         return this.state.type == CatState.CatStateType.IDLE;
     }
     public void sleep(){
-        this.state = new CatState(CatState.CatStateType.SLEEPING, maxTired);
+        changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired, room.getDecoration(Decoration.DecorationType.BED)));
         this.tired = maxTired;
+    }
+    public void changeState(CatState state){
+        if(state.type != this.state.type){
+            System.out.println(this.state + " -> " + state);
+            this.state = state;
+        }
     }
     public void increaseHealth(){
         health += 10;
@@ -234,9 +233,6 @@ public class Cat {
     }
     public boolean isDying(){
         return this.state.type == CatState.CatStateType.DYING;
-    }
-    public int getTimeLeftOutside(){
-        return (int) (maxTimeOutside - outsideTimer);
     }
     public void heal() {
         this.state = new CatState(CatState.CatStateType.DEFAULT);
@@ -300,7 +296,6 @@ public class Cat {
             maxTimeOutside -= value;
         }
     }
-
 
     public CatState getState() {
         return state;

@@ -34,7 +34,7 @@ public class UI {
         FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
         FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
         FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
-
+        FONT.draw(sb, "State " + cat.getState().getType(), new Rectangle(50, MochiClicker.HEIGHT - 200, 200, 200), 2, 2);
         //Catnip counter
         FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);
 

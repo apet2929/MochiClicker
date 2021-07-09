@@ -1,10 +1,10 @@
 package com.moonjew.mochiclicker.entities;
 
 public class CatState {
-    float maxTime;
-    float timer;
-    float timeModifier;
-    boolean finished;
+    float maxTime; // How long the state will be active
+    float timer; // How long the state has been active
+    float timeModifier; // How fast time passes
+    boolean finished; // If the state has finished
     CatStateType type;
 
     public enum CatStateType {
@@ -59,13 +59,17 @@ public class CatState {
     }
 
     public boolean update(float deltaTime){
-        timer += deltaTime;
+        timer += deltaTime * timeModifier;
         if(timer > maxTime){
             timer = 0;
             finished = true;
             return true;
         }
         return false;
+    }
+
+    public CatStateType getType() {
+        return type;
     }
 
     @Override
