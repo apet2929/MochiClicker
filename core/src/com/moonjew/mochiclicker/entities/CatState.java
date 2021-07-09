@@ -38,6 +38,10 @@ public class CatState {
         this.finished = false;
     }
 
+    public float getTimeRemaining(){
+        return maxTime - timer;
+    }
+
     public boolean isFinished() {
         return finished;
     }
@@ -64,4 +68,11 @@ public class CatState {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "CatState{" +
+                "finished=" + finished +
+                ", type=" + type +
+                '}';
+    }
 }

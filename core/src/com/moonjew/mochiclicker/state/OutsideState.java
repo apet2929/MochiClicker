@@ -39,7 +39,7 @@ public class OutsideState extends State{
         if(outsideRoom.getCat() == null){
             FONT.drawMiddle(sb, "Cat has returned!", new Rectangle(0,MochiClicker.HEIGHT*0.6f, MochiClicker.WIDTH, 0), 4, 4);
         } else {
-            FONT.drawMiddle(sb, "Time remaining " + outsideRoom.getCat().getTimeLeftOutside(), new Rectangle(0,MochiClicker.HEIGHT*0.6f, MochiClicker.WIDTH/4, 0), 2, 2);
+            FONT.drawMiddle(sb, "Time remaining " + (int) (outsideRoom.getCat().getState().getTimeRemaining()), new Rectangle(0,MochiClicker.HEIGHT*0.6f, MochiClicker.WIDTH/4, 0), 2, 2);
         }
         sb.end();
     }

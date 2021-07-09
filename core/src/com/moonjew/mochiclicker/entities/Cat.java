@@ -96,10 +96,6 @@ public class Cat {
         //update animation
         if(!isSleeping()) texture.update(deltaTime);
 
-
-
-        this.state.update(deltaTime);
-
         //movement
         if(!isSleeping() && !isDying() && !isIdle()) {
             doMovement(deltaTime);
@@ -107,10 +103,10 @@ public class Cat {
 
         //handle state
         if(!isOutside() && !inMainRoom) {
-            if (!isSleeping() && !isDying()) {
+            if (!isSleeping() && !isDying() && !isIdle()) {
                 tired += deltaTime * ((100-tiredModifier)/100);
                 if (tired >= maxTired) {
-                    System.out.println("Sleeping");
+                    System.out.println("Line 109, tired >= maxTired, Sleeping");
                     sleep();
                 }
                 happiness -= deltaTime * room.getDecoration(Decoration.DecorationType.PAINTING);
@@ -128,16 +124,21 @@ public class Cat {
             health = clampFloat(health, 0, maxHealth);
             hunger = clampFloat(hunger, 0, maxHunger);
 
-            if (isSleeping() && !this.state.finished) {
-                this.tired = this.state.maxTime - this.state.timer;
-
-                System.out.println(this.state.maxTime + " " + this.state.timer);
+            //State stuff
+            this.state.update(deltaTime);
+            if(isSleeping()) {
+                if (!this.state.finished) {
+                    this.tired = this.state.maxTime - this.state.timer;
+                } else {
+                    System.out.println("Line 132, " + this.state);
+                    this.tired = 0;
+                }
             }
             if(this.health == 0){
                 this.state = new CatState(CatState.CatStateType.DYING);
             }
             if(this.state.finished){
-                System.out.println("CatState returning to default");
+                System.out.println("CatState " + state + " returning to default");
                 this.state = new CatState(CatState.CatStateType.DEFAULT);
             }
         }
@@ -150,12 +151,15 @@ public class Cat {
         if(Math.abs(xDif) < 10 && Math.abs(yDif) < 10 || hitTargetPosition) {
             hitTargetPosition = true;
             //we hit the target
-            if(checkMove()){
+            if(checkMove() || (isIdle() && state.finished)){
                 genTargetPosition();
                 this.hitTargetPosition = false;
             } else {
-                this.targetPosition = new Vector2(-50,-50);
-                this.state = new CatState(CatState.CatStateType.IDLE, 5);
+                if(!isSleeping() && !isIdle()) {
+                    System.out.println("Line 159, !isSleeping() && !isIdle() -> going IDLE " + this.state);
+                    this.targetPosition = new Vector2(-50, -50);
+                    this.state = new CatState(CatState.CatStateType.IDLE, 5);
+                }
             }
 
             increaseHealth();
@@ -188,8 +192,8 @@ public class Cat {
         this.happiness = 100;
         this.tired = 0;
     }
-    private boolean checkMove(){
-        return happiness >= Math.random() * 100;
+    private boolean checkMove() {
+        return happiness >= Math.random() * 75;
     }
     private void genTargetPosition() {
         double targetX = (Math.random() * floorBounds.width) + floorBounds.x;
@@ -200,13 +204,14 @@ public class Cat {
         return (int) (Math.random() * 1000) < Math.floor(level);
     }
     public void sendOutside(){
-        if(this.outsideTimer == -1) this.outsideTimer = 0.0f;
+        this.state = new CatState(CatState.CatStateType.OUTSIDE, 20);
     }
     public boolean isIdle(){
         return this.state.type == CatState.CatStateType.IDLE;
     }
     public void sleep(){
-        this.state = new CatState(CatState.CatStateType.SLEEPING, maxTired, tiredModifier);
+        this.state = new CatState(CatState.CatStateType.SLEEPING, maxTired);
+        this.tired = maxTired;
     }
     public void increaseHealth(){
         health += 10;
@@ -295,6 +300,7 @@ public class Cat {
             maxTimeOutside -= value;
         }
     }
+
 
     public CatState getState() {
         return state;

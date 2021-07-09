@@ -292,5 +292,8 @@ public class PlayState extends State {
     public void dispose() {
         rooms.dispose();
         foodBowlCursor.dispose();
+        handCursor.dispose();
+        dustbinCursor.dispose();
+        mouseCursor.dispose();
     }
 }

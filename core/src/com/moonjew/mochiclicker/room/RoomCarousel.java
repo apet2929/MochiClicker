@@ -70,9 +70,10 @@ public class RoomCarousel {
                     cam.position.y + leftRectangle.y, leftRectangle.width, leftRectangle.height);
         }
     }
+
     public void renderCat(SpriteBatch sb, Camera cam){
         if(getCurrentRoom().cat != null) {
-            if(getCurrentRoom().cat.outsideTimer == -1) getCurrentRoom().cat.render(sb, cam);
+            if(!getCurrentRoom().cat.isOutside()) getCurrentRoom().cat.render(sb, cam);
         }
     }
 
