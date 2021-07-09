@@ -72,7 +72,7 @@ public class Room {
 
     void initDecorations(){
         decorations = new Decoration[Decoration.DecorationType.values().length];
-        decorations[Decoration.DecorationType.BED.ordinal()] = new Decoration(new Texture(Gdx.files.internal("pumpkin_bed.png")), 5, Decoration.DecorationType.BED, 96, 96);
+        decorations[Decoration.DecorationType.BED.ordinal()] = new Decoration(new Texture(Gdx.files.internal("pumpkin_bed.png")), 0.5f, Decoration.DecorationType.BED, 96, 96);
         decorations[Decoration.DecorationType.TREE.ordinal()] = new Decoration(new Texture(Gdx.files.internal("cat-tree.png")), 5, Decoration.DecorationType.TREE, 96, 192);
         decorations[Decoration.DecorationType.WINDOW.ordinal()] = new Decoration(new Texture(Gdx.files.internal("window.png")), 5, Decoration.DecorationType.WINDOW, 128, 128);
         decorations[Decoration.DecorationType.CARPET.ordinal()] = new Decoration(new Texture(Gdx.files.internal("carpet.png")), 5, Decoration.DecorationType.CARPET, 384, 384);

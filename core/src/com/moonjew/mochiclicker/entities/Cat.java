@@ -17,6 +17,7 @@ import java.util.List;
 public class Cat {
     private static final List<String> usedNames = new ArrayList<>();
     Animation texture;
+    Animation sleepingTexture;
     Texture sourceTexture;
     Rectangle position;
     Rectangle floorBounds;
@@ -56,6 +57,7 @@ public class Cat {
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
+        this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 86, 27), 2, 1.0f);
         this.floorBounds = new Rectangle(room.getRectangle().x + room.getRectangle().width/3, room.getRectangle().y, room.getRectangle().width*2/3, room.getRectangle().height/2);
         this.position = new Rectangle(x + floorBounds.x, y + floorBounds.y, -width, height);
         this.velocity = new Vector2();
@@ -67,7 +69,7 @@ public class Cat {
         this.maxHappiness = 100;
         this.tired = 0;
 
-        this.maxTired = 10;
+        this.maxTired = 5;
         this.tiredModifier = 1;
         this.hunger = 0;
         this.maxHunger = 100;
@@ -81,18 +83,23 @@ public class Cat {
         double targetY = Math.random()*room.getRectangle().height + room.getRectangle().y;
         targetPosition = new Vector2((float)targetX, (float)targetY);
         genTargetPosition();
-
-
     }
 
     public void render(SpriteBatch spriteBatch, Camera cam){
-        spriteBatch.draw(getTexture(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
+        if(!isSleeping()) {
+            spriteBatch.draw(getTexture(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
+        } else {
+            spriteBatch.draw(sleepingTexture.getFrame(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
+        }
         spriteBatch.draw(getTexture(), cam.position.x + targetPosition.x, cam.position.y + targetPosition.y, 32, 32);
     }
 
     public void update(float deltaTime){
         //update animation
         if(!isSleeping()) texture.update(deltaTime);
+        else {
+            sleepingTexture.update(deltaTime);
+        }
 
         //movement
         if(!isSleeping() && !isDying() && !isIdle()) {
