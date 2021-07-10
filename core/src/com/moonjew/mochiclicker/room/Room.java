@@ -101,7 +101,14 @@ public class Room {
             catTexture = new Texture("Paige.png");
         }
 
-        return new Cat(name, catTexture, 0,0, 160, 84, this);
+        Texture sleepTexture;
+        try {
+            sleepTexture = new Texture(name + "_sleep.png");
+        } catch (GdxRuntimeException e){
+            sleepTexture = new Texture("paige_sleep.png");
+        }
+
+        return new Cat(name, catTexture, sleepTexture, 0,0, 160, 84, this);
     }
 
     public float getDecoration(Decoration.DecorationType type){

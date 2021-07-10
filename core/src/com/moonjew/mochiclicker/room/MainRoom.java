@@ -25,9 +25,9 @@ public class MainRoom extends Room {
         this.roomTexture = roomTexture;
         this.cats = new ArrayList<>();
         this.rectangle = new Rectangle(20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        Cat bob = new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this);
+        Cat bob = new Cat("Bob", new Texture("coco.png"), new Texture("paige_sleep.png"),0, 0, 100, 70, this);
         bob.sendToMainRoom();
-        addCat(new Cat("Bob", new Texture("coco.png"), 0, 0, 100, 70, this));
+        addCat(new Cat("Bob", new Texture("coco.png"), new Texture("paige_sleep.png"),0, 0, 100, 70, this));
         initDecorations();
     }
 

@@ -19,6 +19,7 @@ public class Cat {
     Animation texture;
     Animation sleepingTexture;
     Texture sourceTexture;
+    Texture sleepTexture;
     Rectangle position;
     Rectangle floorBounds;
     Vector2 velocity; //temp variable
@@ -52,12 +53,15 @@ public class Cat {
     private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
-    public Cat(String name, Texture sourceTexture, int x, int y, int width, int height, Room room) {
+    public Cat(String name, Texture sourceTexture, Texture sleepTexture, int x, int y, int width, int height, Room room) {
         this.name = name;
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
-        this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 160, 42), 2, 1.0f);
+        this.sleepTexture = sleepTexture;
+        TextureRegion src2 = new TextureRegion(sleepTexture, 160, 42);
+        this.sleepingTexture = new Animation(src2, 2, 1.0f);
+        //this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 160, 42), 2, 1.0f);
         this.floorBounds = new Rectangle(room.getRectangle().x + room.getRectangle().width/3, room.getRectangle().y, room.getRectangle().width*2/3, room.getRectangle().height/2);
         this.position = new Rectangle(x + floorBounds.x, y + floorBounds.y, -width, height);
         this.velocity = new Vector2();
