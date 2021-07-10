@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.io.button.Button;
 
 import java.util.ArrayList;
 
@@ -29,12 +30,17 @@ public class UI {
     }
 
     public void render(Cat cat, SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
-        //Cat status
-        FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
-        FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
-        FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
-        FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
-        FONT.draw(sb, "State " + cat.getState().getType(), new Rectangle(50, MochiClicker.HEIGHT - 200, 200, 200), 2, 2);
+        if(cat != null) {
+            //Cat status
+            FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
+            FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
+            FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
+            FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
+            FONT.draw(sb, "State " + cat.getState().getType(), new Rectangle(50, MochiClicker.HEIGHT - 200, 200, 200), 2, 2);
+        } else {
+            FONT.drawMiddle(sb, "You have no cat. Buy one?",
+                    new Rectangle(0,0,MochiClicker.WIDTH, MochiClicker.HEIGHT).setCenter(MochiClicker.WIDTH/2.0f, MochiClicker.HEIGHT/1.4f), 4, 4);
+        }
         //Catnip counter
         FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);
 
@@ -42,7 +48,7 @@ public class UI {
 //            sr.setColor(Color.BLACK);
 //            sr.rect(MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT); //To be replaced with menu sprite
             sb.draw(menuTexture, MochiClicker.WIDTH - 100, 0, 100, MochiClicker.HEIGHT);
-            FONT.drawMiddle(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT - 50, 100, 0), 2, 2);
+            if(cat != null) FONT.drawMiddle(sb, cat.getName(), new Rectangle(MochiClicker.WIDTH - 100, MochiClicker.HEIGHT - 50, 100, 0), 2, 2);
         }
 
         //Buttons
@@ -57,7 +63,6 @@ public class UI {
         if (dyingCat != null) {
             FONT.drawMiddle(sb, dyingCat.getName() + " is dying! Heal?", new Rectangle(60, -200, MochiClicker.WIDTH - 60, MochiClicker.HEIGHT), 6, 6);
         }
-
     }
 
     private String getUIText(int transitioning, String valName, float val){

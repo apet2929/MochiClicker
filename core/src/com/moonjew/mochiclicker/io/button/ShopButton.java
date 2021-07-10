@@ -1,10 +1,10 @@
-package com.moonjew.mochiclicker.io;
+package com.moonjew.mochiclicker.io.button;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.state.GameStateManager;
 
-public class ShopButton extends MenuButton{
+public class ShopButton extends ConditionalButton{
     private Room room;
     private GameStateManager gsm;
 

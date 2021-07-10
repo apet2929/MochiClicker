@@ -26,20 +26,10 @@ public class Room {
     ShopState shop;
     Decoration[] decorations;
 
-    public static final Vector2[] decorationPositions = {
-            new Vector2(MochiClicker.WIDTH*0.77f, 12), // Bed
-            new Vector2(MochiClicker.WIDTH/5, MochiClicker.HEIGHT/2.75f), // Tree
-            new Vector2(MochiClicker.WIDTH/3.7f, MochiClicker.HEIGHT*0.62f), // Window
-            new Vector2(MochiClicker.WIDTH/2 - 192, MochiClicker.HEIGHT/2 - 320), // Carpet
-            new Vector2(MochiClicker.WIDTH/24, MochiClicker.HEIGHT/2), // Painting
-            new Vector2(MochiClicker.WIDTH*0.01f, MochiClicker.HEIGHT*0.05f), // Food/Water Bowl
-            new Vector2(MochiClicker.WIDTH*0.6f, MochiClicker.HEIGHT/2.6f), // Litter Box
-            new Vector2(MochiClicker.WIDTH/2-120, MochiClicker.HEIGHT/3) // Special
-    };
-
     public Room(GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
-        this.cat = genCat();
+//        this.cat = genCat();
+        this.cat = null;
         this.shop = new ShopState(gsm, this);
         this.roomTexture = 0;
         initDecorations();
@@ -59,6 +49,19 @@ public class Room {
             cat.update(deltaTime);
         }
     }
+
+//    Decorations
+
+    public static final Vector2[] decorationPositions = {
+            new Vector2(MochiClicker.WIDTH*0.77f, 12), // Bed
+            new Vector2(MochiClicker.WIDTH/5, MochiClicker.HEIGHT/2.75f), // Tree
+            new Vector2(MochiClicker.WIDTH/3.7f, MochiClicker.HEIGHT*0.62f), // Window
+            new Vector2(MochiClicker.WIDTH/2 - 192, MochiClicker.HEIGHT/2 - 320), // Carpet
+            new Vector2(MochiClicker.WIDTH/24, MochiClicker.HEIGHT/2), // Painting
+            new Vector2(MochiClicker.WIDTH*0.01f, MochiClicker.HEIGHT*0.05f), // Food/Water Bowl
+            new Vector2(MochiClicker.WIDTH*0.6f, MochiClicker.HEIGHT/2.6f), // Litter Box
+            new Vector2(MochiClicker.WIDTH/2-120, MochiClicker.HEIGHT/3) // Special
+    };
 
     public void renderDecorations(SpriteBatch sb, Camera cam){
         for(Decoration decoration : decorations){
@@ -81,14 +84,16 @@ public class Room {
         decorations[Decoration.DecorationType.LITTER_BOX.ordinal()] = new Decoration(new Texture(Gdx.files.internal("litterbox.png")), 5, Decoration.DecorationType.LITTER_BOX, 96, 96);
         decorations[Decoration.DecorationType.SPECIAL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("mouse_toy.png")), 5, Decoration.DecorationType.SPECIAL, 96, 96);
     }
-
     public void setDecoration(Decoration decoration){
         decorations[decoration.getType().ordinal()] = decoration;
     }
+    public float getDecorationValue(Decoration.DecorationType type){
+        return decorations[type.ordinal()].getValue();
+    }
 
+//    Cats
     public void killCat(){
         this.cat = null;
-        this.cat = genCat();
         this.shop.restart();
     }
 
@@ -107,12 +112,8 @@ public class Room {
         } catch (GdxRuntimeException e){
             sleepTexture = new Texture("paige_sleep.png");
         }
-
-        return new Cat(name, catTexture, sleepTexture, 0,0, 160, 84, this);
-    }
-
-    public float getDecoration(Decoration.DecorationType type){
-        return decorations[type.ordinal()].getValue();
+        this.cat = new Cat(name, catTexture, sleepTexture, 0,0, 160, 84, this);
+        return this.cat;
     }
 
     public Decoration[] getDecorations(){

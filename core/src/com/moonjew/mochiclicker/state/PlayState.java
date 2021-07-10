@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
 import com.moonjew.mochiclicker.io.*;
-import com.moonjew.mochiclicker.io.Button;
+import com.moonjew.mochiclicker.io.button.*;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.room.RoomCarousel;
 
@@ -24,10 +24,11 @@ public class PlayState extends State {
     int currentRoom;
     ShopButton shopButton;
     SidebarButton sidebarButton;
-    HealButton healYesButton;
-    HealButton healNoButton;
-    MenuButton sendCatToMainRoomButton;
-    MenuButton[] menuButtons;
+
+    ConditionalButton[] menuButtons;
+    ConditionalButton healYesButton, healNoButton;
+    ConditionalButton sendCatToMainRoomButton;
+    ConditionalButton buyCatYesButton, buyCatNoButton;
 
     Button foodBowlButton;
     Button handButton;
@@ -52,9 +53,11 @@ public class PlayState extends State {
 
         currentRoom = 0;
         rooms = new RoomCarousel();
+        Room firstRoom = new Room(gsm);
+        firstRoom.genCat();
+        rooms.addRoom(firstRoom);
         rooms.addRoom(new Room(gsm));
-        rooms.addRoom(new Room(gsm));
-        rooms.addRoom(new Room(gsm));
+
         transitioning = 0;
         ui.setCat(rooms.getCurrentRoom().getCat());
 
@@ -62,17 +65,18 @@ public class PlayState extends State {
 
 //        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH * 0.84f, MochiClicker.HEIGHT * .79f, 100, 50), gsm, rooms.getCurrentRoom());
         shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 150, 100, 50), gsm, rooms.getCurrentRoom());
-        sendCatToMainRoomButton = new MenuButton("Send Cat To Main Room", new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 300, 100, 50));
-        menuButtons = new MenuButton[]{shopButton, sendCatToMainRoomButton};
+        sendCatToMainRoomButton = new ConditionalButton("Send Cat To Main Room", new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 300, 100, 50));
+        menuButtons = new ConditionalButton[]{shopButton, sendCatToMainRoomButton};
 
         sidebarButton = new SidebarButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
         foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
         handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
         mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
-        healYesButton = new HealButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
-        healNoButton = new HealButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
+        healYesButton = new ConditionalButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
+        healNoButton = new ConditionalButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
+        buyCatYesButton = new ConditionalButton("Yes 50 Catnip", new Rectangle(MochiClicker.WIDTH/3.0f + 100, MochiClicker.HEIGHT/2.5f, 200, 50));
 
-        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton, sendCatToMainRoomButton}); //adding buttons to the UI
+        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -123,22 +127,28 @@ public class PlayState extends State {
         if(Gdx.input.justTouched()) {
             float x = Gdx.input.getX();
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
-            if(rooms.getCurrentRoom().getCat().touch(x,y) && !rooms.getCurrentRoom().getCat().isSleeping()){
-                // hit cat
-                if(currentTool.equals( NO_TOOL)) {
-                    System.out.println("True");
-                    catNip+= rooms.getCurrentRoom().getCat().getLevel();
+            if(rooms.getCurrentRoom().getCat() != null) {
+                if (rooms.getCurrentRoom().getCat().touch(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()) {
+                    // hit cat
+                    if (currentTool.equals(NO_TOOL)) {
+                        System.out.println("True");
+                        catNip += rooms.getCurrentRoom().getCat().getLevel();
+                    } else if (currentTool.equals(FOOD_BOWL_TOOL)) {
+                        rooms.getCurrentRoom().getCat().eat();
+                    } else if (currentTool.equals(HAND_TOOL)) {
+                        rooms.getCurrentRoom().getCat().pet();
+                    } else if (currentTool.equals(MOUSE_TOY_TOOL)) {
+                        System.out.println("true");
+                        rooms.getCurrentRoom().getCat().pet();
+                        rooms.getCurrentRoom().getCat().pet();
+                    }
                 }
-                else if (currentTool.equals( FOOD_BOWL_TOOL)){
-                    rooms.getCurrentRoom().getCat().eat();
-                }
-                else if(currentTool.equals( HAND_TOOL)){
-                    rooms.getCurrentRoom().getCat().pet();
-                }
-                else if(currentTool.equals( MOUSE_TOY_TOOL)){
-                    System.out.println("true");
-                    rooms.getCurrentRoom().getCat().pet();
-                    rooms.getCurrentRoom().getCat().pet();
+            } else {
+                if (buyCatYesButton.getBounds().contains(x, y)){
+                    if(catNip >= 50) {
+                        catNip -= 50;
+                        rooms.getCurrentRoom().genCat();
+                    }
                 }
             }
             if(sidebarButton.getBounds().contains(x,y)){
@@ -189,7 +199,11 @@ public class PlayState extends State {
         handleInput();
         rooms.update(deltaTime);
         ui.dyingCat = rooms.isCatDying();
-        setAlert(rooms.getCurrentRoom().getCat().equals(ui.dyingCat)); //in the same room as the dying cat
+        if(rooms.getCurrentRoom().getCat() != null){
+            setAlert(rooms.getCurrentRoom().getCat().equals(ui.dyingCat)); //in the same room as the dying cat
+        }
+
+        buyCatYesButton.willRender = rooms.getCurrentRoom().getCat() == null;
 
         if(transitioning == 1) {
             cam.position.x -= 1000 * deltaTime;
@@ -276,8 +290,8 @@ public class PlayState extends State {
             cam.position.x = 0;
             sidebarButton.getBounds().x = MochiClicker.WIDTH - 50;
         }
-        for (MenuButton menuButton : menuButtons) {
-            menuButton.setMenu(menu);
+        for (ConditionalButton menuButton : menuButtons) {
+            menuButton.willRender = menu;
         }
         ui.menu = menu;
     }

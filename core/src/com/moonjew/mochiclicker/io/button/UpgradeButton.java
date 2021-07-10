@@ -1,13 +1,14 @@
-package com.moonjew.mochiclicker.io;
+package com.moonjew.mochiclicker.io.button;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.moonjew.mochiclicker.io.button.Button;
 import com.moonjew.mochiclicker.upgrades.Upgrade;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
-public class UpgradeButton extends Button{
+public class UpgradeButton extends Button {
     Upgrade upgrade;
     public UpgradeButton(Rectangle bounds,  Upgrade upgrade) {
         super((String) null, bounds);

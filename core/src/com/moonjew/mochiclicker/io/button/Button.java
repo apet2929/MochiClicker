@@ -1,4 +1,4 @@
-package com.moonjew.mochiclicker.io;
+package com.moonjew.mochiclicker.io.button;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

@@ -1,7 +1,7 @@
 package com.moonjew.mochiclicker.upgrades;
 
 import com.moonjew.mochiclicker.entities.Cat;
-import com.moonjew.mochiclicker.io.UpgradeButton;
+import com.moonjew.mochiclicker.io.button.UpgradeButton;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.state.PlayState;
 

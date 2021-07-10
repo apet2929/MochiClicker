@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.moonjew.mochiclicker.room.Decoration;
 import com.moonjew.mochiclicker.room.Room;
-import com.moonjew.mochiclicker.upgrades.Upgrade;
 import com.moonjew.mochiclicker.io.Animation;
 
 import java.util.ArrayList;
@@ -117,14 +116,14 @@ public class Cat {
                 if (tired >= maxTired) {
                     sleep();
                 }
-                happiness -= deltaTime * room.getDecoration(Decoration.DecorationType.PAINTING);
-                hunger += deltaTime * room.getDecoration(Decoration.DecorationType.FOOD_WATER_BOWL);
+                happiness -= deltaTime * room.getDecorationValue(Decoration.DecorationType.PAINTING);
+                hunger += deltaTime * room.getDecorationValue(Decoration.DecorationType.FOOD_WATER_BOWL);
 
                 if (hunger >= maxHunger * 0.25f || happiness <= maxHappiness * 0.25f) {
-                    health -= deltaTime * 0.1 * ((100-room.getDecoration(Decoration.DecorationType.LITTER_BOX))/100);
+                    health -= deltaTime * 0.1 * ((100-room.getDecorationValue(Decoration.DecorationType.LITTER_BOX))/100);
                 }
                 if (hunger >= 100 || happiness <= 0) {
-                    health -= deltaTime * 0.9 * ((100-room.getDecoration(Decoration.DecorationType.LITTER_BOX))/100);
+                    health -= deltaTime * 0.9 * ((100-room.getDecorationValue(Decoration.DecorationType.LITTER_BOX))/100);
                 }
             }
 
@@ -214,7 +213,7 @@ public class Cat {
         return this.state.type == CatState.CatStateType.IDLE;
     }
     public void sleep(){
-        changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired, room.getDecoration(Decoration.DecorationType.BED)));
+        changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired, room.getDecorationValue(Decoration.DecorationType.BED)));
         this.tired = maxTired;
     }
     public void changeState(CatState state){
