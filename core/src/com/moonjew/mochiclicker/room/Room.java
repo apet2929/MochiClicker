@@ -27,13 +27,13 @@ public class Room {
     Decoration[] decorations;
 
     public static final Vector2[] decorationPositions = {
-            new Vector2(MochiClicker.WIDTH*0.8f, 10), // Bed
-            new Vector2(MochiClicker.WIDTH/5, MochiClicker.HEIGHT/2.5f), // Tree
-            new Vector2(MochiClicker.WIDTH/4, MochiClicker.HEIGHT*0.6f), // Window
-            new Vector2(MochiClicker.WIDTH/2 - 192, MochiClicker.HEIGHT/2 - 384), // Carpet
+            new Vector2(MochiClicker.WIDTH*0.77f, 12), // Bed
+            new Vector2(MochiClicker.WIDTH/5, MochiClicker.HEIGHT/2.75f), // Tree
+            new Vector2(MochiClicker.WIDTH/3.7f, MochiClicker.HEIGHT*0.62f), // Window
+            new Vector2(MochiClicker.WIDTH/2 - 192, MochiClicker.HEIGHT/2 - 320), // Carpet
             new Vector2(MochiClicker.WIDTH/24, MochiClicker.HEIGHT/2), // Painting
             new Vector2(MochiClicker.WIDTH*0.01f, MochiClicker.HEIGHT*0.05f), // Food/Water Bowl
-            new Vector2(MochiClicker.WIDTH*0.65f, MochiClicker.HEIGHT/2.5f), // Litter Box
+            new Vector2(MochiClicker.WIDTH*0.6f, MochiClicker.HEIGHT/2.6f), // Litter Box
             new Vector2(MochiClicker.WIDTH/2-120, MochiClicker.HEIGHT/3) // Special
     };
 
@@ -101,7 +101,7 @@ public class Room {
             catTexture = new Texture("Paige.png");
         }
 
-        return new Cat(name, catTexture, 0,0, 100, 70, this);
+        return new Cat(name, catTexture, 0,0, 160, 84, this);
     }
 
     public float getDecoration(Decoration.DecorationType type){

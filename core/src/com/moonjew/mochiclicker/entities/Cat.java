@@ -57,7 +57,7 @@ public class Cat {
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
         this.texture = new Animation(src, 5, 0.6f);
-        this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 86, 27), 2, 1.0f);
+        this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 160, 42), 2, 1.0f);
         this.floorBounds = new Rectangle(room.getRectangle().x + room.getRectangle().width/3, room.getRectangle().y, room.getRectangle().width*2/3, room.getRectangle().height/2);
         this.position = new Rectangle(x + floorBounds.x, y + floorBounds.y, -width, height);
         this.velocity = new Vector2();
