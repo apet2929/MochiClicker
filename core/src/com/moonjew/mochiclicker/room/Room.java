@@ -98,7 +98,8 @@ public class Room {
     }
 
     public Cat genCat(){
-        String name = Cat.randomName();
+        String name = "Coco";
+        //String name = Cat.randomName();
         Texture catTexture;
         try {
             catTexture = new Texture(name + ".png");
