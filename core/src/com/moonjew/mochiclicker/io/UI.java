@@ -38,8 +38,8 @@ public class UI {
             FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
             FONT.draw(sb, "State " + cat.getState().getType(), new Rectangle(50, MochiClicker.HEIGHT - 200, 200, 200), 2, 2);
         } else {
-            FONT.drawMiddle(sb, "You have no cat. Buy one?",
-                    new Rectangle(0,0,MochiClicker.WIDTH, MochiClicker.HEIGHT).setCenter(MochiClicker.WIDTH/2.0f, MochiClicker.HEIGHT/1.4f), 4, 4);
+            FONT.drawMiddle(sb, "You have no cat.   Buy one? 50 Catnip",
+                    new Rectangle(0,0,MochiClicker.WIDTH*0.8f, MochiClicker.HEIGHT).setCenter(MochiClicker.WIDTH/2.0f, MochiClicker.HEIGHT/1.4f), 4, 4);
         }
         //Catnip counter
         FONT.draw(sb, "Catnip " + catNip, new Rectangle(50, MochiClicker.HEIGHT - 50, 200, 200), 2, 2);

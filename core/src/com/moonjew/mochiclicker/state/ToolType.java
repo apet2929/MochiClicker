@@ -1,4 +1,4 @@
-package com.moonjew.mochiclicker;
+package com.moonjew.mochiclicker.state;
 
 public enum ToolType {
     NO_TOOL,

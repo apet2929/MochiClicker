@@ -15,7 +15,7 @@ import com.moonjew.mochiclicker.io.button.*;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.room.RoomCarousel;
 
-import static com.moonjew.mochiclicker.ToolType.*;
+import static com.moonjew.mochiclicker.state.ToolType.*;
 
 public class PlayState extends State {
     public static int catNip;
@@ -74,7 +74,7 @@ public class PlayState extends State {
         mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
         healYesButton = new ConditionalButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
         healNoButton = new ConditionalButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
-        buyCatYesButton = new ConditionalButton("Yes 50 Catnip", new Rectangle(MochiClicker.WIDTH/3.0f + 100, MochiClicker.HEIGHT/2.5f, 200, 50));
+        buyCatYesButton = new ConditionalButton(new Texture("yes_button.png"), new Rectangle(MochiClicker.WIDTH/3.0f + 100, MochiClicker.HEIGHT/2.5f, 200, 50));
 
         ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton}); //adding buttons to the UI
 
@@ -122,7 +122,6 @@ public class PlayState extends State {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             Gdx.app.exit();
         }
-
 
         if(Gdx.input.justTouched()) {
             float x = Gdx.input.getX();

@@ -98,8 +98,8 @@ public class Room {
     }
 
     public Cat genCat(){
-        String name = "Coco";
-        //String name = Cat.randomName();
+//        String name = "Coco";
+        String name = Cat.randomName();
         Texture catTexture;
         try {
             catTexture = new Texture(name + ".png");
@@ -111,16 +111,15 @@ public class Room {
         try {
             sleepTexture = new Texture(name + "_sleep.png");
         } catch (GdxRuntimeException e){
-            sleepTexture = new Texture("paige_sleep.png");
+            sleepTexture = new Texture("Paige_sleep.png");
         }
 
         Texture idleTexture;
         try {
             idleTexture = new Texture(name + "_idle.png");
         } catch(GdxRuntimeException e) {
-            idleTexture = new Texture("paige_idle.png");
+            idleTexture = new Texture("Paige_idle.png");
         }
-
 
         this.cat = new Cat(name, catTexture, sleepTexture, idleTexture, 0,0, 160, 84, this);
         return this.cat;
