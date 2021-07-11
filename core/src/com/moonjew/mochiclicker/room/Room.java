@@ -112,7 +112,16 @@ public class Room {
         } catch (GdxRuntimeException e){
             sleepTexture = new Texture("paige_sleep.png");
         }
-        this.cat = new Cat(name, catTexture, sleepTexture, 0,0, 160, 84, this);
+
+        Texture idleTexture;
+        try {
+            idleTexture = new Texture(name + "_idle.png");
+        } catch(GdxRuntimeException e) {
+            idleTexture = new Texture("paige_idle.png");
+        }
+
+
+        this.cat = new Cat(name, catTexture, sleepTexture, idleTexture, 0,0, 160, 84, this);
         return this.cat;
     }
 

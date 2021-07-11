@@ -17,8 +17,10 @@ public class Cat {
     private static final List<String> usedNames = new ArrayList<>();
     Animation texture;
     Animation sleepingTexture;
+    Animation idlingTexture;
     Texture sourceTexture;
     Texture sleepTexture;
+    Texture idleTexture;
     Rectangle position;
     Rectangle floorBounds;
     Vector2 velocity; //temp variable
@@ -52,7 +54,7 @@ public class Cat {
     private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
-    public Cat(String name, Texture sourceTexture, Texture sleepTexture, int x, int y, int width, int height, Room room) {
+    public Cat(String name, Texture sourceTexture, Texture sleepTexture, Texture idleTexture, int x, int y, int width, int height, Room room) {
         this.name = name;
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
@@ -60,6 +62,9 @@ public class Cat {
         this.sleepTexture = sleepTexture;
         TextureRegion src2 = new TextureRegion(sleepTexture, 160, 42);
         this.sleepingTexture = new Animation(src2, 2, 1.0f);
+        this.idleTexture = idleTexture;
+        TextureRegion src3 = new TextureRegion(idleTexture, 770, 60);
+        this.idlingTexture = new Animation(src3, 14, 1.5f);
         //this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 160, 42), 2, 1.0f);
         this.floorBounds = new Rectangle(room.getRectangle().x + room.getRectangle().width/3, room.getRectangle().y, room.getRectangle().width*2/3, room.getRectangle().height/2);
         this.position = new Rectangle(x + floorBounds.x, y + floorBounds.y, -width, height);
@@ -89,19 +94,27 @@ public class Cat {
     }
 
     public void render(SpriteBatch spriteBatch, Camera cam){
-        if(!isSleeping()) {
+        if(state.type == CatState.CatStateType.DEFAULT) {
             spriteBatch.draw(getTexture(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
-        } else {
+        } else if(state.type == CatState.CatStateType.SLEEPING){
             spriteBatch.draw(sleepingTexture.getFrame(), cam.position.x + getPosition().x, cam.position.y + getPosition().y, getPosition().width, getPosition().height);
         }
+        else if(state.type == CatState.CatStateType.IDLE) {
+            spriteBatch.draw(idlingTexture.getFrame(),  cam.position.x + getPosition().x, cam.position.y + getPosition().y,getPosition().width * 0.7f, getPosition().height * 1.4f);
+        }
+
         spriteBatch.draw(getTexture(), cam.position.x + targetPosition.x, cam.position.y + targetPosition.y, 32, 32);
     }
 
     public void update(float deltaTime){
         //update animation
-        if(!isSleeping()) texture.update(deltaTime);
-        else {
+        if(state.type == CatState.CatStateType.DEFAULT) texture.update(deltaTime);
+        else if (state.type == CatState.CatStateType.SLEEPING) {
             sleepingTexture.update(deltaTime);
+        }
+
+        else if (state.type == CatState.CatStateType.IDLE) {
+            idlingTexture.update(deltaTime);
         }
 
         //movement
@@ -140,6 +153,7 @@ public class Cat {
                     this.tired = 0;
                 }
             }
+
             if(this.health == 0){
                 changeState(new CatState(CatState.CatStateType.DYING));
             }
