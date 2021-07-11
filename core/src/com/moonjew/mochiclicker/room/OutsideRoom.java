@@ -35,7 +35,6 @@ public class OutsideRoom extends Room{
     public void render(SpriteBatch sb, Camera cam){
         sb.draw(RoomCarousel.roomTextures[roomTexture], rectangle.x + cam.position.x, rectangle.y + cam.position.y, rectangle.width, rectangle.height);
         if(cat != null) cat.render(sb, cam);
-
     }
 
     public void sendCatOutside(Room regularRoom) {

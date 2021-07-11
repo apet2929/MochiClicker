@@ -12,7 +12,6 @@ public class Meter {
     Color color;
     Rectangle fillRect;
     Rectangle textureRect;
-    public int fillHeight;
 
     public Meter(Texture texture, Color color, Rectangle textureRect, Rectangle fillRect) {
         this.texture = texture;
@@ -21,9 +20,13 @@ public class Meter {
         this.textureRect = textureRect;
     }
 
-    public void render(SpriteBatch sb, ShapeRenderer sr){
+    public void fillMeter(ShapeRenderer sr, int fillHeight){
         sr.setColor(color);
-        sr.rect(fillRect.x, fillRect.y, fillRect.width, fillHeight);
+        sr.set(ShapeRenderer.ShapeType.Filled);
+        sr.rect(textureRect.x + fillRect.x, textureRect.y + fillRect.y, fillRect.width, fillHeight);
+        sr.set(ShapeRenderer.ShapeType.Line);
+    }
+    public void render(SpriteBatch sb){
         sb.draw(texture, textureRect.x, textureRect.y, textureRect.width, textureRect.height);
     }
 }

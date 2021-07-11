@@ -57,7 +57,7 @@ public class Room {
             new Vector2(MochiClicker.WIDTH/5, MochiClicker.HEIGHT/2.75f), // Tree
             new Vector2(MochiClicker.WIDTH/3.7f, MochiClicker.HEIGHT*0.62f), // Window
             new Vector2(MochiClicker.WIDTH/2 - 192, MochiClicker.HEIGHT/2 - 320), // Carpet
-            new Vector2(MochiClicker.WIDTH/24, MochiClicker.HEIGHT/2), // Painting
+            new Vector2(MochiClicker.WIDTH*0.78f, MochiClicker.HEIGHT/2), // Painting
             new Vector2(MochiClicker.WIDTH*0.01f, MochiClicker.HEIGHT*0.05f), // Food/Water Bowl
             new Vector2(MochiClicker.WIDTH*0.6f, MochiClicker.HEIGHT/2.6f), // Litter Box
             new Vector2(MochiClicker.WIDTH/2-120, MochiClicker.HEIGHT/3) // Special
@@ -121,7 +121,7 @@ public class Room {
             idleTexture = new Texture("Paige_idle.png");
         }
 
-        this.cat = new Cat(name, catTexture, sleepTexture, idleTexture, 0,0, 160, 84, this);
+        this.cat = new Cat(name, catTexture, sleepTexture, idleTexture, 160, 84, this);
         return this.cat;
     }
 

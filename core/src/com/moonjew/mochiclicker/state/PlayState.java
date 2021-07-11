@@ -232,24 +232,31 @@ public class PlayState extends State {
         sr.setProjectionMatrix(cam.combined);
         sr.setAutoShapeType(true);
 
-        sr.begin(ShapeRenderer.ShapeType.Line);
-        sb.begin();
+
 
         //BOTTOM LAYER - BACKGROUNDS
 
+        sb.begin();
         rooms.renderBackgrounds(sb, cam, transitioning);
-
+        sb.end();
 
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
+        sb.begin();
         rooms.renderCat(sb, cam);
+        sb.end();
 
         //TOP LAYER - UI
 
-        ui.render(rooms.getCurrentRoom().getCat(), sb, sr, transitioning);
-
-        sb.end();
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        ui.render(rooms.getCurrentRoom().getCat(), sr);
         sr.end();
+
+        sb.begin();
+        ui.render(rooms.getCurrentRoom().getCat(), sb, transitioning);
+        sb.end();
+
+
     }
 
     public void setCurrentTool(ToolType currentTool) {

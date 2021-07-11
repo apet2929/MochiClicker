@@ -22,21 +22,36 @@ public class UI {
     ArrayList<Button> buttons;
     public Cat dyingCat;
     Texture menuTexture;
+    HappyMeter happyMeter;
+    Meter hungerMeter;
+    Meter healthMeter;
 
     public UI() {
         menu = false;
         buttons = new ArrayList<>();
         menuTexture = new Texture("sidebar.png");
+        happyMeter = new HappyMeter(new Texture("happiness_icon.png"), new Rectangle(MochiClicker.WIDTH*0.06f, MochiClicker.HEIGHT*0.72f, 32, 32));
+        healthMeter = new Meter(new Texture("health_icon.png"), Color.valueOf("c32f2f"),
+                new Rectangle(MochiClicker.WIDTH*0.1f, MochiClicker.HEIGHT*0.77f, 32, 32),
+                new Rectangle(4, 5, 24, 21));
+        hungerMeter = new Meter(new Texture("hunger_icon.png"), Color.valueOf("7591ff"),
+                new Rectangle(MochiClicker.WIDTH*0.14f, MochiClicker.HEIGHT*0.72f, 32, 32),
+                new Rectangle(10,10,21,14));
     }
 
-    public void render(Cat cat, SpriteBatch sb, ShapeRenderer sr, int transitioning) { // Called only by the PlayState
+    public void render(Cat cat, SpriteBatch sb, int transitioning) { // Called only by the PlayState
         if(cat != null) {
             //Cat status
-            FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
-            FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
-            FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
-            FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
+//            FONT.draw(sb, getUIText(transitioning, "Tired", (float) cat.getTired()), new Rectangle(50, MochiClicker.HEIGHT - 100, 200, 200), 2, 2);
+//            FONT.draw(sb, getUIText(transitioning, "Happiness", cat.getHappiness()), new Rectangle(50, MochiClicker.HEIGHT - 125, 200, 200), 2, 2);
+//            FONT.draw(sb, getUIText(transitioning, "Hunger", cat.getHunger()), new Rectangle(50, MochiClicker.HEIGHT - 150, 200, 200), 2, 2);
+//            FONT.draw(sb, getUIText(transitioning, "Health", (int) Math.ceil(cat.getHealth())), new Rectangle(50, MochiClicker.HEIGHT - 175, 200, 200), 2, 2);
             FONT.draw(sb, "State " + cat.getState().getType(), new Rectangle(50, MochiClicker.HEIGHT - 200, 200, 200), 2, 2);
+
+            happyMeter.render(sb, 3 - Math.round(cat.getHappiness()/33.0f));
+            healthMeter.render(sb);
+            hungerMeter.render(sb);
+
         } else {
             FONT.drawMiddle(sb, "You have no cat.   Buy one? 50 Catnip",
                     new Rectangle(0,0,MochiClicker.WIDTH*0.8f, MochiClicker.HEIGHT).setCenter(MochiClicker.WIDTH/2.0f, MochiClicker.HEIGHT/1.4f), 4, 4);
@@ -56,13 +71,18 @@ public class UI {
             button.render(sb);
         }
 
-        sr.setColor(Color.BLUE);
-        sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
-        sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
-
         if (dyingCat != null) {
             FONT.drawMiddle(sb, dyingCat.getName() + " is dying! Heal?", new Rectangle(60, -200, MochiClicker.WIDTH - 60, MochiClicker.HEIGHT), 6, 6);
         }
+    }
+
+    public void render(Cat cat, ShapeRenderer sr){
+        healthMeter.fillMeter(sr, (int) (cat.getHealth()/cat.maxHealth * 23));
+        hungerMeter.fillMeter(sr, (int) ((cat.maxHunger - cat.getHunger()) / cat.maxHunger * 14));
+        sr.setColor(Color.BLUE);
+        sr.set(ShapeRenderer.ShapeType.Line);
+        sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
+        sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
     }
 
     private String getUIText(int transitioning, String valName, float val){

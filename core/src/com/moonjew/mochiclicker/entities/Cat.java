@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.room.Decoration;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.io.Animation;
@@ -54,7 +55,7 @@ public class Cat {
     private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
 
-    public Cat(String name, Texture sourceTexture, Texture sleepTexture, Texture idleTexture, int x, int y, int width, int height, Room room) {
+    public Cat(String name, Texture sourceTexture, Texture sleepTexture, Texture idleTexture, int width, int height, Room room) {
         this.name = name;
         this.sourceTexture = sourceTexture;
         TextureRegion src = new TextureRegion(sourceTexture, 400, 42);
@@ -66,8 +67,8 @@ public class Cat {
         TextureRegion src3 = new TextureRegion(idleTexture, 770, 60);
         this.idlingTexture = new Animation(src3, 14, 1.5f);
         //this.sleepingTexture = new Animation(new TextureRegion(new Texture("paige_sleep.png"), 160, 42), 2, 1.0f);
-        this.floorBounds = new Rectangle(room.getRectangle().x + room.getRectangle().width/3, room.getRectangle().y, room.getRectangle().width*2/3, room.getRectangle().height/2);
-        this.position = new Rectangle(x + floorBounds.x, y + floorBounds.y, -width, height);
+        this.floorBounds = new Rectangle(0,0, room.getRectangle().width/3, room.getRectangle().height/3).setCenter(MochiClicker.WIDTH/2,MochiClicker.HEIGHT/3);
+        this.position = new Rectangle( floorBounds.x, floorBounds.y, -width, height);
         this.velocity = new Vector2();
         this.room = room;
 
@@ -81,7 +82,7 @@ public class Cat {
         this.tiredModifier = 1;
         this.hunger = 0;
         this.maxHunger = 100;
-        this.health = 100;
+        this.health = 10;
         this.maxHealth = 100;
         this.maxTimeOutside = 10;
         usedNames.add(this.name);
@@ -382,7 +383,8 @@ public class Cat {
         String[] names = {
                 "Bob", "Joe", "Dog", "Paige",
                 "Sparky", "Marshmallow", "Rigby",
-                "Elwood", "Coco", "Tiger"
+                "Elwood", "Coco",
+                "Tiger"
         };
         //make sure that names don't get reused
         //I actually found a use for do while loops? wtf??
