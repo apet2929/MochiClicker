@@ -11,11 +11,9 @@ import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
 public class MainMenuState extends State{
     Texture img;
-    ShapeRenderer sr;
-    public MainMenuState(GameStateManager gsm, ShapeRenderer sr) {
+    public MainMenuState(GameStateManager gsm) {
         super(gsm);
         img = new Texture("testcat.jpg");
-        this.sr = sr;
     }
 
     @Override

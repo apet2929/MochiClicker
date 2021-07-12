@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.moonjew.mochiclicker.io.Font;
 import com.moonjew.mochiclicker.state.GameStateManager;
 import com.moonjew.mochiclicker.state.MainMenuState;
+import com.moonjew.mochiclicker.state.TutorialState;
 
 public class MochiClicker extends ApplicationAdapter {
 	public static int WIDTH = 640;
@@ -30,7 +31,8 @@ public class MochiClicker extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
 		sr = new ShapeRenderer();
-		gsm.push(new MainMenuState(gsm, sr));
+//		gsm.push(new MainMenuState(gsm);
+		gsm.push(new TutorialState(gsm));
 		FONT = new Font();
 	}
 

@@ -5,12 +5,14 @@ import com.badlogic.gdx.utils.Array;
 
 public class Animation {
     private Array<TextureRegion> frames;
+    private TextureRegion source;
     private float maxFrameTime;
     private float currentFrameTime;
     private int frameCount;
     private int frame;
 
     public Animation(TextureRegion region, int frameCount, float cycleTime){
+        source = region;
         frames = new Array<>();
         int frameWidth = region.getRegionWidth() / frameCount;
         for(int i = 0; i < frameCount; i++){
@@ -36,5 +38,8 @@ public class Animation {
         return frames.get(frame);
     }
 
+    public void dispose(){
+        source.getTexture().dispose();
+    }
 
 }
