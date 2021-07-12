@@ -77,12 +77,14 @@ public class UI {
     }
 
     public void render(Cat cat, ShapeRenderer sr){
-        healthMeter.fillMeter(sr, (int) (cat.getHealth()/cat.maxHealth * 23));
-        hungerMeter.fillMeter(sr, (int) ((cat.maxHunger - cat.getHunger()) / cat.maxHunger * 14));
-        sr.setColor(Color.BLUE);
-        sr.set(ShapeRenderer.ShapeType.Line);
-        sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
-        sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
+        if(cat != null) {
+            healthMeter.fillMeter(sr, (int) (cat.getHealth() / cat.maxHealth * 23));
+            hungerMeter.fillMeter(sr, (int) ((cat.maxHunger - cat.getHunger()) / cat.maxHunger * 14));
+            sr.setColor(Color.BLUE);
+            sr.set(ShapeRenderer.ShapeType.Line);
+            sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
+            sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
+        }
     }
 
     private String getUIText(int transitioning, String valName, float val){

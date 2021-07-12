@@ -108,24 +108,39 @@ public class Cat {
     }
 
     public void update(float deltaTime){
+
+        //State stuff
+        this.state.update(deltaTime);
+        if(isSleeping()) {
+            if (!this.state.finished) {
+                this.tired = this.state.maxTime - this.state.timer;
+            } else {
+                this.tired = 0;
+            }
+        }
+        if(this.health == 0){
+            changeState(new CatState(CatState.CatStateType.DYING));
+        }
+        if(this.state.finished){
+            changeState(new CatState(CatState.CatStateType.DEFAULT));
+        }
+
         //update animation
         if(state.type == CatState.CatStateType.DEFAULT) texture.update(deltaTime);
+
         else if (state.type == CatState.CatStateType.SLEEPING) {
             sleepingTexture.update(deltaTime);
         }
-
         else if (state.type == CatState.CatStateType.IDLE) {
             idlingTexture.update(deltaTime);
         }
 
         //movement
-        if(!isSleeping() && !isDying() && !isIdle()) {
-            doMovement(deltaTime);
-        }
+        doMovement(deltaTime);
 
         //handle state
         if(!isOutside() && !inMainRoom) {
-            if (!isSleeping() && !isDying() && !isIdle()) {
+            if (!isSleeping()) {
                 tired += deltaTime * ((100-tiredModifier)/100);
                 if (tired >= maxTired) {
                     sleep();
@@ -144,23 +159,6 @@ public class Cat {
             happiness = clampFloat(happiness, 0, maxHappiness);
             health = clampFloat(health, 0, maxHealth);
             hunger = clampFloat(hunger, 0, maxHunger);
-
-            //State stuff
-            this.state.update(deltaTime);
-            if(isSleeping()) {
-                if (!this.state.finished) {
-                    this.tired = this.state.maxTime - this.state.timer;
-                } else {
-                    this.tired = 0;
-                }
-            }
-
-            if(this.health == 0){
-                changeState(new CatState(CatState.CatStateType.DYING));
-            }
-            if(this.state.finished){
-                changeState(new CatState(CatState.CatStateType.DEFAULT));
-            }
         }
     }
 
@@ -175,11 +173,10 @@ public class Cat {
                 genTargetPosition();
                 this.hitTargetPosition = false;
             } else {
-                if(!isSleeping() && !isIdle()) {
+                if(!isSleeping()) {
                     changeState(new CatState(CatState.CatStateType.IDLE, 5));
                 }
             }
-
             increaseHealth();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
@@ -193,7 +190,6 @@ public class Cat {
             position.width = -position.width;
             position.x -= position.width;
         }
-
         velocity.x = tempX;
         velocity.y = tempY;
     }
@@ -211,7 +207,7 @@ public class Cat {
         this.tired = 0;
     }
     private boolean checkMove() {
-        return happiness >= Math.random() * 75;
+        return happiness <= Math.random() * 25;
     }
     private void genTargetPosition() {
         double targetX = (Math.random() * floorBounds.width) + floorBounds.x;
@@ -266,8 +262,10 @@ public class Cat {
 
     public void doMovement(float deltaTime){
         moveToTarget();
-        position.x += velocity.x * deltaTime * (maxHunger - hunger);
-        position.y += velocity.y * deltaTime * (maxHunger - hunger);
+        if(canMove()) {
+            position.x += velocity.x * deltaTime * (maxHunger - hunger);
+            position.y += velocity.y * deltaTime * (maxHunger - hunger);
+        }
     }
 
     public boolean updateOutside(float deltaTime){
@@ -322,6 +320,9 @@ public class Cat {
         }
     }
 
+    private boolean canMove(){
+        return !isIdle() && !isSleeping() && !isDying();
+    }
     public CatState getState() {
         return state;
     }

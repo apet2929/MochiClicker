@@ -61,7 +61,7 @@ public class PlayState extends State {
         transitioning = 0;
         ui.setCat(rooms.getCurrentRoom().getCat());
 
-        catNip = 0;
+        catNip = 500;
 
 //        shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH * 0.84f, MochiClicker.HEIGHT * .79f, 100, 50), gsm, rooms.getCurrentRoom());
         shopButton = new ShopButton(new Rectangle(MochiClicker.WIDTH -100, MochiClicker.HEIGHT - 150, 100, 50), gsm, rooms.getCurrentRoom());

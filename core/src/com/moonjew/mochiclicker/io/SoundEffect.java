@@ -19,7 +19,7 @@ public class SoundEffect {
         this.sound = Gdx.audio.newSound(Gdx.files.internal("audio/" + fileName));
     }
     public void play(){
-        sound.play(volume, pitch, pan);
+        sound.play(volume, 1.0f, pan);
     }
     public void pause(){
         sound.pause();
