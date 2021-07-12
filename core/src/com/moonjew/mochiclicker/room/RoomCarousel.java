@@ -19,7 +19,7 @@ public class RoomCarousel {
     public RoomCarousel() {
         rooms = new ArrayList<>();
         currentRoom = 0;
-        this.mainRoom = new MainRoom(0);
+        this.mainRoom = new MainRoom(2);
         this.outsideRoom = new OutsideRoom(1);
     }
 
@@ -129,7 +129,8 @@ public class RoomCarousel {
     private static Texture[] genRoomTextures(){
         return new Texture[]{
                 new Texture("catroom.png"),
-                new Texture("outside.png")
+                new Texture("outside.png"),
+                new Texture("mainroom.png")
         };
     }
 }
