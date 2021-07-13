@@ -32,19 +32,23 @@ public class ShopState extends State{
 
     UpgradeButton bedUpgradeButton;
     UpgradeTree bedUpgradeTree;
+    Texture upgradesIcon;
 
 
     Room room;
+    Texture shopBackground;
 
     public ShopState(GameStateManager gsm, Room room) {
         super(gsm);
-        backButton = new BackButton(new Texture("back-button.png"), new Rectangle(50, MochiClicker.HEIGHT-100, 100, 100), gsm);
-        healthUpgradeButton = new UpgradeButton(new Rectangle(10, 100, 140, 100));
-        hungerUpgradeButton = new UpgradeButton(new Rectangle(170, 100, 140, 100));
-        happinessUpgradeButton = new UpgradeButton(new Rectangle(330, 100, 140, 100));
-        sleepUpgradeButton = new UpgradeButton(new Rectangle(490, 100, 140, 100));
-        bedUpgradeButton = new UpgradeButton(new Rectangle(10, 220, 140, 100));
+        backButton = new BackButton(new Texture("back_arrow.png"), new Rectangle(50, MochiClicker.HEIGHT-105, 80, 80), gsm);
+        healthUpgradeButton = new UpgradeButton(new Rectangle(50, 270, 120, 90));
+        hungerUpgradeButton = new UpgradeButton(new Rectangle(190, 270, 120, 90));
+        happinessUpgradeButton = new UpgradeButton(new Rectangle(330, 270, 120, 90));
+        sleepUpgradeButton = new UpgradeButton(new Rectangle(470, 270, 120, 90));
+        bedUpgradeButton = new UpgradeButton(new Rectangle(50, 160, 120, 90));
         this.room = room;
+        shopBackground = new Texture("shop_bg.png");
+        upgradesIcon = new Texture("shop_unit.png");
         restart();
     }
 
@@ -89,25 +93,36 @@ public class ShopState extends State{
     @Override
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         sb.begin();
-        FONT.drawMiddle(sb, "Shop", new Rectangle(0, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, 0), 6, 6);
+        sb.draw(shopBackground, 0, 0, 640, 480);
+        int boxes = 4;
+        int margin = 40;
+        int spacing = 15;
+        for(int i = 0; i < boxes; i++) {
+            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes + 5;
+            sb.draw(upgradesIcon, xCoord, 265, 126, 96);
+        }
+        for(int i = 0; i < boxes; i++) {
+            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes + 5;
+            sb.draw(upgradesIcon, xCoord, 155, 126, 96);
+        }
+        FONT.drawMiddle(sb,"Shop", new Rectangle(0, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, 0), 6, 6);
         backButton.render(sb);
-
         healthUpgradeButton.render(sb);
         hungerUpgradeButton.render(sb);
         sleepUpgradeButton.render(sb);
         happinessUpgradeButton.render(sb);
         bedUpgradeButton.render(sb);
-
         sb.end();
-        sr.setAutoShapeType(true);
-        sr.begin();
-        sr.setColor(Color.BLACK);
-        healthUpgradeButton.renderOutline(sr);
-        happinessUpgradeButton.renderOutline(sr);
-        hungerUpgradeButton.renderOutline(sr);
-        sleepUpgradeButton.renderOutline(sr);
-        bedUpgradeButton.renderOutline(sr);
-        sr.end();
+
+//        sr.setAutoShapeType(true);
+//        sr.begin();
+//        sr.setColor(Color.BLACK);
+//        healthUpgradeButton.renderOutline(sr);
+//        happinessUpgradeButton.renderOutline(sr);
+//        hungerUpgradeButton.renderOutline(sr);
+//        sleepUpgradeButton.renderOutline(sr);
+//        bedUpgradeButton.renderOutline(sr);
+//        sr.end();
     }
 
     public void restart() {

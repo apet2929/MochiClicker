@@ -78,7 +78,7 @@ public class Cat {
         this.maxHappiness = 100;
         this.tired = 0;
 
-        this.maxTired = 5;
+        this.maxTired = 15;
         this.tiredModifier = 1;
         this.hunger = 0;
         this.maxHunger = 100;
