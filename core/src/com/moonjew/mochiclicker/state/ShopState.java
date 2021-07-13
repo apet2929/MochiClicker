@@ -41,11 +41,11 @@ public class ShopState extends State{
     public ShopState(GameStateManager gsm, Room room) {
         super(gsm);
         backButton = new BackButton(new Texture("back_arrow.png"), new Rectangle(50, MochiClicker.HEIGHT-105, 80, 80), gsm);
-        healthUpgradeButton = new UpgradeButton(new Rectangle(50, 270, 120, 90));
-        hungerUpgradeButton = new UpgradeButton(new Rectangle(190, 270, 120, 90));
-        happinessUpgradeButton = new UpgradeButton(new Rectangle(330, 270, 120, 90));
-        sleepUpgradeButton = new UpgradeButton(new Rectangle(470, 270, 120, 90));
-        bedUpgradeButton = new UpgradeButton(new Rectangle(50, 160, 120, 90));
+        healthUpgradeButton = new UpgradeButton(new Rectangle(112, 270, 120, 90));
+        hungerUpgradeButton = new UpgradeButton(new Rectangle(250, 270, 120, 90));
+        happinessUpgradeButton = new UpgradeButton(new Rectangle(395, 270, 120, 90));
+        sleepUpgradeButton = new UpgradeButton(new Rectangle(112, 160, 120, 90));
+        bedUpgradeButton = new UpgradeButton(new Rectangle(253, 160, 120, 90));
         this.room = room;
         shopBackground = new Texture("shop_bg.png");
         upgradesIcon = new Texture("shop_unit.png");
@@ -94,15 +94,15 @@ public class ShopState extends State{
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         sb.begin();
         sb.draw(shopBackground, 0, 0, 640, 480);
-        int boxes = 4;
-        int margin = 40;
+        int boxes = 3;
         int spacing = 15;
+        int margin = (MochiClicker.WIDTH - (boxes * (126 + spacing)))/2;
         for(int i = 0; i < boxes; i++) {
-            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes + 5;
+            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes;
             sb.draw(upgradesIcon, xCoord, 265, 126, 96);
         }
         for(int i = 0; i < boxes; i++) {
-            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes + 5;
+            int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes;
             sb.draw(upgradesIcon, xCoord, 155, 126, 96);
         }
         FONT.drawMiddle(sb,"Shop", new Rectangle(0, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, 0), 6, 6);
