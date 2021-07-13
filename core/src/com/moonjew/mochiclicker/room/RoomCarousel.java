@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.entities.Mess;
 
 import java.util.ArrayList;
 
@@ -71,11 +72,15 @@ public class RoomCarousel {
         }
     }
 
-    public void renderCat(SpriteBatch sb, Camera cam){
+    public void renderForeground(SpriteBatch sb, Camera cam){
         if(getCurrentRoom().cat != null) {
             if(!getCurrentRoom().cat.isOutside()) getCurrentRoom().cat.render(sb, cam);
         }
+        for(Mess mess : getCurrentRoom().messList){
+            mess.render(sb);
+        }
     }
+
 
     public OutsideRoom getOutsideRoom() {
         return outsideRoom;

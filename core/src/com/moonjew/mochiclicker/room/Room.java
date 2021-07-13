@@ -11,9 +11,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.entities.Cat;
 import com.moonjew.mochiclicker.entities.CatState;
+import com.moonjew.mochiclicker.entities.Mess;
 import com.moonjew.mochiclicker.state.GameStateManager;
 import com.moonjew.mochiclicker.state.ShopState;
 import com.moonjew.mochiclicker.upgrades.Upgrade;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.moonjew.mochiclicker.state.PlayState.catNip;
 
@@ -22,16 +26,21 @@ public class Room {
     int roomTexture;
     Cat cat;
     Rectangle rectangle;
+    Rectangle floorBounds;
     Color color;
     ShopState shop;
     Decoration[] decorations;
+    List<Mess> messList;
 
     public Room(GameStateManager gsm) {
         this.rectangle = new Rectangle(20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
+        this.floorBounds = new Rectangle(0,0, rectangle.width/2, rectangle.height/3).setCenter(MochiClicker.WIDTH/2,MochiClicker.HEIGHT/3);
+
 //        this.cat = genCat();
         this.cat = null;
         this.shop = new ShopState(gsm, this);
         this.roomTexture = 0;
+        messList = new ArrayList<>();
         initDecorations();
     }
 
@@ -39,6 +48,8 @@ public class Room {
         this.rectangle = new Rectangle(20,20,MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         this.cat = null;
         this.shop = null;
+        this.messList = new ArrayList<>();
+
     }
 
     public void update(float deltaTime){
@@ -48,8 +59,15 @@ public class Room {
             }
             cat.update(deltaTime);
         }
+
+        if(Math.random() * 1000 < 100 && messList.size() < 100) {
+            messList.add(new Mess(floorBounds));
+        }
     }
 
+    public List<Mess> getMessList() {
+        return messList;
+    }
 //    Decorations
 
     public static final Vector2[] decorationPositions = {
@@ -81,7 +99,7 @@ public class Room {
         decorations[Decoration.DecorationType.CARPET.ordinal()] = new Decoration(new Texture(Gdx.files.internal("carpet.png")), 5, Decoration.DecorationType.CARPET, 384, 384);
         decorations[Decoration.DecorationType.PAINTING.ordinal()] = new Decoration(new Texture(Gdx.files.internal("painting.png")), 5, Decoration.DecorationType.PAINTING, 96, 96);
         decorations[Decoration.DecorationType.FOOD_WATER_BOWL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("food_bowl.png")), 5, Decoration.DecorationType.FOOD_WATER_BOWL, 48, 48);
-        decorations[Decoration.DecorationType.LITTER_BOX.ordinal()] = new Decoration(new Texture(Gdx.files.internal("litterbox.png")), 5, Decoration.DecorationType.LITTER_BOX, 96, 96);
+        decorations[Decoration.DecorationType.LITTER_BOX.ordinal()] = new Decoration(new Texture(Gdx.files.internal("litterbox.png")), 2, Decoration.DecorationType.LITTER_BOX, 96, 96);
         decorations[Decoration.DecorationType.SPECIAL.ordinal()] = new Decoration(new Texture(Gdx.files.internal("mouse_toy.png")), 5, Decoration.DecorationType.SPECIAL, 96, 96);
     }
     public void setDecoration(Decoration decoration){

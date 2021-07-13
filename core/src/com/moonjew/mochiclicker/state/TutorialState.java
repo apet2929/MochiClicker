@@ -12,14 +12,10 @@ import com.moonjew.mochiclicker.MochiClicker;
 import com.moonjew.mochiclicker.io.Animation;
 import com.moonjew.mochiclicker.io.HappyMeter;
 import com.moonjew.mochiclicker.io.Meter;
+import com.moonjew.mochiclicker.io.button.Button;
 import com.moonjew.mochiclicker.io.button.ConditionalButton;
-import com.moonjew.mochiclicker.io.button.GenericButton;
-import com.moonjew.mochiclicker.io.button.SidebarButton;
-
-import java.awt.*;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
-import static com.moonjew.mochiclicker.state.PlayState.catNip;
 
 public class TutorialState extends State{
     Rectangle text_box = new Rectangle(50, 25, 450, 100);
@@ -39,7 +35,7 @@ public class TutorialState extends State{
     int drawUI;
     Meter healthMeter, hungerMeter;
     HappyMeter happyMeter;
-    GenericButton skipTutorialButton;
+    Button skipTutorialButton;
     ConditionalButton sidebarButton, foodBowlButton, handButton, mouseButton;
     ConditionalButton[] ui;
     boolean renderTextBox = true;
@@ -60,7 +56,7 @@ public class TutorialState extends State{
         foodBowlButton = new ConditionalButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
         handButton = new ConditionalButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
         mouseButton = new ConditionalButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
-        skipTutorialButton = new GenericButton("Skip", new Rectangle(30, MochiClicker.HEIGHT-75,50, 50));
+        skipTutorialButton = new Button("Skip", new Rectangle(30, MochiClicker.HEIGHT-75,50, 50));
         ui = new ConditionalButton[]{sidebarButton, foodBowlButton, handButton, mouseButton};
     }
 
@@ -116,7 +112,7 @@ public class TutorialState extends State{
         sr.setAutoShapeType(true);
         //background render
         sb.begin();
-        sb.draw(new Texture("room.png"),20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
+        sb.draw(new Texture("catroom.png"),20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         sb.end();
 
         //cats & UI

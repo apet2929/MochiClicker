@@ -44,7 +44,7 @@ public class MainRoom extends Room {
 
     public void render(SpriteBatch sb, Camera cam){
         sb.draw(RoomCarousel.roomTextures[roomTexture], rectangle.x + cam.position.x, rectangle.y + cam.position.y, rectangle.width, rectangle.height);
-        for(Cat cat: cats){
+        for(Cat cat: cats) {
             cat.render(sb, cam);
         }
     }

@@ -10,10 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
+import com.moonjew.mochiclicker.entities.Mess;
 import com.moonjew.mochiclicker.io.*;
 import com.moonjew.mochiclicker.io.button.*;
+import com.moonjew.mochiclicker.room.Decoration;
 import com.moonjew.mochiclicker.room.Room;
 import com.moonjew.mochiclicker.room.RoomCarousel;
+
+import java.util.ListIterator;
 
 import static com.moonjew.mochiclicker.state.ToolType.*;
 
@@ -33,12 +37,13 @@ public class PlayState extends State {
     Button foodBowlButton;
     Button handButton;
     Button mouseButton;
+    Button cleaningButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
     boolean menu;
 
     ToolType currentTool; //0 = no tool, 1 = dustbin, 2 = toy bin, 3 = food bowl
 
-    Cursor dustbinCursor;
+    Cursor cleaningCursor;
     Cursor handCursor;
     Cursor foodBowlCursor;
     Cursor mouseCursor;
@@ -69,14 +74,15 @@ public class PlayState extends State {
         menuButtons = new ConditionalButton[]{shopButton, sendCatToMainRoomButton};
 
         sidebarButton = new SidebarButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
-        foodBowlButton = new GenericButton(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
-        handButton = new GenericButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
-        mouseButton = new GenericButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
+        foodBowlButton = new Button(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
+        handButton = new Button(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
+        mouseButton = new Button(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
+        cleaningButton = new Button(new Texture("cleaning_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 120, 25, 64, 64));
         healYesButton = new ConditionalButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
         healNoButton = new ConditionalButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
         buyCatYesButton = new ConditionalButton(new Texture("yes_button.png"), new Rectangle(MochiClicker.WIDTH/3.0f + 100, MochiClicker.HEIGHT/2.5f, 200, 50));
 
-        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton}); //adding buttons to the UI
+        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, cleaningButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton}); //adding buttons to the UI
 
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
@@ -96,6 +102,11 @@ public class PlayState extends State {
         xHotSpot = mouseCursorTexture.getWidth() / 2;
         yHotSpot = mouseCursorTexture.getHeight() / 2;
         mouseCursor = Gdx.graphics.newCursor(mouseCursorTexture, xHotSpot, yHotSpot);
+
+        Pixmap cleaningCursorTexture = new Pixmap(Gdx.files.internal("mop.png"));
+        xHotSpot = cleaningCursorTexture.getWidth() / 2;
+        yHotSpot = cleaningCursorTexture.getHeight() / 2;
+        cleaningCursor = Gdx.graphics.newCursor(cleaningCursorTexture, xHotSpot, yHotSpot);
     }
 
     @Override
@@ -130,23 +141,34 @@ public class PlayState extends State {
                 if (rooms.getCurrentRoom().getCat().touch(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()) {
                     // hit cat
                     if (currentTool.equals(NO_TOOL)) {
-                        System.out.println("True");
                         catNip += rooms.getCurrentRoom().getCat().getLevel();
                     } else if (currentTool.equals(FOOD_BOWL_TOOL)) {
                         rooms.getCurrentRoom().getCat().eat();
                     } else if (currentTool.equals(HAND_TOOL)) {
                         rooms.getCurrentRoom().getCat().pet();
                     } else if (currentTool.equals(MOUSE_TOY_TOOL)) {
-                        System.out.println("true");
                         rooms.getCurrentRoom().getCat().pet();
                         rooms.getCurrentRoom().getCat().pet();
                     }
                 }
-            } else {
+            }
+            else {
                 if (buyCatYesButton.getBounds().contains(x, y)){
                     if(catNip >= 50) {
                         catNip -= 50;
                         rooms.getCurrentRoom().genCat();
+                    }
+                }
+            }
+            if (currentTool.equals(CLEANING_TOOL)){
+                ListIterator<Mess> messListIterator = rooms.getCurrentRoom().getMessList().listIterator();
+                while(messListIterator.hasNext()){
+                    Mess mess = messListIterator.next();
+                    if(mess.getBounds().contains(x, y)){
+                        mess.clean((int) rooms.getCurrentRoom().getDecorationValue(Decoration.DecorationType.LITTER_BOX));
+                        if(mess.getSize() <= 0){
+                            messListIterator.remove();
+                        }
                     }
                 }
             }
@@ -168,6 +190,10 @@ public class PlayState extends State {
             else if(foodBowlButton.getBounds().contains(x,y)){
                 if(currentTool.equals( FOOD_BOWL_TOOL)) setCurrentTool(NO_TOOL);
                 else setCurrentTool(FOOD_BOWL_TOOL);
+            }
+            else if(cleaningButton.getBounds().contains(x, y)){
+                if(currentTool.equals(CLEANING_TOOL)) setCurrentTool(NO_TOOL);
+                else setCurrentTool(CLEANING_TOOL);
             }
             else if(handButton.getBounds().contains(x,y)){
                 if(currentTool.equals( HAND_TOOL)) setCurrentTool(NO_TOOL);
@@ -243,7 +269,7 @@ public class PlayState extends State {
         //MIDDLE LAYER - ENTITIES, EFFECTS
 
         sb.begin();
-        rooms.renderCat(sb, cam);
+        rooms.renderForeground(sb, cam);
         sb.end();
 
         //TOP LAYER - UI
@@ -267,7 +293,8 @@ public class PlayState extends State {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 break;
             }
-            case DUSTBIN_TOOL: {
+            case CLEANING_TOOL: {
+                Gdx.graphics.setCursor(cleaningCursor);
                 break;
             }
             case HAND_TOOL: {
@@ -313,7 +340,7 @@ public class PlayState extends State {
         rooms.dispose();
         foodBowlCursor.dispose();
         handCursor.dispose();
-        dustbinCursor.dispose();
+        cleaningCursor.dispose();
         mouseCursor.dispose();
     }
 }

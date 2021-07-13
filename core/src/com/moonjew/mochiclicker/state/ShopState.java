@@ -29,6 +29,7 @@ public class ShopState extends State{
     UpgradeTree hungerUpgradeTree;
     UpgradeTree happinessUpgradeTree;
     UpgradeTree sleepUpgradeTree;
+    UpgradeButton[] upgrades;
 
     UpgradeButton bedUpgradeButton;
     UpgradeTree bedUpgradeTree;
@@ -97,21 +98,30 @@ public class ShopState extends State{
         int boxes = 3;
         int spacing = 15;
         int margin = (MochiClicker.WIDTH - (boxes * (126 + spacing)))/2;
+        int upgradeIndex = 0;
         for(int i = 0; i < boxes; i++) {
             int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes;
             sb.draw(upgradesIcon, xCoord, 265, 126, 96);
+
+            if(upgradeIndex < upgrades.length) {
+                upgrades[upgradeIndex].resize(xCoord, 265, 126, 96);
+                upgradeIndex++;
+            }
+
         }
         for(int i = 0; i < boxes; i++) {
             int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes;
             sb.draw(upgradesIcon, xCoord, 155, 126, 96);
+            if(upgradeIndex < upgrades.length) {
+                upgrades[upgradeIndex].resize(xCoord, 155, 126, 96);
+                upgradeIndex++;
+            }
         }
         FONT.drawMiddle(sb,"Shop", new Rectangle(0, MochiClicker.HEIGHT-100, MochiClicker.WIDTH, 0), 6, 6);
         backButton.render(sb);
-        healthUpgradeButton.render(sb);
-        hungerUpgradeButton.render(sb);
-        sleepUpgradeButton.render(sb);
-        happinessUpgradeButton.render(sb);
-        bedUpgradeButton.render(sb);
+        for(UpgradeButton button: upgrades){
+            button.render(sb);
+        }
         sb.end();
 
 //        sr.setAutoShapeType(true);
@@ -132,6 +142,8 @@ public class ShopState extends State{
         sleepUpgradeTree = new UpgradeTree(Upgrade.SLEEP_UPGRADES, UpgradeType.SLEEP);
 
         bedUpgradeTree = new UpgradeTree(Upgrade.BED_UPGRADES, UpgradeType.BED);
+
+        upgrades = new UpgradeButton[]{hungerUpgradeButton, healthUpgradeButton, happinessUpgradeButton, sleepUpgradeButton, bedUpgradeButton};
 
         healthUpgradeButton.setUpgrade(healthUpgradeTree.getNextUpgrade());
         hungerUpgradeButton.setUpgrade(hungerUpgradeTree.getNextUpgrade());

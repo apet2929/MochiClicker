@@ -147,7 +147,7 @@ public class Cat {
                 }
                 happiness -= deltaTime * room.getDecorationValue(Decoration.DecorationType.PAINTING);
                 hunger += deltaTime * room.getDecorationValue(Decoration.DecorationType.FOOD_WATER_BOWL);
-
+                health -= (deltaTime * room.getMessList().size()) / 1000;
                 if (hunger >= maxHunger * 0.25f || happiness <= maxHappiness * 0.25f) {
                     health -= deltaTime * 0.1 * ((100-room.getDecorationValue(Decoration.DecorationType.LITTER_BOX))/100);
                 }
@@ -177,7 +177,6 @@ public class Cat {
                     changeState(new CatState(CatState.CatStateType.IDLE, 5));
                 }
             }
-            increaseHealth();
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 

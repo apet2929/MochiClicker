@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import static com.moonjew.mochiclicker.MochiClicker.FONT;
 
-public abstract class Button {
+public class Button {
     Rectangle bounds;
     String text;
     Texture texture;
@@ -36,6 +36,9 @@ public abstract class Button {
         return bounds;
     }
 
-    public abstract void onclick();
+    public void onclick(){
+
+    }
+
 
 }
