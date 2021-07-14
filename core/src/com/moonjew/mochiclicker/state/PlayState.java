@@ -3,6 +3,7 @@ package com.moonjew.mochiclicker.state;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -35,7 +36,8 @@ public class PlayState extends State {
     ConditionalButton buyCatYesButton, buyCatNoButton;
 
     Button foodBowlButton;
-    Button handButton;
+//    Button handButton;
+    ToolButtonTree handButtonTree;
     Button mouseButton;
     Button cleaningButton;
     int transitioning; // 0 = not transitioning, 1 = right, -1 = left
@@ -49,6 +51,7 @@ public class PlayState extends State {
     Cursor mouseCursor;
 
     SoundEffect mrow = new SoundEffect("mrow.wav", 1, 1.0f, 0);
+    Music music;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -75,15 +78,21 @@ public class PlayState extends State {
 
         sidebarButton = new SidebarButton(new Rectangle(MochiClicker.WIDTH-50, MochiClicker.HEIGHT-50, 32, 32));
         foodBowlButton = new Button(new Texture("food_bowl_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f + 40, 25, 64, 64));
-        handButton = new Button(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
-        mouseButton = new Button(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
+//        handButton = new Button(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64));
+//        mouseButton = new Button(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-43, 100, 20, 20));
         cleaningButton = new Button(new Texture("cleaning_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 120, 25, 64, 64));
         healYesButton = new ConditionalButton("Yes", new Rectangle(MochiClicker.WIDTH/2.0f-75, 125, 50, 50));
         healNoButton = new ConditionalButton("No", new Rectangle(MochiClicker.WIDTH/2.0f, 125, 50, 50));
         buyCatYesButton = new ConditionalButton(new Texture("yes_button.png"), new Rectangle(MochiClicker.WIDTH/3.0f + 100, MochiClicker.HEIGHT/2.5f, 200, 50));
 
-        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, handButton, mouseButton, cleaningButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton}); //adding buttons to the UI
+        handButtonTree = new ToolButtonTree(HAND_TOOL, new Button(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH / 2.0f - 40, 25, 64, 64)),
+                new ConditionalButton[]{
+                        new ConditionalButton(new Texture("hand_button.png"), new Rectangle(MochiClicker.WIDTH/2-40, 100, 20, 20)),
+                        new ConditionalButton(new Texture("mouse_button.png"), new Rectangle(MochiClicker.WIDTH/2-15, 100, 20, 20)),
+                });
 
+        ui.addButtons(new Button[]{shopButton, sidebarButton, foodBowlButton, cleaningButton, healYesButton, healNoButton, sendCatToMainRoomButton, buyCatYesButton, handButtonTree.getMainButton()}); //adding buttons to the UI
+        ui.addButtons(handButtonTree.getButtons());
         cam.setToOrtho(false, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         cam.position.x = 0;
         cam.position.y = 0;
@@ -107,6 +116,10 @@ public class PlayState extends State {
         xHotSpot = cleaningCursorTexture.getWidth() / 2;
         yHotSpot = cleaningCursorTexture.getHeight() / 2;
         cleaningCursor = Gdx.graphics.newCursor(cleaningCursorTexture, xHotSpot, yHotSpot);
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("audio/soundtrack_final.wav"));
+        music.setLooping(true);
+        music.setPosition(0.0f);
     }
 
     @Override
@@ -124,7 +137,7 @@ public class PlayState extends State {
             gsm.push(new MainRoomState(gsm, rooms.getMainRoom()));
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
-            mrow.play();
+            music.play();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
             rooms.sendCatOutside();
@@ -168,6 +181,7 @@ public class PlayState extends State {
                         mess.clean((int) rooms.getCurrentRoom().getDecorationValue(Decoration.DecorationType.LITTER_BOX));
                         if(mess.getSize() <= 0){
                             messListIterator.remove();
+                            rooms.getCurrentRoom().getCat().increaseHealth();
                         }
                     }
                 }
@@ -195,14 +209,18 @@ public class PlayState extends State {
                 if(currentTool.equals(CLEANING_TOOL)) setCurrentTool(NO_TOOL);
                 else setCurrentTool(CLEANING_TOOL);
             }
-            else if(handButton.getBounds().contains(x,y)){
-                if(currentTool.equals( HAND_TOOL)) setCurrentTool(NO_TOOL);
-                else setCurrentTool(HAND_TOOL);
+            ToolType type = handButtonTree.onclick(x,y);
+            if(type != null) {
+                setCurrentTool(type);
             }
-            else if(mouseButton.getBounds().contains(x,y)){
-                if(currentTool.equals( MOUSE_TOY_TOOL)) setCurrentTool(NO_TOOL);
-                else setCurrentTool(MOUSE_TOY_TOOL);
-            } else if(healYesButton.willRender && healYesButton.getBounds().contains(x,y)){
+//            else if(handButton.getBounds().contains(x,y)){
+//                if(currentTool.equals( HAND_TOOL)) setCurrentTool(NO_TOOL);
+//                else setCurrentTool(HAND_TOOL);
+//            }
+//            else if(mouseButton.getBounds().contains(x,y)){
+//                if(currentTool.equals( MOUSE_TOY_TOOL)) setCurrentTool(NO_TOOL);
+//                else setCurrentTool(MOUSE_TOY_TOOL);
+             else if(healYesButton.willRender && healYesButton.getBounds().contains(x,y)){
                 rooms.getCurrentRoom().getCat().heal();
                 ui.dyingCat = rooms.isCatDying();
                 setAlert(false);

@@ -31,8 +31,7 @@ public class MochiClicker extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
 		sr = new ShapeRenderer();
-//		gsm.push(new MainMenuState(gsm);
-		gsm.push(new TutorialState(gsm));
+		gsm.push(new MainMenuState(gsm));
 		FONT = new Font();
 	}
 

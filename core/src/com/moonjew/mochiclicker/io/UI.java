@@ -82,8 +82,6 @@ public class UI {
             hungerMeter.fillMeter(sr, (int) ((cat.maxHunger - cat.getHunger()) / cat.maxHunger * 14));
             sr.setColor(Color.BLUE);
             sr.set(ShapeRenderer.ShapeType.Line);
-            sr.rect(MochiClicker.WIDTH / 2 - 18, 100, 20, 20);
-            sr.rect(MochiClicker.WIDTH / 2 + 7, 100, 20, 20);
         }
     }
 

@@ -21,6 +21,8 @@ import java.util.List;
 
 import static com.moonjew.mochiclicker.state.PlayState.catNip;
 
+
+
 public class Room {
 
     int roomTexture;
@@ -60,7 +62,7 @@ public class Room {
             cat.update(deltaTime);
         }
 
-        if(Math.random() * 1000 < 100 && messList.size() < 100) {
+        if(Math.random() * deltaTime * 10000 < 1 && messList.size() < 100) {
             messList.add(new Mess(floorBounds));
         }
     }

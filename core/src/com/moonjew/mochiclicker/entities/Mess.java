@@ -36,8 +36,8 @@ public class Mess {
     }
     public void clean(int value){
         this.size -= value;
-        this.bounds.width = texture.getWidth() * size/2.0f;
-        this.bounds.height = texture.getHeight() * size/2.0f;
+        this.bounds.width = texture.getWidth() * size;
+        this.bounds.height = texture.getHeight() * size;
         if(this.size <= 0){
             this.dispose();
         }

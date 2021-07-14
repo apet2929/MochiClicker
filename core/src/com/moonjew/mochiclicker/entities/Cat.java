@@ -142,7 +142,7 @@ public class Cat {
         if(!isOutside() && !inMainRoom) {
             if (!isSleeping()) {
                 tired += deltaTime * ((100-tiredModifier)/100);
-                if (tired >= maxTired) {
+                if (tired >= maxTired && this.state.type != CatState.CatStateType.DYING) {
                     sleep();
                 }
                 happiness -= deltaTime * room.getDecorationValue(Decoration.DecorationType.PAINTING);
