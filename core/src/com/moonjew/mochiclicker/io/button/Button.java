@@ -25,7 +25,7 @@ public class Button {
             sb.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
         if(text != null){
-            FONT.drawMiddle(sb, text, bounds, 2, 2);
+            FONT.drawMiddle(sb, text, bounds.x, bounds.y, bounds.width, bounds.width*0.35f, 2, 2);
         }
     }
     public void resize(float x, float y, float width, float height){
@@ -34,6 +34,18 @@ public class Button {
 
     public Rectangle getBounds() {
         return bounds;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void onclick(){

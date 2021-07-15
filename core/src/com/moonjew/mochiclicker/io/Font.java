@@ -152,6 +152,11 @@ public class Font {
         }
     }
 
+    public void drawMiddle(SpriteBatch batch, String text, float x, float y, float width, float height, float xScale, float yScale) {
+        this.drawMiddle(batch, text, new Rectangle(x, y, width, height), xScale, yScale);
+    }
+
+
     public int getLetter(char c){
         if(48 <= c && c <= 57) {
             //c is a number

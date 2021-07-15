@@ -50,7 +50,7 @@ public class PlayState extends State {
     Cursor foodBowlCursor;
     Cursor mouseCursor;
 
-    SoundEffect mrow = new SoundEffect("mrow.wav", 1, 1.0f, 0);
+//    SoundEffect mrow = new SoundEffect("mrow.wav", 1, 1.0f, 0);
     Music music;
     Texture background;
 
