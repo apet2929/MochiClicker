@@ -52,6 +52,7 @@ public class PlayState extends State {
 
     SoundEffect mrow = new SoundEffect("mrow.wav", 1, 1.0f, 0);
     Music music;
+    Texture background;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -272,7 +273,11 @@ public class PlayState extends State {
 
     @Override
     public void render(SpriteBatch sb, ShapeRenderer sr) {
+        background = new Texture("basicbg.png");
+        sb.begin();
+        sb.draw(background, 0, 0, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         sb.setProjectionMatrix(cam.combined);
+        sb.end();
         sr.setProjectionMatrix(cam.combined);
         sr.setAutoShapeType(true);
 

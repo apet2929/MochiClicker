@@ -97,7 +97,7 @@ public class ShopState extends State{
         sb.draw(shopBackground, 0, 0, 640, 480);
         int boxes = 3;
         int spacing = 15;
-        int margin = (MochiClicker.WIDTH - (boxes * (126 + spacing)))/2;
+        int margin = (MochiClicker.WIDTH - (boxes * 126 + spacing * (boxes - 1)))/2;
         int upgradeIndex = 0;
         for(int i = 0; i < boxes; i++) {
             int xCoord = margin + i * (MochiClicker.WIDTH - margin * 2)/boxes;

@@ -112,6 +112,7 @@ public class TutorialState extends State{
         sr.setAutoShapeType(true);
         //background render
         sb.begin();
+        sb.draw(new Texture("basicbg.png"), 0,0, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         sb.draw(new Texture("catroom.png"),20,20, MochiClicker.WIDTH-40, MochiClicker.HEIGHT-40);
         sb.end();
 

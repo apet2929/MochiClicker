@@ -20,7 +20,7 @@ public class Font {
     Texture source;
 
     public Font(){
-        source = new Texture("font.png");
+        source = new Texture("blue_font.png");
         chars = new TextureRegion[40]; // 39
         int cnt = 0;
         int y = 0;
