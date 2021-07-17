@@ -61,6 +61,7 @@ public class MainMenuState extends State{
                             break;
                         case 3:
                             //credits,
+                            gsm.push(new CreditState(gsm));
                             break;
                     }
                 }

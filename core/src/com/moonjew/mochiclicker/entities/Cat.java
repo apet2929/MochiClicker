@@ -31,26 +31,28 @@ public class Cat {
     CatState state;
 
     float happiness; //0 - 100, affects how likely the cat is to fall asleep
+    public float happinessModifier;
     public int maxHappiness; //How much happiness it gets from toys
 
-    float tired; //0 - 10, once the cat reaches 10, it falls asleep
-    public int maxTired; //How fast the cat wakes up after falling asleep
-    public float tiredModifier; // How fast the cat falls asleep
+    float tired; // how tired the cat is
+    public int maxTired; // upgrade in shop
+    public float tiredModifier; // bed decoration
 
     float health; //0 - 100, affects cat's health? not sure how to implement this
-    public int maxHealth; //How much health the cat gains from exercise
+    public int maxHealth; // upgrade in the shop
 
     float hunger; //0 - 100, the cat gets slower until it reaches 100, then it stops moving
-    public int maxHunger; //How much hunger it gets from food
+    public int maxHunger; // food bowl
+    public float hungerModifier; //upgrade in the shop
 
-    float outsideChanceModifier;
+    float outsideChanceModifier; // upgrade in the shop
 
     int level; //The number of upgrades purchased, affects how much catnip is acquired per click
 
     //Movement
     Vector2 targetPosition; //Where the cat is going to
     boolean hitTargetPosition;
-    int speed = 2;
+    int speed = 20; // upgrade in the shop
 
     private float maxTimeOutside; //How long the cat will be outside
     private boolean inMainRoom; //If the cat is in the main room, you don't have to care for it.
@@ -75,14 +77,18 @@ public class Cat {
         this.state = new CatState(CatState.CatStateType.DEFAULT);
         this.level = 1;
         this.happiness = 100;
+        this.happinessModifier = 1; // upgrade in the shop
         this.maxHappiness = 100;
-        this.tired = 0;
 
+        this.tired = 0;
         this.maxTired = 15;
         this.tiredModifier = 1;
+
         this.hunger = 0;
         this.maxHunger = 100;
-        this.health = 10;
+        this.hungerModifier = 1;
+
+        this.health = 100;
         this.maxHealth = 100;
         this.maxTimeOutside = 10;
         usedNames.add(this.name);
@@ -109,57 +115,23 @@ public class Cat {
 
     public void update(float deltaTime){
 
-        //State stuff
-        this.state.update(deltaTime);
-        if(isSleeping()) {
-            if (!this.state.finished) {
-                this.tired = this.state.maxTime - this.state.timer;
-            } else {
-                this.tired = 0;
-            }
+        if(this.state.type == CatState.CatStateType.DEFAULT) tired += deltaTime * tiredModifier;
+        hunger += deltaTime * hungerModifier;
+        happiness -= deltaTime * happinessModifier;
+        health -= deltaTime * room.getMessList().size() / 10;
+
+
+        if(tired > maxTired){
+            changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired - room.getDecorationValue(Decoration.DecorationType.BED)));
         }
-        if(this.health == 0){
-            changeState(new CatState(CatState.CatStateType.DYING));
-        }
-        if(this.state.finished){
+
+        doMovement(deltaTime);
+
+        if(state.finished){
             changeState(new CatState(CatState.CatStateType.DEFAULT));
         }
 
-        //update animation
-        if(state.type == CatState.CatStateType.DEFAULT) texture.update(deltaTime);
-
-        else if (state.type == CatState.CatStateType.SLEEPING) {
-            sleepingTexture.update(deltaTime);
-        }
-        else if (state.type == CatState.CatStateType.IDLE) {
-            idlingTexture.update(deltaTime);
-        }
-
-        //movement
-        doMovement(deltaTime);
-
-        //handle state
-        if(!isOutside() && !inMainRoom) {
-            if (!isSleeping()) {
-                tired += deltaTime * ((100-tiredModifier)/100);
-                if (tired >= maxTired && this.state.type != CatState.CatStateType.DYING) {
-                    sleep();
-                }
-                happiness -= deltaTime * room.getDecorationValue(Decoration.DecorationType.PAINTING);
-                hunger += deltaTime * room.getDecorationValue(Decoration.DecorationType.FOOD_WATER_BOWL);
-                health -= (deltaTime * room.getMessList().size()) / 1000;
-                if (hunger >= maxHunger * 0.25f || happiness <= maxHappiness * 0.25f) {
-                    health -= deltaTime * 0.1 * ((100-room.getDecorationValue(Decoration.DecorationType.LITTER_BOX))/100);
-                }
-                if (hunger >= 100 || happiness <= 0) {
-                    health -= deltaTime * 0.9 * ((100-room.getDecorationValue(Decoration.DecorationType.LITTER_BOX))/100);
-                }
-            }
-
-            happiness = clampFloat(happiness, 0, maxHappiness);
-            health = clampFloat(health, 0, maxHealth);
-            hunger = clampFloat(hunger, 0, maxHunger);
-        }
+        getCurrentAnimation().update(deltaTime);
     }
 
     public void moveToTarget(){
@@ -173,15 +145,14 @@ public class Cat {
                 genTargetPosition();
                 this.hitTargetPosition = false;
             } else {
-                if(!isSleeping()) {
-                    changeState(new CatState(CatState.CatStateType.IDLE, 5));
-                }
+                changeState(new CatState(CatState.CatStateType.IDLE, 5));
             }
         }
         double mag = Math.sqrt(xDif * xDif + yDif * yDif);
 
-        float tempX = (float) (xDif / mag * speed); //previous = 2 next = 1
-        float tempY= (float) (yDif / mag * speed);
+        float tempSpeed = speed * hunger/maxHunger;
+        float tempX = (float) (xDif / mag * tempSpeed); //previous = 2 next = 1
+        float tempY= (float) (yDif / mag * tempSpeed);
 
         boolean newYee = tempX > 0;
         boolean yee = velocity.x > 0;
@@ -206,7 +177,7 @@ public class Cat {
         this.tired = 0;
     }
     private boolean checkMove() {
-        return happiness <= Math.random() * 25;
+        return Math.random() * 100 < hunger;
     }
     private void genTargetPosition() {
         double targetX = (Math.random() * floorBounds.width) + floorBounds.x;
@@ -225,6 +196,17 @@ public class Cat {
     public void sleep(){
         changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired, room.getDecorationValue(Decoration.DecorationType.BED)));
         this.tired = maxTired;
+    }
+
+    Animation getCurrentAnimation(){
+        if(this.state.type == CatState.CatStateType.DEFAULT){
+            return texture;
+        } else if(this.state.type == CatState.CatStateType.SLEEPING){
+            return sleepingTexture;
+        } else if(this.state.type == CatState.CatStateType.IDLE){
+            return idlingTexture;
+        }
+        return texture;
     }
     public void changeState(CatState state){
         if(state.type != this.state.type){
@@ -262,8 +244,8 @@ public class Cat {
     public void doMovement(float deltaTime){
         moveToTarget();
         if(canMove()) {
-            position.x += velocity.x * deltaTime * (maxHunger - hunger);
-            position.y += velocity.y * deltaTime * (maxHunger - hunger);
+            position.x += velocity.x * deltaTime * hunger;
+            position.y += velocity.y * deltaTime * hunger;
         }
     }
 
