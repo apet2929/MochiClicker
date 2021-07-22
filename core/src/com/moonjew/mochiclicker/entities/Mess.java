@@ -3,6 +3,7 @@ package com.moonjew.mochiclicker.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class Mess {
     public static final int NUM_MESS_TEXTURES = 3;
@@ -28,7 +29,7 @@ public class Mess {
         double posX = Math.random()*spawnPosition.width + spawnPosition.x;
         double posY = Math.random()*spawnPosition.height + spawnPosition.y;
         this.size = (int) (Math.random() * MAX_SIZE);
-        this.bounds = new Rectangle((float) posX, (float)posY, texture.getWidth() * size/2.0f, texture.getHeight() * size/2.0f);
+        this.bounds = new Rectangle((float) posX, (float)posY, texture.getWidth() * size, texture.getHeight() * size);
     }
 
     public void render(SpriteBatch sb){
@@ -36,8 +37,14 @@ public class Mess {
     }
     public void clean(int value){
         this.size -= value;
-        this.bounds.width = texture.getWidth() * size;
-        this.bounds.height = texture.getHeight() * size;
+
+        this.bounds.x += bounds.width/2;
+        this.bounds.y += bounds.height/2;
+
+        this.bounds.width = texture.getWidth() * size/2.0f;
+        this.bounds.height = texture.getHeight() * size/2.0f;
+
+
         if(this.size <= 0){
             this.dispose();
         }
