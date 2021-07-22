@@ -16,6 +16,8 @@ public class CatState {
         OUTSIDE
     }
 
+    public static CatState IDLE = new CatState(CatStateType.IDLE);
+    public static CatState DEFAULT = new CatState(CatStateType.DEFAULT);
     public CatState(CatStateType type, float maxTime, float timeModifier) {
         this.type = type;
         this.maxTime = maxTime;

@@ -51,7 +51,6 @@ public class Room {
         this.cat = null;
         this.shop = null;
         this.messList = new ArrayList<>();
-
     }
 
     public void update(float deltaTime){
@@ -60,11 +59,12 @@ public class Room {
                 cat.setState(new CatState(CatState.CatStateType.DYING));
             }
             cat.update(deltaTime);
+            if(Math.random() * deltaTime * 10000 < 1 && messList.size() < 100) {
+                messList.add(new Mess(floorBounds));
+            }
         }
 
-        if(Math.random() * deltaTime * 10000 < 1 && messList.size() < 100) {
-            messList.add(new Mess(floorBounds));
-        }
+
     }
 
     public List<Mess> getMessList() {

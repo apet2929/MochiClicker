@@ -37,6 +37,8 @@ public class Cat {
     float tired; // how tired the cat is
     public int maxTired; // upgrade in shop
     public float tiredModifier; // bed decoration
+    public int clicksToWake;
+    public int numClicks;
 
     float health; //0 - 100, affects cat's health? not sure how to implement this
     public int maxHealth; // upgrade in the shop
@@ -80,8 +82,10 @@ public class Cat {
         this.happinessModifier = 1; // upgrade in the shop
         this.maxHappiness = 100;
 
-        this.tired = 0;
-        this.maxTired = 15;
+        this.tired = 10;
+        this.maxTired = 5;
+        this.clicksToWake = 0;
+        this.numClicks = 0;
         this.tiredModifier = 1;
 
         this.hunger = 0;
@@ -120,8 +124,29 @@ public class Cat {
         happiness -= deltaTime * happinessModifier;
         health -= deltaTime * room.getMessList().size() / 10;
 
+        happiness = clampFloat(happiness, 0, maxHappiness);
+        hunger = clampFloat(hunger, 0, maxHunger);
+        health = clampFloat(health, 0, maxHealth);
 
         if(tired > maxTired){
+            clicksToWake = (int) (Math.random() * room.getDecorationValue(Decoration.DecorationType.TREE));
+            changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired - room.getDecorationValue(Decoration.DecorationType.BED)));
+        }
+        if(hunger < 25 && !isIdle() && !isSleeping()){
+            setState(CatState.IDLE);
+        }
+        if(hunger > 75 && !isSleeping()){
+            setState(CatState.DEFAULT);
+            speed = 100;
+        } else if(hunger > 50 && !isSleeping()){
+            setState(CatState.DEFAULT);
+            speed = 50;
+        } else if(hunger > 25 && !isSleeping()){
+            setState(CatState.DEFAULT);
+            speed = 25;
+        }
+
+        if(Math.random() * 25 > happiness){
             changeState(new CatState(CatState.CatStateType.SLEEPING, maxTired - room.getDecorationValue(Decoration.DecorationType.BED)));
         }
 
@@ -175,6 +200,12 @@ public class Cat {
         this.hunger = 0;
         this.happiness = 100;
         this.tired = 0;
+    }
+    public void wake(){
+        if(this.isSleeping()){
+            this.state = CatState.DEFAULT;
+            this.tired = 0;
+        }
     }
     private boolean checkMove() {
         return Math.random() * 100 < hunger;
@@ -231,8 +262,8 @@ public class Cat {
         if(val < min) return min;
         if(val > max) return max;
         return val;
-
     }
+
     public boolean isDying(){
         return this.state.type == CatState.CatStateType.DYING;
     }
@@ -244,8 +275,8 @@ public class Cat {
     public void doMovement(float deltaTime){
         moveToTarget();
         if(canMove()) {
-            position.x += velocity.x * deltaTime * hunger;
-            position.y += velocity.y * deltaTime * hunger;
+            position.x += velocity.x * deltaTime * speed;
+            position.y += velocity.y * deltaTime * speed;
         }
     }
 
@@ -312,9 +343,6 @@ public class Cat {
         this.state = state;
     }
 
-    public void setHunger(float hunger) {
-        this.hunger = hunger;
-    }
     public float getHunger() {
         return hunger;
     }
@@ -324,23 +352,14 @@ public class Cat {
     public float getHappiness() {
         return happiness;
     }
-    public void setHappiness(float happiness) {
-        this.happiness = happiness;
-    }
     public float getHealth() {
         return health;
-    }
-    public void setHealth(float health) {
-        this.health = health;
     }
     public double getLevel() {
         return level;
     }
     public void levelUp() {
         this.level++;
-    }
-    public void setPosition(Rectangle position) {
-        this.position = position;
     }
     public double getTired() {
         return tired;

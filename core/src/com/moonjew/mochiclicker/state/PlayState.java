@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.moonjew.mochiclicker.*;
+import com.moonjew.mochiclicker.entities.Cat;
+import com.moonjew.mochiclicker.entities.CatState;
 import com.moonjew.mochiclicker.entities.Mess;
 import com.moonjew.mochiclicker.io.*;
 import com.moonjew.mochiclicker.io.button.*;
@@ -152,17 +154,23 @@ public class PlayState extends State {
             float x = Gdx.input.getX();
             float y = MochiClicker.HEIGHT - Gdx.input.getY();
             if(rooms.getCurrentRoom().getCat() != null) {
-                if (rooms.getCurrentRoom().getCat().touch(x, y) && !rooms.getCurrentRoom().getCat().isSleeping()) {
+                Cat cat = rooms.getCurrentRoom().getCat();
+                if (cat.touch(x, y) ) {
                     // hit cat
                     if (currentTool.equals(NO_TOOL)) {
-                        catNip += rooms.getCurrentRoom().getCat().getLevel();
-                    } else if (currentTool.equals(FOOD_BOWL_TOOL)) {
-                        rooms.getCurrentRoom().getCat().eat();
-                    } else if (currentTool.equals(HAND_TOOL)) {
-                        rooms.getCurrentRoom().getCat().pet();
-                    } else if (currentTool.equals(MOUSE_TOY_TOOL)) {
-                        rooms.getCurrentRoom().getCat().pet();
-                        rooms.getCurrentRoom().getCat().pet();
+                        if (cat.isSleeping()) {
+                            cat.numClicks++;
+                            if(cat.numClicks > cat.clicksToWake) cat.wake();
+                        } else {
+                            catNip += cat.getLevel();
+                        }
+                    } else if (currentTool.equals(FOOD_BOWL_TOOL) && !cat.isSleeping()) {
+                        cat.eat();
+                    } else if (currentTool.equals(HAND_TOOL) && !cat.isSleeping()) {
+                        cat.pet();
+                    } else if (currentTool.equals(MOUSE_TOY_TOOL) && !cat.isSleeping()) {
+                        cat.pet();
+                        cat.pet();
                     }
                 }
             }
@@ -275,7 +283,7 @@ public class PlayState extends State {
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         background = new Texture("basicbg.png");
         sb.begin();
-        sb.draw(background, 0, 0, MochiClicker.WIDTH, MochiClicker.HEIGHT);
+        sb.draw(background, cam.position.x, cam.position.y, MochiClicker.WIDTH, MochiClicker.HEIGHT);
         sb.setProjectionMatrix(cam.combined);
         sb.end();
         sr.setProjectionMatrix(cam.combined);
